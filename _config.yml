@@ -1,0 +1,16 @@
+# Site settings
+title: MacMladen
+email: macmladen@bluefish.rs
+description: "Musings about code. And life."
+baseurl: ""
+url: "http://macmladen.com"
+twitter_username: MacMladen
+github_username:  MacMladen
+facebook_username:  MaclMaden
+
+# Build settings
+markdown: kramdown
+highlighter: pygments
+permalink: pretty
+paginate: 5
+exclude: ["node_modules"]
