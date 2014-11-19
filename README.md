@@ -25,5 +25,21 @@ And then in my quest I decided to start with themes and I stumbled upon Jekyll t
 
 This blog will be my place to post some of my experiences as [sysadmin](http://en.wikipedia.org/wiki/System_administrator/), sometimes as [DevOps](http://en.wikipedia.org/wiki/DevOps/) but I pretty much enjoy any challenge that I face in my work every day, be it front-end or Drupal theme development, [SASS](http://sass-lang.com/) or some Ruby gems issues, [Drupal](http://drupal.org//) site building, development, upgrade, maintenance or tuning, [bash](https://gist.github.com/macmladen/4224633) scripts, [jQuery](http://jquery.org/) eye-candy or exploring new territories with [Ember](http://emberjs.com/)
 
-> "ALL men by nature desire to know"
+> ### *ALL men by nature desire to know*
 > [Aristotle, Metaphysics ~350 BCE](http://classics.mit.edu/Aristotle/metaphysics.1.i.html)
+
+## Feel like forking?
+
+I did so you may too.
+
+I will try to improve on original **Clean Blog** and features will be described in blog and listed as features here.
+
+Basic steps would be:
+
+1. Fork the repository
+2. Rename it
+3. Change however you feel is right for you
+4. Mentioning source(s) always pays respect to the work of those whose shoulders you stand on
+5. Improve and
+6. Make something wonderful
+7. Contribute back
