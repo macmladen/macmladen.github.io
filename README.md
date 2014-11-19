@@ -1,24 +1,29 @@
-#Clean Blog by Start Bootstrap - Jekyll Version
+# MacMladen Blog is based on Clean Blog by Start Bootstrap - Jekyll Version
 
 The official Jekyll version of the Clean Blog theme by [Start Bootstrap](http://startbootstrap.com/).
 
-###[View Live Demo &rarr;](http://ironsummitmedia.github.io/startbootstrap-clean-blog-jekyll/)
+###[Original Clean Blog by Ironsummitmedia &rarr;](http://github.com/ironsummitmedia/startbootstrap-clean-blog-jekyll/)
 
-## Before You Begin
+## Background
 
-In the _config.yml file, the base URL is set to /startbootstrap-clean-blog-jekyll which is this themes gh-pages preview. It's recommended that you remove the base URL before working with this theme locally!
+It is quite easy to get lost with all the hype, expectations, options, themes, tools and everything else. Just like life is not complicated enough by itself.
 
-It should look like this:
-`baseurl: ""`
+While I decided on domain name (quite strangely coinciding with my nickname) in August 2014 and I was quite sure I'd go with [github pages](https://pages.github.com/) and [Jekyll](http://jekyllrb.com/).
 
-## What's Included
+And then, I wished some new shiny things like [Octopress 2](http://octopress.org/) and looked for this and that and read *how to* and... on and on while my page stood there just an inch from *Lorem ipsum* and shallow void.
 
-A full Jekyll environment is included with this theme. If you have Jekyll installed, simply run `jekyll serve` in your command line and preview the build in your browser. You can use `jekyll serve --watch` to watch for changes in the source files as well.
 
-A Grunt environment is also included. There are a number of tasks it performs like minification of the JavaScript, compiling of the LESS files, adding banners to keep the Apache 2.0 license intact, and watching for changes. Run the grunt default task by entering `grunt` into your command line which will build the files. You can use `grunt watch` if you are working on the JavaScript or the LESS.
+## [Jekyll themes](http://jekyllthemes.org/)
 
-You can run `jekyll serve --watch` and `grunt watch` at the same time to watch for changes and then build them all at once.
+And then in my quest I decided to start with themes and I stumbled upon Jekyll themes.
 
-## Support
+**The good thing:** they are free, open, ready to fork them, learn and adjust to your own taste.
 
-Visit Clean Blog's template overview page on Start Bootstrap at http://startbootstrap.com/template-overviews/clean-blog/ and leave a comment, email feedback@startbootstrap.com, or open an issue here on GitHub for support.
+**The bad thing:** they are not for average Jane and John Do, you need to have a solid grip on Ruby and Node based development and tools, and SASS proficiency surely helps. 
+
+## Tao
+
+This blog will be my place to post some of my experiences as [sysadmin](http://en.wikipedia.org/wiki/System_administrator/), sometimes as [DevOps](http://en.wikipedia.org/wiki/DevOps/) but I pretty much enjoy any challenge that I face in my work every day, be it front-end or Drupal theme development, [SASS](http://sass-lang.com/) or some Ruby gems issues, [Drupal](http://drupal.org//) site building, development, upgrade, maintenance or tuning, [bash](https://gist.github.com/macmladen/4224633) scripts, [jQuery](http://jquery.org/) eye-candy or exploring new territories with [Ember](http://emberjs.com/)
+
+> "ALL men by nature desire to know"
+> [Aristotle, Metaphysics ~350 BCE](http://classics.mit.edu/Aristotle/metaphysics.1.i.html)
