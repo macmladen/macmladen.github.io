@@ -1,0 +1,4 @@
+ISSUES
+about.html:   bad front img reference, extra dash
+contact.html: bad front img reference, extra dash
+nav.html:     empty <li> for /, feeds.xml and page2?
