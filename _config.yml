@@ -4,9 +4,17 @@ email: macmladen@bluefish.rs
 description: "Musings about code. And life."
 baseurl: ""
 url: "http://macmladen.com"
-twitter_username: MacMladen
-github_username:  MacMladen
-facebook_username:  MaclMaden
+
+# Social contacts
+twitter_username:    MacMladen
+github_username:     MacMladen
+facebook_username:   MaclMaden
+linkedin_username:   MacMladen
+googleplus_username: MacMladen
+drupalorg_username:  MacMladen
+medium_username:     MacMladen
+stackoverflow_username: 1099667/MacMladen
+apple:               bluefish.rs
 
 # Build settings
 markdown: kramdown
