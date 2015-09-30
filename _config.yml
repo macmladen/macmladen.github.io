@@ -22,3 +22,6 @@ highlighter: pygments
 permalink: pretty
 paginate: 5
 exclude: ["node_modules"]
+
+# Exclude files
+exclude: ["less", "Gruntfile.js", "ISSUES", "package.json", "node_modules", ".idea", "CNAME", "ISSUES"]
