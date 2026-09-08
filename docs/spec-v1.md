@@ -150,7 +150,7 @@ D1 table `registrations` additionally has `id`, `created_at`, `ip_hash`, `mailer
 - `docs/` holds this spec, decisions made during the build (`docs/decisions/`), and the deploy procedure once verified here.
 
 ### Repo hygiene
-- `README.md`: run locally (DDEV and plain `npm`), deploy as a Cloudflare Worker with static assets, create and bind D1, run migrations, export registrations to CSV with one wrangler command, which secrets to set where, and the DNS change (Workers custom domain for `macmladen.com` and `www`) as the last step. No secrets in the repo, ever.
+- `README.md`: run locally (`npm run dev`), deploy as a Cloudflare Worker with static assets, create and bind D1, run migrations, export registrations to CSV with one wrangler command, which secrets to set where, and the DNS change (Workers custom domain for `macmladen.com` and `www`) as the last step. No secrets in the repo, ever.
 - `wrangler.toml` with the D1 binding; `migrations/0001_registrations.sql`.
 - `CLAUDE.md` with process guardrails: never run the dev server in agent mode, never change DNS or secrets, never publish content Mladen has not approved, and a task→file map for the recurring tasks (edit the workshop block, add a speaking entry, add a redirect).
 - `.gitignore`, `.editorconfig`, `.nvmrc`.
