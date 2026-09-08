@@ -19,7 +19,7 @@ Never spawn a subagent that inherits the session model; set model and effort exp
 
 1. When something is off — unexpected result, misbehaving tool, unclear path — **ask, don't improvise workarounds**.
 2. Nothing is pushed to the remote until Mladen switches the GitHub Pages source away from `master`; pushing is Mladen's hand. No DNS, no secrets, no account settings by agents. Never write an API key or token anywhere but a gitignored file Mladen created.
-3. Verify the site through DDEV (`https://macmladen.ddev.site`) or `astro preview` of a production build; no ad-hoc background servers left running.
+3. Agents never start servers or long-running processes (no `npm run dev`, `astro preview`, `wrangler dev`, `ddev start`). Mladen starts them in his terminal and says which URL is up; agents then verify against that URL with the browser tools or curl. Agents verify what they can without a server: `npm run build`, static checks of `dist/`, unit-level scripts.
 4. Don't edit unrelated code — flag it as a separate task.
 5. Copy marked as draft in the source stays marked until Mladen approves it.
 
