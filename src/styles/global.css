@@ -1,3 +1,12 @@
-/* Global stylesheet entry. MM-04 adds the cascade layers
-   (reset, base, layout, components, utilities) below this import. */
+/* Global stylesheet entry.
+   The layer order is declared once, here, before anything is imported.
+   tokens.css stays unlayered so custom properties are never subject to
+   layer precedence. */
+@layer reset, base, layout, components, utilities;
+
 @import './tokens.css';
+@import './reset.css' layer(reset);
+@import './base.css' layer(base);
+@import './layout.css' layer(layout);
+@import './components.css' layer(components);
+@import './utilities.css' layer(utilities);

@@ -1,0 +1,173 @@
+/* Appearance only. Every colour and every size is a token. */
+
+/* Buttons */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border: var(--border-width) solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-accent);
+  color: var(--color-accent-ink);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button:hover,
+.button:active {
+  border-color: var(--color-accent-strong);
+  background-color: var(--color-accent-strong);
+  color: var(--color-accent-ink);
+}
+
+.button--secondary {
+  border-color: var(--color-border);
+  background-color: transparent;
+  color: var(--color-accent);
+}
+
+.button--secondary:hover,
+.button--secondary:active {
+  border-color: var(--color-accent-strong);
+  background-color: var(--color-bg-alt);
+  color: var(--color-accent-strong);
+}
+
+/* Eyebrow — the small line above a heading. Sentence case, never uppercased. */
+.eyebrow {
+  color: var(--color-ink-soft);
+  font-size: var(--text-sm);
+  text-transform: none;
+}
+
+/* Image attribution overlay. .credit-frame is the positioning context the
+   strip needs; put it on the figure that wraps the image. */
+.credit-frame {
+  position: relative;
+}
+
+.credit {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  padding: var(--space-1) var(--space-3);
+  background-color: var(--color-overlay);
+  color: var(--color-accent-ink);
+  font-size: var(--text-sm);
+  line-height: var(--leading-tight);
+}
+
+.credit a {
+  color: var(--color-accent-ink);
+  text-decoration-thickness: var(--underline-thickness);
+  text-underline-offset: var(--underline-offset);
+}
+
+/* Notices */
+.notice {
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg-alt);
+  color: var(--color-ink);
+}
+
+.notice--ok {
+  border-color: var(--color-ok-ink);
+  background-color: var(--color-ok-bg);
+  color: var(--color-ok-ink);
+}
+
+.notice--error {
+  border-color: var(--color-error-ink);
+  background-color: var(--color-error-bg);
+  color: var(--color-error-ink);
+}
+
+/* Form controls */
+.field {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.field > label {
+  font-weight: var(--weight-semibold);
+}
+
+.field input,
+.field select,
+.field textarea {
+  inline-size: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-field-bg);
+  color: var(--color-ink);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+}
+
+.field textarea {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  resize: vertical;
+}
+
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: var(--focus-width) solid var(--color-accent-strong);
+  outline-offset: var(--focus-offset);
+}
+
+.field__hint {
+  color: var(--color-ink-soft);
+  font-size: var(--text-sm);
+}
+
+.field__error {
+  color: var(--color-error-ink);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+
+.field [aria-invalid='true'] {
+  border-color: var(--color-error-ink);
+  background-color: var(--color-error-bg);
+}
+
+.checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.checkbox input {
+  flex: none;
+  inline-size: var(--space-5);
+  block-size: var(--space-5);
+  margin-block-start: var(--space-1);
+  accent-color: var(--color-accent);
+}
+
+/* Skip link — visually hidden until it takes focus */
+.skip-link {
+  position: absolute;
+  inset-block-start: var(--space-2);
+  inset-inline-start: var(--space-2);
+  z-index: 1;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-accent);
+  color: var(--color-accent-ink);
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}

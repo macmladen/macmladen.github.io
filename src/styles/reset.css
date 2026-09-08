@@ -1,0 +1,39 @@
+/* Minimal reset. Anything beyond "make the box model sane and stop the
+   browser inventing spacing" belongs in base.css. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-block-size: 100vh;
+}
+
+img,
+picture,
+svg,
+video {
+  display: block;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: 0;
+}

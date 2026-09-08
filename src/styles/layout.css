@@ -1,0 +1,60 @@
+/* Layout only: placement, never appearance.
+   Mobile-first — every rule is written for 360px and widened with
+   min-width queries. Breakpoints are literal because custom properties
+   are not allowed in media query conditions. */
+.section {
+  background-color: var(--section-bg, transparent);
+  padding-block: var(--space-12);
+}
+
+.container {
+  inline-size: 100%;
+  max-inline-size: var(--width-content);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.container--narrow {
+  max-inline-size: var(--width-narrow);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--row-gap, var(--space-4));
+}
+
+.flow > * + * {
+  margin-block-start: var(--flow-space, var(--space-4));
+}
+
+.grid {
+  display: grid;
+  gap: var(--grid-gap, var(--space-6));
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-min, 16rem), 100%), 1fr));
+}
+
+/* Two halves: stacked on mobile, side by side from 768px.
+   .split--media-first pulls the second child ahead of the first, so the
+   image can lead visually while the heading stays first in the source. */
+.split {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.split--media-first > :nth-child(2) {
+  order: -1;
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding-block: var(--space-16);
+  }
+
+  .split {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: var(--space-8);
+  }
+}
