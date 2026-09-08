@@ -1,10 +1,10 @@
 ---
 id: TASK-14
 title: Warmer classroom photo for the announcement
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-09-08 19:36'
-updated_date: '2026-09-08 19:47'
+updated_date: '2026-09-08 19:56'
 labels:
   - feature
 milestone: m-2
@@ -21,8 +21,8 @@ Effort: S. Estimate: 0.5 h. Actual: . Billable: no. AI cost: pending script. AI 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
 - [x] #1 New image committed under src/assets with source URL, author, licence and size in the task notes
-- [ ] #2 Credit overlay shows the correct author and links to the source
-- [ ] #3 Home page still under 150 KB
+- [x] #2 Credit overlay shows the correct author and links to the source
+- [x] #3 Home page still under 150 KB
 <!-- AC:END -->
 
 ## Implementation Notes
@@ -44,3 +44,9 @@ Chose #1: it is the only free-licence option with a screen showing on-topic cont
 
 AI time: approx. 25 min agent activity, approx. 45 browser/bash tool calls (Unsplash/Pexels/Pixabay search + verification, curl download, sips checks).
 <!-- SECTION:NOTES:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+Done 2026-09-08. Photo from Pexels (RDNE Stock project, Pexels License), 1600x1067, 155 KB, chosen by a performer (Sonnet, 142k tokens, 120 tool calls, 11 min); credit and alt swapped into index.astro by Fable. AI cost pending script.
+<!-- SECTION:FINAL_SUMMARY:END -->
