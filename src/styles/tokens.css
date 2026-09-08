@@ -20,6 +20,15 @@
   --color-field-bg: #FFF;
   --color-overlay: rgb(0 0 0 / 0.7);
 
+  /* The header and footer bars. Ink with white links, checked against
+     --color-bar-bg rather than the page background:
+     --color-bar-ink 18.9:1, --color-bar-hover 4.0:1 (and 4.7:1 against the
+     white it outlines). --color-bar-hover is the deepest web-safe fuchsia
+     that clears 3:1 on #111; #909 reaches only 2.5:1. */
+  --color-bar-bg: #111;
+  --color-bar-ink: #FFF;
+  --color-bar-hover: #C0C;
+
   /* Type — system fonts only, nothing loaded over the network */
   --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;

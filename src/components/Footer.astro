@@ -59,11 +59,29 @@ const year = new Date().getFullYear();
 
 <style>
   @layer components {
+    /* The second ink bar. Same rules as the header: the colour separates it
+       from the page, so no top rule, and hover and focus-visible both draw
+       the fuchsia outline. Nothing here underlines, because both links are
+       marks with no visible text. */
     .site-footer {
-      border-block-start: var(--border-width) solid var(--color-border);
+      background-color: var(--color-bar-bg);
+      color: var(--color-bar-ink);
       margin-block-start: var(--space-16);
       padding-block: var(--space-8);
       font-size: var(--text-sm);
+    }
+
+    .site-footer a {
+      color: var(--color-bar-ink);
+      text-decoration: none;
+    }
+
+    .site-footer a:hover,
+    .site-footer a:active,
+    .site-footer a:focus-visible {
+      color: var(--color-bar-ink);
+      outline: var(--focus-width) solid var(--color-bar-hover);
+      outline-offset: var(--focus-offset);
     }
 
     .site-footer__links {
@@ -80,16 +98,14 @@ const year = new Date().getFullYear();
       margin-block-start: 0;
     }
 
-    /* The mark is the whole link, so there is no text to underline; the
-       padding is what makes the tap target bigger than the 24px glyph. */
+    /* The mark is the whole link; the padding is what makes the tap target
+       bigger than the 24px glyph. */
     .site-footer__icon {
       display: inline-flex;
       padding: var(--space-2);
-      text-decoration: none;
     }
 
     .site-footer__copy {
-      color: var(--color-ink-soft);
       text-align: center;
     }
   }

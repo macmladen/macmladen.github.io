@@ -29,9 +29,27 @@ const here = Astro.url.pathname.replace(/\/+$/, '');
 
 <style>
   @layer components {
+    /* An ink bar: the colour itself separates it from the page, so it needs
+       no bottom rule. Bar links are white and only underline on hover, and
+       both hover and focus-visible draw the fuchsia outline, so a pointer and
+       a keyboard get the same signal. */
     .site-header {
-      border-block-end: var(--border-width) solid var(--color-border);
+      background-color: var(--color-bar-bg);
+      color: var(--color-bar-ink);
       padding-block: var(--space-4);
+    }
+
+    .site-header a {
+      color: var(--color-bar-ink);
+      text-decoration: none;
+    }
+
+    .site-header a:hover,
+    .site-header a:active,
+    .site-header a:focus-visible {
+      color: var(--color-bar-ink);
+      outline: var(--focus-width) solid var(--color-bar-hover);
+      outline-offset: var(--focus-offset);
     }
 
     .site-header__inner {
@@ -42,15 +60,16 @@ const here = Astro.url.pathname.replace(/\/+$/, '');
       gap: var(--space-4);
     }
 
+    /* The wordmark, never underlined — the underline rule below is scoped to
+       the nav so it never reaches the name. */
     .site-header__name {
-      color: var(--color-ink);
       font-size: var(--text-lg);
       font-weight: var(--weight-bold);
-      text-decoration: none;
     }
 
-    .site-header__name:hover {
-      color: var(--color-accent-strong);
+    .site-header__nav a:hover,
+    .site-header__nav a:active {
+      text-decoration: underline;
     }
 
     .site-header__nav {
@@ -65,9 +84,11 @@ const here = Astro.url.pathname.replace(/\/+$/, '');
       margin-block-start: 0;
     }
 
+    /* "You are here" carries weight and a rule, not a colour, so it survives
+       on an ink bar where every link is already white. */
     .site-header__nav [aria-current='page'] {
-      color: var(--color-accent-strong);
       font-weight: var(--weight-semibold);
+      text-decoration: underline;
     }
   }
 </style>
