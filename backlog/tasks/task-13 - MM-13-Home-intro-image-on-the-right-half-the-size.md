@@ -1,10 +1,10 @@
 ---
 id: TASK-13
-title: 'Home intro: image on the right, half the size'
+title: 'MM-13: Home intro: image on the right, half the size'
 status: Done
 assignee: []
 created_date: '2026-09-08 19:36'
-updated_date: '2026-09-08 19:39'
+updated_date: '2026-09-08 20:29'
 labels:
   - feature
 milestone: m-2

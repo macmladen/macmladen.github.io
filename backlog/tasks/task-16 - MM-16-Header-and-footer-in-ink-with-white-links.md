@@ -1,10 +1,10 @@
 ---
 id: TASK-16
-title: Header and footer in ink with white links
+title: 'MM-16: Header and footer in ink with white links'
 status: Done
 assignee: []
 created_date: '2026-09-08 19:36'
-updated_date: '2026-09-08 19:44'
+updated_date: '2026-09-08 20:29'
 labels:
   - feature
 milestone: m-2

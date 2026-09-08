@@ -1,10 +1,10 @@
 ---
 id: TASK-15
-title: 'Footer: centred LinkedIn and GitHub icons, no email'
+title: 'MM-15: Footer: centred LinkedIn and GitHub icons, no email'
 status: Done
 assignee: []
 created_date: '2026-09-08 19:36'
-updated_date: '2026-09-08 19:42'
+updated_date: '2026-09-08 20:29'
 labels:
   - feature
 milestone: m-2

@@ -1,10 +1,10 @@
 ---
 id: TASK-17
-title: 'Colour scheme: auto, light, dark'
+title: 'MM-17: Colour scheme: auto, light, dark'
 status: Done
 assignee: []
 created_date: '2026-09-08 19:36'
-updated_date: '2026-09-08 19:55'
+updated_date: '2026-09-08 20:29'
 labels:
   - feature
 milestone: m-2

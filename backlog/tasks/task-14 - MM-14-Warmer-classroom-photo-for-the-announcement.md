@@ -1,10 +1,10 @@
 ---
 id: TASK-14
-title: Warmer classroom photo for the announcement
+title: 'MM-14: Warmer classroom photo for the announcement'
 status: Done
 assignee: []
 created_date: '2026-09-08 19:36'
-updated_date: '2026-09-08 19:56'
+updated_date: '2026-09-08 20:29'
 labels:
   - feature
 milestone: m-2
