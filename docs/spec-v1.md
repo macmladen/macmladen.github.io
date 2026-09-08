@@ -14,13 +14,13 @@ Decisions taken 2026-09-07:
 - Repo: clean Astro build at the root of this repo on `main`; legacy removed.
 
 ### Stack (fixed)
-- Astro 7, `output: 'static'`, `@astrojs/cloudflare` adapter; only the form endpoint opts out of prerendering. Deploy target: Cloudflare Pages (git-triggered build of `dist/`).
+- Astro 7, `output: 'static'`, `@astrojs/cloudflare` adapter; only the form endpoint opts out of prerendering. Deploy target: Cloudflare Workers with static assets, git-triggered Workers Build (decision: `docs/decisions/M1-DEPLOY-TARGET.md`).
 - Cloudflare D1 stores registrations; local development uses wrangler's local D1.
 - MailerLite API upserts each registrant as a subscriber with custom fields and a group. The confirmation email is a MailerLite automation configured in the dashboard, not code. Keys and ids: see `docs/mail-setup.md`.
 - Cloudflare Turnstile on the form; locally the documented always-pass test keys.
 - No CSS framework, no client-side framework, no Tailwind, no React. Plain CSS with tokens, cascade layers `reset, base, layout, components, utilities`, per `~/Sites/altervictus/docs/FRONTEND-CHARTER.md` (section/container model, layout vs appearance separated). The existing `src/styles/tokens.css` is the starting token set; adjust values, keep the names. Astro config `build.inlineStylesheets: 'always'` so the page ships one HTML file and no external CSS.
 - Integrations: `@astrojs/sitemap` (with a `serialize` filter that drops non-page URLs), `astro-robots-txt`. Nothing else in v1.
-- `public/_redirects` (Cloudflare Pages native) holds the aliases and legacy redirects.
+- `public/_redirects` (handled natively by Workers static assets, same format as Pages) holds the aliases and legacy redirects.
 - Local development runs in DDEV (`type: generic`, `docroot: dist`, `web_extra_daemons` running `npm run dev -- --host`, pattern from `ddev/ddev.com`). The site the participants register on is itself developed the way the workshop teaches. `npm run dev` outside DDEV must keep working.
 
 ### Design (fixed for v1)
@@ -77,7 +77,7 @@ Built now:
 
 Reserved, not built, must not be taken by anything else: `/speaking/` and `/speaking/<year>/` indexes, `/work/`, `/writing/` and `/rss.xml`, `/now/`, `/cv/`, `/contact/`, `/colophon/`, `/sr/` (Serbian prefix if ever bilingual). Participant deploy boxes live on a subdomain (`*.ws.macmladen.com` or similar), outside the site's path space.
 
-Trailing-slash form is canonical for pages (`trailingSlash: 'always'`); Cloudflare Pages normalises the other form.
+Trailing-slash form is canonical for pages (`trailingSlash: 'always'`); Workers static assets normalise the other form.
 
 ### Pages
 
@@ -150,7 +150,7 @@ D1 table `registrations` additionally has `id`, `created_at`, `ip_hash`, `mailer
 - `docs/` holds this spec, decisions made during the build (`docs/decisions/`), and the deploy procedure once verified here.
 
 ### Repo hygiene
-- `README.md`: run locally (DDEV and plain `npm`), deploy to Cloudflare Pages, create and bind D1, run migrations, export registrations to CSV with one wrangler command, which secrets to set where, and the DNS change (CNAME `macmladen.com` and `www` → Pages) as the last step. No secrets in the repo, ever.
+- `README.md`: run locally (DDEV and plain `npm`), deploy as a Cloudflare Worker with static assets, create and bind D1, run migrations, export registrations to CSV with one wrangler command, which secrets to set where, and the DNS change (Workers custom domain for `macmladen.com` and `www`) as the last step. No secrets in the repo, ever.
 - `wrangler.toml` with the D1 binding; `migrations/0001_registrations.sql`.
 - `CLAUDE.md` with process guardrails: never run the dev server in agent mode, never change DNS or secrets, never publish content Mladen has not approved, and a task→file map for the recurring tasks (edit the workshop block, add a speaking entry, add a redirect).
 - `.gitignore`, `.editorconfig`, `.nvmrc`.

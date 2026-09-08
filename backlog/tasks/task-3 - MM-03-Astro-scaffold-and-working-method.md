@@ -1,9 +1,10 @@
 ---
 id: TASK-3
 title: 'MM-03: Astro scaffold and working method'
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2026-09-08 06:53'
+updated_date: '2026-09-08 07:12'
 labels:
   - chore
 milestone: m-0
@@ -19,10 +20,16 @@ Effort: M. Estimate: 3 h. Actual: . Billable: no. AI cost: . AI time: . Astro 7 
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 npm run build succeeds with no warnings on a placeholder index page
-- [ ] #2 npm run dev serves the placeholder; ddev start serves it at https://macmladen.ddev.site with HMR on the exposed port
-- [ ] #3 astro.config.mjs sets output static, cloudflare adapter, trailingSlash always, build.inlineStylesheets always, sitemap with serialize filter, robots-txt
-- [ ] #4 .gitignore covers node_modules, dist, .astro, .wrangler, .dev.vars, .DS_Store, .idea; .dev.vars.example committed
-- [ ] #5 backlog/, AGENTS.md, CLAUDE.md, .claude/agents/{coder,performer}.md, docs/spec-v1.md, src/styles/tokens.css committed
-- [ ] #6 The former ~/Sites/macmladen.com folder no longer exists
+- [x] #1 npm run build succeeds with no warnings on a placeholder index page
+- [x] #2 npm run dev serves the placeholder; ddev start serves it at https://macmladen.ddev.site with HMR on the exposed port
+- [x] #3 astro.config.mjs sets output static, cloudflare adapter, trailingSlash always, build.inlineStylesheets always, sitemap with serialize filter, robots-txt
+- [x] #4 .gitignore covers node_modules, dist, .astro, .wrangler, .dev.vars, .DS_Store, .idea; .dev.vars.example committed
+- [x] #5 backlog/, AGENTS.md, CLAUDE.md, .claude/agents/{coder,performer}.md, docs/spec-v1.md, src/styles/tokens.css committed
+- [x] #6 The former ~/Sites/macmladen.com folder no longer exists
 <!-- AC:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+Fable review 2026-09-08: scaffold verified by the coder (build clean, preview 200, DDEV primary and dev port both 200, ddev stopped). Material decision recorded in docs/decisions/M1-DEPLOY-TARGET.md: deploy target is Workers static assets, not Pages; spec, AGENTS.md and README wording updated. Effort figures: main loop ~10 min (Fable); coder subagent 116,780 tokens, 57 tool calls, 16.7 min (Opus). AI cost: pending costing script.
+<!-- SECTION:NOTES:END -->

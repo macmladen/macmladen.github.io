@@ -4,6 +4,7 @@ title: 'MM-06: Home page'
 status: To Do
 assignee: []
 created_date: '2026-09-08 06:53'
+updated_date: '2026-09-08 06:58'
 labels:
   - feature
 milestone: m-2
@@ -25,3 +26,9 @@ Effort: M. Estimate: 3 h. Actual: . Billable: no. AI cost: . AI time: . Intro se
 - [ ] #4 JSON-LD WebSite and Person parse and match the page
 - [ ] #5 No JavaScript shipped; page under 150 KB including images
 <!-- AC:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+Unsplash image chosen by Fable 2026-09-08: "Rows of empty desks in a modern conference room" by runda choo, https://unsplash.com/photos/rows-of-empty-desks-in-a-modern-conference-room-8seo3zZSoBM, profile https://unsplash.com/@rundachoo, Unsplash License. Downloaded at 1600×1067, 233 KB, to src/assets/workshop-room.jpg (untracked until MM-06 commits it). Credit overlay text: "Photo: runda choo / Unsplash" linking to the photo page. Headshot extracted from the jekyll branch to src/assets/mladen-head-2020.jpg (1024×1024, 109 KB).
+<!-- SECTION:NOTES:END -->

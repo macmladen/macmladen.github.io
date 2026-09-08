@@ -71,7 +71,7 @@ configured with `output: 'static'`, `trailingSlash: 'always'` and
 its CSS inlined and no external stylesheet request. `robots.txt` and
 `sitemap-index.xml` are generated at build time; the sitemap contains pages only.
 
-## Deploy (Cloudflare Pages)
+## Deploy (Cloudflare Workers, static assets)
 
 _Placeholder — MM-12 documents the git-triggered build, the project settings and the build output directory._
 

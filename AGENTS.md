@@ -1,6 +1,6 @@
 # macmladen.com
 
-Personal site of Mladen Đurić (MacMladen): Astro 7, static output on Cloudflare Pages, one server endpoint for the workshop registration form. English only. Spec: `docs/spec-v1.md`. Estate vision: `docs/analisys/f-2.md`.
+Personal site of Mladen Đurić (MacMladen): Astro 7, static output deployed as a Cloudflare Worker with static assets, one server endpoint for the workshop registration form. English only. Spec: `docs/spec-v1.md`. Estate vision: `docs/analisys/f-2.md`.
 
 ## Working model
 
@@ -43,7 +43,7 @@ Never spawn a subagent that inherits the session model; set model and effort exp
 ## Environment
 
 - Local: DDEV project `macmladen`, type generic, Astro dev server as an extra daemon; `npm run dev` outside DDEV must also work. Node per `.nvmrc`.
-- Production (M5): Cloudflare Pages, git-triggered build, D1 binding, secrets in the Pages project. DNS on Cloudflare.
+- Production (M5): Cloudflare Worker with static assets, git-triggered Workers Build, D1 binding, secrets on the Worker. DNS on Cloudflare. Decision record: `docs/decisions/M1-DEPLOY-TARGET.md`.
 - Old site: Jekyll on GitHub Pages from branch `master` of this repo's remote, CNAME macmladen.com, last built 2022. The `jekyll` branch holds it.
 
 <!-- BACKLOG.MD GUIDELINES START -->
