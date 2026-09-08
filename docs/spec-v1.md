@@ -36,9 +36,9 @@ Confident, plain, professional. No animation, no decoration that does not carry 
 | `--color-border` | `#CBA` | rules, input borders | |
 | `--color-ink` | `#111` | text | 16.7 : 1 |
 | `--color-ink-soft` | `#444` | secondary text, dates, captions | 8.6 : 1 |
-| `--color-accent` | `#909` | links, primary button background | 7.2 : 1 (AAA) |
-| `--color-accent-strong` | `#606` | link hover and active, focus ring | |
-| `--color-accent-ink` | `#FFF` | text on the accent | 8.1 : 1 on `#909` |
+| `--color-accent` | `#909` | links, primary button background | 6.6 : 1 (AA; links are underlined) |
+| `--color-accent-strong` | `#606` | link hover and active, focus ring | 10.6 : 1 |
+| `--color-accent-ink` | `#FFF` | text on the accent | 7.5 : 1 on `#909` |
 | `--color-ok-bg` / `--color-ok-ink` | `#DED` / `#151` | success state | |
 | `--color-error-bg` / `--color-error-ink` | `#FDD` / `#900` | field errors | |
 
