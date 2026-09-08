@@ -38,6 +38,17 @@
   color: var(--color-ink-soft);
 }
 
+/* The facts under an event title: date, venue, language, link. */
+.facts {
+  padding-inline-start: 0;
+  list-style: none;
+  color: var(--color-ink-soft);
+}
+
+.facts li + li {
+  margin-block-start: var(--space-1);
+}
+
 /* Buttons */
 .button {
   display: inline-flex;

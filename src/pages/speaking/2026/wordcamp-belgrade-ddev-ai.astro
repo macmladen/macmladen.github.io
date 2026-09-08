@@ -1,0 +1,109 @@
+---
+import { getImage } from 'astro:assets';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import StructuredData from '../../../components/StructuredData.astro';
+import RegistrationForm from '../../../components/RegistrationForm.astro';
+import RegistrationClosed from '../../../components/RegistrationClosed.astro';
+import headshot from '../../../assets/mladen-head-2020.jpg';
+import { workshop, isRegistrationOpen } from '../../../data/workshop';
+import { fullDate, timeOfDay } from '../../../lib/dates';
+import { breadcrumbNode, eventNode, graph, personNode } from '../../../lib/schema';
+
+/** Asked at render time, not at module scope: see isRegistrationOpen. */
+const registrationOpen = isRegistrationOpen();
+
+const headshotFile = await getImage({
+  src: headshot,
+  width: 560,
+  height: 560,
+  format: 'webp',
+});
+
+/** The Person node travels with the Event so its performer and organizer
+ *  references resolve inside this page's own graph. */
+const schema = graph(
+  eventNode(Astro.site),
+  personNode(Astro.site, headshotFile.src),
+  breadcrumbNode(Astro.site, [
+    { name: 'Home', path: '/' },
+    { name: 'Speaking', path: '/speaking/' },
+    { name: '2026', path: '/speaking/2026/' },
+    { name: workshop.wordcampName, path: workshop.path },
+  ]),
+);
+---
+
+<BaseLayout
+  title={workshop.title}
+  description={workshop.summary}
+  canonical={workshop.path}
+  ogType="article"
+>
+  <StructuredData slot="head" data={schema} />
+
+  <article>
+    <section class="section" aria-labelledby="workshop-title">
+      <div class="container container--narrow flow">
+        <p class="eyebrow">{workshop.subtitle}</p>
+        <h1 id="workshop-title">{workshop.title}</h1>
+        <ul class="facts">
+          <li>
+            <time datetime={workshop.start}
+              >{fullDate(workshop.start)}, {timeOfDay(workshop.start)}</time
+            >–<time datetime={workshop.end}>{timeOfDay(workshop.end)}</time>
+          </li>
+          <li>{workshop.venue}, {workshop.address}</li>
+          <li>Held in Serbian</li>
+          <li><a href={workshop.wordcampUrl}>{workshop.wordcampName}</a></li>
+        </ul>
+        {workshop.abstract.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="audience-title">
+      <div class="container container--narrow flow">
+        <h2 id="audience-title">Who it is for</h2>
+        <p>{workshop.audience}</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="prerequisites-title">
+      <div class="container container--narrow flow">
+        <h2 id="prerequisites-title">Prerequisites</h2>
+        <p>
+          All of these are mandatory if you want to work along on your own laptop.
+          Installing them in the room costs everybody their workshop.
+        </p>
+        <ul>
+          {workshop.prerequisites.map((item) => <li>{item}</li>)}
+        </ul>
+        <p>{workshop.optionalPrerequisite}</p>
+        <!-- placeholder: prepRepoUrl points at the GitHub profile until the
+             scaffolding repository is public -->
+        <p>
+          Preparation guide and materials will be
+          <a href={workshop.prepRepoUrl}>on GitHub</a> by {workshop.prepDeadline}.
+        </p>
+      </div>
+    </section>
+
+    <section class="section section--alt" aria-labelledby="register-title">
+      <div class="container container--narrow flow">
+        <h2 id="register-title">Registration</h2>
+        {
+          registrationOpen ? (
+            <Fragment>
+              <p>
+                Registration closes{' '}
+                <time datetime={workshop.closeDate}>{fullDate(workshop.closesAt)}</time>.
+              </p>
+              <RegistrationForm />
+            </Fragment>
+          ) : (
+            <RegistrationClosed />
+          )
+        }
+      </div>
+    </section>
+  </article>
+</BaseLayout>

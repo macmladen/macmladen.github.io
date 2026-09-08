@@ -1,0 +1,227 @@
+---
+/** The workshop registration form. Rendered twice: on the static workshop page
+ *  with empty props, and by /api/register/ with the values the visitor typed and
+ *  the errors the server found, so a failed submission comes back filled in. */
+import {
+  emptyValues,
+  githubPattern,
+  osOptions,
+  toolOptions,
+  type RegistrationErrors,
+  type RegistrationValues,
+} from '../data/registration';
+import { person } from '../data/person';
+
+interface Props {
+  values?: Partial<RegistrationValues>;
+  errors?: RegistrationErrors;
+}
+
+const { values = {}, errors = {} } = Astro.props;
+const value = { ...emptyValues, ...values };
+
+/** Hints are permanent; error messages appear only after a failed submission.
+ *  Both are announced through aria-describedby. */
+const describedBy = (field: keyof RegistrationErrors, hasHint = false): string | undefined => {
+  const ids = [hasHint ? `${field}-hint` : null, errors[field] ? `${field}-error` : null];
+  const joined = ids.filter(Boolean).join(' ');
+  return joined === '' ? undefined : joined;
+};
+
+const invalid = (field: keyof RegistrationErrors): 'true' | undefined =>
+  errors[field] ? 'true' : undefined;
+
+/** Cloudflare's documented always-pass test key is the fallback, so the form
+ *  works locally without any configuration. The real key is a build-time
+ *  environment variable, PUBLIC_TURNSTILE_SITE_KEY. */
+const turnstileSiteKey =
+  import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '1x00000000000000000000AA';
+
+const hasErrors = Object.keys(errors).length > 0;
+---
+
+<form class="flow" method="post" action="/api/register/">
+  {
+    hasErrors && (
+      <p class="notice notice--error" role="alert">
+        {errors.form ?? 'Something below needs a second look. The details are next to the fields.'}
+      </p>
+    )
+  }
+
+  <div class="field">
+    <label for="name">Name</label>
+    <input
+      id="name"
+      name="name"
+      type="text"
+      required
+      autocomplete="name"
+      maxlength="100"
+      value={value.name === '' ? undefined : value.name}
+      aria-describedby={describedBy('name')}
+      aria-invalid={invalid('name')}
+    />
+    {errors.name && <p class="field__error" id="name-error">{errors.name}</p>}
+  </div>
+
+  <div class="field">
+    <label for="email">Email</label>
+    <input
+      id="email"
+      name="email"
+      type="email"
+      required
+      autocomplete="email"
+      maxlength="254"
+      value={value.email === '' ? undefined : value.email}
+      aria-describedby={describedBy('email', true)}
+      aria-invalid={invalid('email')}
+    />
+    <p class="field__hint" id="email-hint">
+      The confirmation and the preparation link go to this address.
+    </p>
+    {errors.email && <p class="field__error" id="email-error">{errors.email}</p>}
+  </div>
+
+  <div class="field">
+    <label for="github">GitHub username</label>
+    <input
+      id="github"
+      name="github"
+      type="text"
+      required
+      autocomplete="off"
+      spellcheck="false"
+      pattern={githubPattern}
+      maxlength="39"
+      value={value.github === '' ? undefined : value.github}
+      aria-describedby={describedBy('github', true)}
+      aria-invalid={invalid('github')}
+    />
+    <p class="field__hint" id="github-hint">
+      Just the username, as in github.com/<strong>username</strong>. Letters, numbers and
+      hyphens.
+    </p>
+    {errors.github && <p class="field__error" id="github-error">{errors.github}</p>}
+  </div>
+
+  <div class="field">
+    <label for="os">Operating system</label>
+    <select
+      id="os"
+      name="os"
+      required
+      aria-describedby={describedBy('os')}
+      aria-invalid={invalid('os')}
+    >
+      <option value="" disabled selected={value.os === ''}>Choose one</option>
+      {
+        osOptions.map((option) => (
+          <option value={option.value} selected={value.os === option.value}>
+            {option.label}
+          </option>
+        ))
+      }
+    </select>
+    {errors.os && <p class="field__error" id="os-error">{errors.os}</p>}
+  </div>
+
+  <div class="field">
+    <label for="tool">AI tool you will use</label>
+    <select
+      id="tool"
+      name="tool"
+      required
+      aria-describedby={describedBy('tool', true)}
+      aria-invalid={invalid('tool')}
+    >
+      <option value="" disabled selected={value.tool === ''}>Choose one</option>
+      {
+        toolOptions.map((option) => (
+          <option value={option.value} selected={value.tool === option.value}>
+            {option.label}
+          </option>
+        ))
+      }
+    </select>
+    <p class="field__hint" id="tool-hint">
+      Have it installed and logged in before you arrive.
+    </p>
+    {errors.tool && <p class="field__error" id="tool-error">{errors.tool}</p>}
+  </div>
+
+  <div class="field">
+    <label for="ssh_key">SSH public key</label>
+    <textarea
+      id="ssh_key"
+      name="ssh_key"
+      rows="3"
+      spellcheck="false"
+      autocomplete="off"
+      aria-describedby={describedBy('ssh_key', true)}
+      aria-invalid={invalid('ssh_key')}>{value.ssh_key}</textarea
+    >
+    <p class="field__hint" id="ssh_key-hint">
+      Optional, for the deploy part. Print yours with <code
+        >cat ~/.ssh/id_ed25519.pub</code
+      >; it starts with <code>ssh-ed25519</code> or <code>ssh-rsa</code>.
+    </p>
+    {errors.ssh_key && <p class="field__error" id="ssh_key-error">{errors.ssh_key}</p>}
+  </div>
+
+  <fieldset class="flow">
+    <legend>Anything else</legend>
+    <div class="checkbox">
+      <input
+        id="own_hosting"
+        name="own_hosting"
+        type="checkbox"
+        value="yes"
+        checked={value.own_hosting}
+      />
+      <label for="own_hosting">I have my own hosting with SSH access</label>
+    </div>
+    <div class="checkbox">
+      <input
+        id="watch_only"
+        name="watch_only"
+        type="checkbox"
+        value="yes"
+        checked={value.watch_only}
+      />
+      <label for="watch_only">I will watch, not work on my own laptop</label>
+    </div>
+    <div class="checkbox">
+      <input
+        id="newsletter"
+        name="newsletter"
+        type="checkbox"
+        value="yes"
+        checked={value.newsletter}
+      />
+      <label for="newsletter">
+        Send me news about Koder workshops, meetups and the Razgovori podcast
+      </label>
+    </div>
+  </fieldset>
+
+  <div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="light"></div>
+  <noscript>
+    <p class="field__hint">
+      The anti-spam check needs JavaScript. With JavaScript off, write to{' '}<a
+        href={`mailto:${person.email}`}>{person.email}</a
+      >{' '}instead and you will be added by hand.
+    </p>
+  </noscript>
+
+  <div class="row">
+    <button class="button" type="submit">Register for the workshop</button>
+  </div>
+</form>
+
+<script
+  is:inline
+  src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+  async
+  defer></script>

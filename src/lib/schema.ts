@@ -3,6 +3,7 @@
  *  drift apart. Pages pass their own `Astro.site` in, so nothing hard-codes
  *  the origin. */
 import { person } from '../data/person';
+import { workshop } from '../data/workshop';
 
 type Node = Record<string, unknown>;
 
@@ -66,5 +67,65 @@ export function profilePageNode(site: URL | string | undefined, mainEntity: Node
     inLanguage: 'en',
     isPartOf: { '@id': absolute('/#website', site) },
     mainEntity,
+  };
+}
+
+export function eventNode(site: URL | string | undefined): Node {
+  return {
+    '@type': 'Event',
+    additionalType: 'EducationEvent',
+    '@id': absolute(`${workshop.path}#event`, site),
+    name: workshop.title,
+    description: workshop.summary,
+    startDate: workshop.start,
+    endDate: workshop.end,
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    eventStatus: 'https://schema.org/EventScheduled',
+    inLanguage: workshop.language,
+    url: absolute(workshop.path, site),
+    location: {
+      '@type': 'Place',
+      name: workshop.venue,
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: workshop.street,
+        addressLocality: workshop.city,
+        addressCountry: workshop.country,
+      },
+    },
+    superEvent: {
+      '@type': 'Event',
+      name: workshop.wordcampName,
+      url: workshop.wordcampUrl,
+      startDate: workshop.wordcampStart,
+      endDate: workshop.wordcampEnd,
+    },
+    performer: personRef(site),
+    organizer: personRef(site),
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'EUR',
+      availability: 'https://schema.org/InStock',
+      url: absolute(workshop.path, site),
+      validThrough: workshop.closesAt,
+    },
+  };
+}
+
+/** Breadcrumb trail. The /speaking/ and /speaking/<year>/ URLs are reserved in
+ *  the spec precisely so these links keep pointing somewhere real. */
+export function breadcrumbNode(
+  site: URL | string | undefined,
+  trail: { name: string; path: string }[],
+): Node {
+  return {
+    '@type': 'BreadcrumbList',
+    itemListElement: trail.map((step, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: step.name,
+      item: absolute(step.path, site),
+    })),
   };
 }

@@ -1,0 +1,13 @@
+---
+/** Replaces the form after the close date. The page itself stays: it is the
+ *  workshop's archive page for the slides and the recording. */
+import { workshop } from '../data/workshop';
+import { fullDate } from '../lib/dates';
+---
+
+<p class="notice">
+  Registration is closed — it ran until <time datetime={workshop.closeDate}
+    >{fullDate(workshop.closesAt)}</time
+  >. Ask at the <a href={workshop.wordcampUrl}>{workshop.wordcampName}</a> desk whether
+  there is a free seat left.
+</p>

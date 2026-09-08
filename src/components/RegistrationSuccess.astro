@@ -1,0 +1,22 @@
+---
+/** Shown in place of the form once a registration is in the database. */
+import { workshop } from '../data/workshop';
+
+interface Props {
+  email: string;
+}
+
+const { email } = Astro.props;
+---
+
+<div class="notice notice--ok flow">
+  <p><strong>You are on the list.</strong></p>
+  <p>
+    A confirmation email is on its way to {email}. The preparation guide and the demo
+    project land on GitHub by {workshop.prepDeadline}; the link is in that email.
+  </p>
+  <p>
+    Bring a laptop with Docker, DDEV, git and your AI tool already installed — there is
+    no time to install them in the room.
+  </p>
+</div>
