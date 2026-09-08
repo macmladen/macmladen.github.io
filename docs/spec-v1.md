@@ -1,0 +1,183 @@
+# Spec — macmladen.com v1: home, about, one workshop page
+
+Owner: Mladen. Implementer: worker agent. Reviewer: Fable, then Mladen.
+Supersedes `spec-macmladen-site.md` in the WordCamp workshop project folder (2026-09-06 draft).
+Repo: `~/Sites/macmladen` (remote `macmladen/macmladen.github.io`), branch `main`. The Drupal/Next legacy was committed (MM-01) and removed (MM-02); Astro lives at the repository root. Nothing is pushed until the GitHub Pages source is switched off master.
+
+## What
+
+A three-page English personal site for a senior developer and speaker, static, with exactly one server endpoint (the workshop registration form). Small on purpose. The full estate plan (`docs/analisys/f-2.md`) stays the vision; only these three pages are built now.
+
+Decisions taken 2026-09-07:
+- Language: English only. The workshop itself is held in Serbian; the page says so in one line.
+- URL hierarchy: `/speaking/<year>/<event-slug>/` is the canonical home for every appearance. Short sayable aliases redirect to the current one.
+- Repo: clean Astro build at the root of this repo on `main`; legacy removed.
+
+### Stack (fixed)
+- Astro 7, `output: 'static'`, `@astrojs/cloudflare` adapter; only the form endpoint opts out of prerendering. Deploy target: Cloudflare Pages (git-triggered build of `dist/`).
+- Cloudflare D1 stores registrations; local development uses wrangler's local D1.
+- MailerLite API upserts each registrant as a subscriber with custom fields and a group. The confirmation email is a MailerLite automation configured in the dashboard, not code. Keys and ids: see `docs/mail-setup.md`.
+- Cloudflare Turnstile on the form; locally the documented always-pass test keys.
+- No CSS framework, no client-side framework, no Tailwind, no React. Plain CSS with tokens, cascade layers `reset, base, layout, components, utilities`, per `~/Sites/altervictus/docs/FRONTEND-CHARTER.md` (section/container model, layout vs appearance separated). The existing `src/styles/tokens.css` is the starting token set; adjust values, keep the names. Astro config `build.inlineStylesheets: 'always'` so the page ships one HTML file and no external CSS.
+- Integrations: `@astrojs/sitemap` (with a `serialize` filter that drops non-page URLs), `astro-robots-txt`. Nothing else in v1.
+- `public/_redirects` (Cloudflare Pages native) holds the aliases and legacy redirects.
+- Local development runs in DDEV (`type: generic`, `docroot: dist`, `web_extra_daemons` running `npm run dev -- --host`, pattern from `ddev/ddev.com`). The site the participants register on is itself developed the way the workshop teaches. `npm run dev` outside DDEV must keep working.
+
+### Design (fixed for v1)
+
+Confident, plain, professional. No animation, no decoration that does not carry meaning. Mobile-first: every rule is written for 360 px and widened with `min-width` queries or `clamp()`.
+
+**Colour.** Web-safe short hex only. Light scheme only in v1 (`color-scheme: light`); dark is reserved, not built. All pairs below are checked against the sand background.
+
+| Token | Value | Use | Contrast on `--color-bg` |
+|---|---|---|---|
+| `--color-bg` | `#FED` | page background, sand | |
+| `--color-bg-alt` | `#EDC` | alternate section band, form fields' surroundings | |
+| `--color-border` | `#CBA` | rules, input borders | |
+| `--color-ink` | `#111` | text | 16.7 : 1 |
+| `--color-ink-soft` | `#444` | secondary text, dates, captions | 8.6 : 1 |
+| `--color-accent` | `#909` | links, primary button background | 7.2 : 1 (AAA) |
+| `--color-accent-strong` | `#606` | link hover and active, focus ring | |
+| `--color-accent-ink` | `#FFF` | text on the accent | 8.1 : 1 on `#909` |
+| `--color-ok-bg` / `--color-ok-ink` | `#DED` / `#151` | success state | |
+| `--color-error-bg` / `--color-error-ink` | `#FDD` / `#900` | field errors | |
+
+Links are underlined in body text (`text-decoration-thickness` from a token, `text-underline-offset` set), never colour alone. Focus: a 2 px outline in `--color-accent-strong` with a 2 px offset, on every interactive element.
+
+**Type.** System fonts, nothing loaded over the network: `--font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`; `--font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace`. Headings use the body family at heavier weight (600 to 700), no display face. Fluid scale with a 1.2 ratio, so steps are noticeable but not dramatic:
+
+| Token | Mobile → desktop | Use |
+|---|---|---|
+| `--text-base` | 1rem → 1.125rem (`clamp(1rem, 0.95rem + 0.25vw, 1.125rem)`) | body |
+| `--text-sm` | 0.875rem → 0.9375rem | meta, captions, footer |
+| `--text-lg` | 1.125rem → 1.25rem | lead paragraph, h4 |
+| `--text-xl` | 1.25rem → 1.5rem | h3 |
+| `--text-2xl` | 1.5rem → 1.875rem | h2 |
+| `--text-3xl` | 1.875rem → 2.5rem | h1 |
+
+Line height 1.55 for body, 1.2 for headings. Reading measure is a layout concern: prose sits in `.container--narrow` (720 px), never a `max-width` on paragraphs. Vertical rhythm from the existing space scale (4 px base). Radius 4 px on inputs and buttons, nothing rounder.
+
+**Layout.** One column on mobile. Header: name as the home link on the left, one nav item on the right ("About"), no hamburger. The workshop is reached from the home block's CTA, not from the menu. Sections are full-width bands, content in `.container` (1200 px) or `.container--narrow`. Footer: link list plus `<address>` with the email.
+
+**Prototyping.** Straight in Astro components, no separate static HTML pass. The charter's "ship CSS first" rule still applies: components carry final CSS from the first commit, and no CSS is written for content that does not exist yet.
+
+### URL hierarchy
+
+Built now:
+
+| URL | What |
+|---|---|
+| `/` | home |
+| `/about/` | story, bio, speaking history, links |
+| `/speaking/2026/wordcamp-belgrade-ddev-ai/` | the workshop page with the registration form |
+| `/api/register` | form endpoint (POST only, server-rendered) |
+| `/radionica`, `/workshop` | 302 → `/speaking/2026/wordcamp-belgrade-ddev-ai/` |
+| `/about`, `/about.html` | 301 → `/about/` |
+| `/sitemap-index.xml`, `/robots.txt` | generated |
+
+Reserved, not built, must not be taken by anything else: `/speaking/` and `/speaking/<year>/` indexes, `/work/`, `/writing/` and `/rss.xml`, `/now/`, `/cv/`, `/contact/`, `/colophon/`, `/sr/` (Serbian prefix if ever bilingual). Participant deploy boxes live on a subdomain (`*.ws.macmladen.com` or similar), outside the site's path space.
+
+Trailing-slash form is canonical for pages (`trailingSlash: 'always'`); Cloudflare Pages normalises the other form.
+
+### Pages
+
+**1. `/` home.** Three sections, each a full-width `section` with a contained `container`:
+- Intro: the headshot (`img/mladen_head_2020-lg.jpg` from the `jekyll` branch of this repo (`git show jekyll:img/mladen_head_2020-lg.jpg`), resized and served as WebP through Astro's image pipeline) beside two paragraphs about who Mladen is. Copy is approved (Mladen, 2026-09-08), third person, verbatim:
+
+  > Mladen Đurić (MacMladen) is a senior developer and architect with more than two decades of building for the web, and a computing story that starts with assembly on 8-bit machines. He lives in Novi Sad, where he builds solutions for clients with WordPress and Drupal, side by side with modern technologies such as Astro, Next.js and React Native.
+
+  > A pragmatist of the "right tool for the right job" school, he cares about performance, sustainability, and the UNIX principle of eliminating everything that is not necessary. He organises meetups, workshops and conferences, and is active in the IT community: WordPress, Drupal, JavaScript, AI.
+
+  Image left, text right at 768 px and up; stacked on mobile with the image first. No positioning slogan, no "what I do" list.
+- Workshop announcement: a two-half block. Left half: an Unsplash photograph of an empty workshop or classroom, no people, with the photographer credit and Unsplash link overlaid in the bottom corner in `--text-sm` on a translucent dark strip, per Unsplash's attribution guideline. The image is committed to the repo under `src/assets/`, served through Astro's image pipeline with width and height, `alt` describing the room. Right half: eyebrow line "18 September · <time> · Dom Omladine Beograda" in `--color-ink-soft` with the time from the data object; title "WordPress, Docker and AI agents — hands-on"; a catchy two-sentence intro (drafted, marked); primary CTA button "Register for the workshop" → `/speaking/2026/wordcamp-belgrade-ddev-ai/`. Halves stack on mobile, image first. The whole block reads from one data object (`src/data/workshop.ts`: title, date, start, end, venue, address, url, closeDate, wordcampUrl) shared with the workshop page and its JSON-LD.
+- Footer (shared component): LinkedIn `rs.linkedin.com/in/macmladen`, GitHub `github.com/macmladen`, Speaker Deck `speakerdeck.com/macmladen`, Blue Fish `bluefish.rs`, Koder `koder.rs`, Razgovori `razgovori.rs`, email `mladen@macmladen.com`.
+
+**2. `/about/`.** Narrow container for the reading text.
+- Headshot and the full EN bio verbatim from section 6 of `wordcamp-belgrade-2026-workshop-handover.md` in the workshop project folder (`~/Documents/JOBS/0905 DDEV and AI Radionica WordCamp BG 2026/`).
+- "Speaking": WordCamp Apatin 2023 "WordPress with Cloudflare CDN" (link `https://apatin.wordcamp.org/2023/session/wordpress-with-cloudflare-cdn/`), DrupalJam Utrecht 2024, Drupal Dev Days Burgas, WordPress Meetup Vršac 2025 "Decoupled WordPress — architecture and challenges", plus the line "40+ events in Novi Sad, Subotica, Zagreb, Amsterdam, Prague, Varna, Utrecht, Burgas", and the Speaker Deck link. The list is a data array in one file so `/speaking/` can be generated from it later.
+- "Community": DaFED founder, Drupal Camp Novi Sad organiser, Drupal meetup, WordPress and Drupal communities. One short paragraph.
+- Footer as above.
+
+**3. `/speaking/2026/wordcamp-belgrade-ddev-ai/`.**
+- Header: title, "Workshop · WordCamp Belgrade 2026", date and time from the shared data object, "Dom Omladine Beograda, Makedonska 22, Belgrade" (venue verified on belgrade.wordcamp.org 2026-09-08), "Held in Serbian". Link to the WordCamp site.
+- The EN abstract from section 2 of the handover with the two flagged fixes applied (workflow "rests on" three things; DDEV added to prerequisites).
+- Prerequisites as a mandatory checklist: Docker, DDEV, git, a GitHub account, an AI tool of choice (Claude Code, Codex, Cursor). SSH access to your own hosting: optional, for the deploy part.
+- Line: "Preparation guide and materials will be on GitHub by Friday 11 September." with a placeholder link, marked in source.
+- "Registration closes Tuesday 15 September." The form, fields below. Success state replaces the form inline with a thank-you saying a confirmation email is on its way. After the close date (a constant in the page's data object) the form is replaced by a "Registration is closed" line; the page stays as the talk's archive page for slides and recording later.
+- JSON-LD `Event` (name, startDate, endDate, location, organizer, performer, url) via a ten-line `StructuredData.astro` component (pattern from `ddev/ddev.com`, `src/components/meta/StructuredData.astro`).
+- Footer as above.
+
+### Form fields (names are the D1 column names)
+
+| field | type | required |
+|---|---|---|
+| name | text | yes |
+| email | email | yes |
+| github | text, GitHub username, `^[a-zA-Z0-9-]{1,39}$` | yes |
+| os | select: macos / windows / linux | yes |
+| tool | select: claude-code / codex / cursor / other | yes |
+| ssh_key | textarea, optional; must start with `ssh-ed25519 ` or `ssh-rsa ` if present; one-line hint on how to print it | no |
+| own_hosting | checkbox "I have my own hosting with SSH access" | no |
+| watch_only | checkbox "I will watch, not work on my own laptop" | no |
+| newsletter | checkbox "Send me news about Koder workshops, meetups and the Razgovori podcast" | no, unchecked by default |
+
+D1 table `registrations` additionally has `id`, `created_at`, `ip_hash`, `mailerlite_status`.
+
+### Endpoint behaviour (`/api/register`)
+- Accepts POST only. Verifies Turnstile server-side. Validates fields. Rejects duplicate email with a friendly message.
+- Inserts into D1 first. Then MailerLite: upsert subscriber with fields `name`, `github`, `os`, `tool`, `own_hosting`, `watch_only`, add to the group from env. Records the outcome in `mailerlite_status`. A MailerLite failure never fails the registration.
+- Env: `MAILERLITE_API_KEY`, `MAILERLITE_GROUP_ID`, `TURNSTILE_SECRET`, `TURNSTILE_SITE_KEY`. Locally `.dev.vars` (gitignored) with `.dev.vars.example` committed. Empty `MAILERLITE_API_KEY` skips the call, status `skipped`.
+- Progressive enhancement: works without JavaScript (full-page POST, server renders success or errors back on the page URL). A small inline script may enhance it. No JavaScript is shipped on `/` or `/about/`.
+
+### Markup, SEO, machine readability
+- Landmarks on every page: `header` with `nav aria-label="Main"`, one `main`, `footer`. Exactly one `h1` per page; heading levels never skip. Each section is `<section aria-labelledby>` its own heading. A skip link to `main` is the first focusable element.
+- Dates in `<time datetime="2026-09-18T12:20:00+02:00">`. The workshop page is an `<article>`; prerequisites are a real `<ul>`; the form uses `<label for>`, `<fieldset>` for the checkbox group, `autocomplete` attributes, `aria-describedby` for hints and errors, and `aria-invalid` on failed fields.
+- Head, per page: `<title>` as "Page · Mladen Đurić" (home: "Mladen Đurić · MacMladen"), `meta description`, `link rel="canonical"`, `lang="en"`, `meta name="theme-color"` set to the sand, Open Graph (`og:type` website or article, title, description, url, image, `og:locale` en_US) and `twitter:card summary_large_image`. One static OG image `public/og.png` (1200×630, name and positioning line) for v1; per-page generation is reserved.
+- `rel="me"` on the LinkedIn, GitHub and Speaker Deck links in the footer, so the profiles verify back to the site.
+- JSON-LD via `StructuredData.astro`, one block per page, values from the same data objects the visible content uses, never duplicated by hand:
+  - `/`: `WebSite` and `Person` (name, alternateName "MacMladen", jobTitle, url, image, email, sameAs [LinkedIn, GitHub, Speaker Deck], worksFor Blue Fish, address locality Novi Sad).
+  - `/about/`: `ProfilePage` whose `mainEntity` is the same `Person`.
+  - workshop page: `Event` (additionalType `EducationEvent`) with name, description, startDate, endDate, `eventAttendanceMode` Offline, `eventStatus` Scheduled, location (Belgrade, Place, address country RS), `inLanguage` "sr", `superEvent` WordCamp Belgrade 2026 with its url, `performer` and `organizer` the Person, `offers` free with `availability` and `validThrough` the close date, and a `BreadcrumbList` Home → Speaking → 2026 → WordCamp Belgrade (breadcrumb URLs point at the reserved index paths and are the reason those paths must not be reused).
+- `public/llms.txt`: a short plain-text description of who Mladen is and links to the three pages, per the llms.txt convention. `robots.txt` allows all crawlers and names the sitemap; no AI crawler is blocked.
+- `public/_headers`: `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` denying camera, microphone and geolocation, and a Content-Security-Policy that allows only self, inline styles, and the Turnstile script and frame. HSTS is set in Cloudflare, not here.
+- Images through Astro's `<Image>`: width and height set, WebP output, `loading="eager"` and `fetchpriority="high"` for the hero headshot only, `alt` text that describes, not decorates.
+- Targets: Lighthouse 100 in all four categories on all three pages, mobile profile; no layout shift; no request other than the document, the images, the favicon, and Turnstile on the workshop page.
+
+### Working method (as on Neusatz)
+- `AGENTS.md` at the root (with `CLAUDE.md` containing `@AGENTS.md`): working model, roles, rules, conventions, where things live. Task IDs `MM-nn`, sequential, never reused. Commits `type [MM-nn] One-line description.` with `Co-Authored-By`. Every task description carries `Effort`, `Estimate`, `Actual`, `Billable` (this is Mladen's own site: `Billable: no` throughout), plus `AI cost (USD list)` and `AI time (min)` recorded at completion from the figures available, marked approximate until the costing script exists.
+- `backlog/` managed with the `backlog` CLI (`backlog init`, tasks in `backlog/tasks/`, milestones in `backlog/milestones/`). Milestone M1 "v1 live for registration" holds the tasks; each task has acceptance criteria copied from this spec; the agent marks them as it goes and fills the final summary.
+- Project agents in `.claude/agents/`: `coder` (Opus, xhigh) for implementation, `performer` (Sonnet, high) for research and mechanical work; `judge` (user-level, Opus) reviews the finished build against the acceptance criteria before Mladen does. No subagent inherits the session model.
+- `docs/` holds this spec, decisions made during the build (`docs/decisions/`), and the deploy procedure once verified here.
+
+### Repo hygiene
+- `README.md`: run locally (DDEV and plain `npm`), deploy to Cloudflare Pages, create and bind D1, run migrations, export registrations to CSV with one wrangler command, which secrets to set where, and the DNS change (CNAME `macmladen.com` and `www` → Pages) as the last step. No secrets in the repo, ever.
+- `wrangler.toml` with the D1 binding; `migrations/0001_registrations.sql`.
+- `CLAUDE.md` with process guardrails: never run the dev server in agent mode, never change DNS or secrets, never publish content Mladen has not approved, and a task→file map for the recurring tasks (edit the workshop block, add a speaking entry, add a redirect).
+- `.gitignore`, `.editorconfig`, `.nvmrc`.
+- Git initialised; one commit at the end: `feat: macmladen.com v1 — home, about, WordCamp Belgrade 2026 workshop page`.
+
+## Acceptance criteria
+- [ ] `npm run dev` serves `/`, `/about/`, `/speaking/2026/wordcamp-belgrade-ddev-ai/` locally; `ddev start` does the same under DDEV.
+- [ ] `/` shows intro, workshop announcement and footer in order; the announcement carries the Unsplash credit overlay, eyebrow, title, intro and CTA to the workshop page; every footer link resolves to the stated URL.
+- [ ] `/about/` shows headshot, full EN bio, the speaking list with the Apatin and Speaker Deck links, and the community paragraph.
+- [ ] The workshop page shows the corrected EN abstract, the mandatory checklist, the GitHub placeholder line, the close date, and the form with all nine fields; the JSON-LD validates as an `Event`.
+- [ ] Submitting valid data locally inserts one row into local D1 (query documented in README) and renders the inline success state.
+- [ ] Missing required field, bad GitHub username, malformed SSH key, or duplicate email re-renders the form with field-level errors and preserves entered values.
+- [ ] Form submits and validates with JavaScript disabled; `/` and `/about/` ship no JavaScript.
+- [ ] Turnstile renders; a request without a valid token is rejected.
+- [ ] Empty `MAILERLITE_API_KEY` → registration succeeds with status `skipped`; with a key the subscriber call is made with the fields above.
+- [ ] With the close-date constant set in the past, the form is replaced by the closed notice.
+- [ ] `_redirects`: `/radionica` and `/workshop` → the workshop page; `/about` and `/about.html` → `/about/`.
+- [ ] `npm run build` produces the static site plus one server function, no Astro warnings; sitemap contains exactly the three pages.
+- [ ] No external CSS or JS except Turnstile's script; `/` under 150 KB including the WebP headshot.
+- [ ] Layout works at 360 px and 1440 px; no horizontal scroll; the intro and the announcement halves stack on mobile and sit side by side at 768 px and up.
+- [ ] Every colour pair in the token table meets the stated contrast; links are underlined; every interactive element shows the focus outline.
+- [ ] Each page has one `h1`, no skipped heading level, `header`/`nav`/`main`/`footer` landmarks, and a working skip link. `<time>` elements carry ISO `datetime` values.
+- [ ] JSON-LD on each page parses and matches the page: `WebSite` + `Person` on `/`, `ProfilePage` on `/about/`, `Event` + `BreadcrumbList` on the workshop page. Values come from shared data objects, not duplicated literals.
+- [ ] `public/llms.txt`, `public/_headers`, and `public/_redirects` exist with the stated content; `rel="me"` is present on the three profile links.
+- [ ] Lighthouse mobile scores 100 / 100 / 100 / 100 on all three pages against the production build served locally (`wrangler pages dev dist` or `astro preview`); report the run in the handover.
+- [ ] README documents local run, deploy, D1 create/bind/migrate, secrets, CSV export, DNS change.
+- [ ] `git log` shows exactly one commit; `git status` clean; no `.dev.vars` in the tree; no token values anywhere.
+
+## Out of scope
+Serbian version, blog, other sites and sections, per-page OG images, theme toggle, search, the confirmation email copy (MailerLite), the GitHub scaffold repo for the workshop, the participant VPS, the DNS change itself.
