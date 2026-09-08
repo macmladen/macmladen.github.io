@@ -76,5 +76,5 @@ Effort: 18 min, 10 tool calls.
 ## Final Summary
 
 <!-- SECTION:FINAL_SUMMARY:BEGIN -->
-Done 2026-09-08. Shared data (person, workshop, speaking), Head, StructuredData, SkipLink, Header, Footer, BaseLayout, SVG favicon, and index.astro reduced to the layout shell for MM-06. Build clean; dist/client/index.html has one inlined style, no external CSS or JS, all four landmarks, the skip link first, rel=me on the three profile links. Open: Drupal Dev Days Burgas has no year or title in the source (nulls in speaking.ts), /og.png is still owed by MM-10. Commit f0df4a7. Coder (Opus): 18 min, 10 tool calls. AI cost pending script.
+Done 2026-09-08. Shared data (person, workshop, speaking), Head, StructuredData, SkipLink, Header, Footer, BaseLayout, SVG favicon, and index.astro reduced to the layout shell for MM-06. Build clean; dist/client/index.html has one inlined style, no external CSS or JS, all four landmarks, the skip link first, rel=me on the three profile links. Open: Drupal Dev Days Burgas has no year or title in the source (nulls in speaking.ts), /og.png is still owed by MM-10. Commit f59f498. Coder (Opus): 18 min, 10 tool calls. AI cost pending script.
 <!-- SECTION:FINAL_SUMMARY:END -->

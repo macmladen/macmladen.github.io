@@ -4,7 +4,7 @@ title: 'MM-04: Design tokens and CSS layers'
 status: Done
 assignee: []
 created_date: '2026-09-08 06:53'
-updated_date: '2026-09-08 10:14'
+updated_date: '2026-09-08 10:19'
 labels:
   - feature
 milestone: m-1
@@ -82,3 +82,9 @@ order, so the cascade order in the shipped CSS is identical.
 
 Effort: 32 min, 12 tool calls.
 <!-- SECTION:NOTES:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+Done 2026-09-08. tokens.css rewritten to the spec palette, fluid 1.2 type scale, 4px space scale; global.css declares the five layers once and imports tokens.css unlayered plus reset/base/layout/components/utilities. Contrast of all 15 pairs computed and recorded in the notes: everything passes AA for its use, one deviation from the spec table (#909 on #FED is 6.58:1, not the stated 7.2:1 AAA) left for Mladen to rule on. Commit 89992c5. Coder (Opus): 32 min, 12 tool calls. AI cost pending script.
+<!-- SECTION:FINAL_SUMMARY:END -->
