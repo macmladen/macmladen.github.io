@@ -36,15 +36,27 @@
 }
 
 /* Two halves: stacked on mobile, side by side from 768px.
+   --split-media is the width of the media column; the text column takes
+   whatever is left. It defaults to 1fr, which makes the two halves equal.
    .split--media-first pulls the second child ahead of the first, so the
-   image can lead visually while the heading stays first in the source. */
+   image can lead visually while the heading stays first in the source.
+   .split--media-right does the same while the halves are stacked, then
+   lets the media fall back into the second column once they sit side by
+   side. .split--media-quarter narrows that column to a quarter of the row. */
 .split {
+  --split-media: 1fr;
+
   display: grid;
   gap: var(--space-6);
 }
 
-.split--media-first > :nth-child(2) {
+.split--media-first > :nth-child(2),
+.split--media-right > :nth-child(2) {
   order: -1;
+}
+
+.split--media-quarter {
+  --split-media: 25%;
 }
 
 @media (min-width: 768px) {
@@ -53,8 +65,16 @@
   }
 
   .split {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: var(--split-media) 1fr;
     align-items: center;
     gap: var(--space-8);
+  }
+
+  .split--media-right {
+    grid-template-columns: 1fr var(--split-media);
+  }
+
+  .split--media-right > :nth-child(2) {
+    order: 0;
   }
 }
