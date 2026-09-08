@@ -15,7 +15,7 @@ ordinal: 7000
 ## Description
 
 <!-- SECTION:DESCRIPTION:BEGIN -->
-Effort: S. Estimate: 1.5 h. Actual: . Billable: no. AI cost: pending script. AI time: 6 min. Narrow container. Headshot, full EN bio verbatim from the handover section 6, speaking list from speaking.ts with the Apatin and Speaker Deck links and the 40+ events line, community paragraph. ProfilePage JSON-LD with the Person as mainEntity. Spec: Pages 2.
+Effort: S. Estimate: 1.5 h. Actual: . Billable: no. AI cost: pending script. AI time: 2 min. Narrow container. Headshot, full EN bio verbatim from the handover section 6, speaking list from speaking.ts with the Apatin and Speaker Deck links and the 40+ events line, community paragraph. ProfilePage JSON-LD with the Person as mainEntity. Spec: Pages 2.
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
@@ -57,11 +57,11 @@ Verified against dist/client/about/index.html after npm run build (clean):
 the application/ld+json block. The JSON-LD parses with node: a ProfilePage whose
 mainEntity is the Person, isPartOf the home page's WebSite node.
 
-Effort: 6 min, 7 tool calls.
+Effort: 2 min, 7 tool calls.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
 
 <!-- SECTION:FINAL_SUMMARY:BEGIN -->
-Done 2026-09-08. /about/ built in the narrow container: headshot (240px, 2x srcset), the full EN bio verbatim from person.bio, the speaking list rendered from speaking.ts (null year and null title render as absence, not invention), the 40+ events line with the Speaker Deck link, and the community paragraph. ProfilePage JSON-LD with the Person as mainEntity parses. .portrait and the .appearances rules were added to components.css. The community paragraph and the meta description are marked draft in the source because the wording is new. Coder (Opus): 6 min, 7 tool calls. AI cost pending script.
+Done 2026-09-08. /about/ built in the narrow container: headshot (240px, 2x srcset), the full EN bio verbatim from person.bio, the speaking list rendered from speaking.ts (null year and null title render as absence, not invention), the 40+ events line with the Speaker Deck link, and the community paragraph. ProfilePage JSON-LD with the Person as mainEntity parses. .portrait and the .appearances rules were added to components.css. The community paragraph and the meta description are marked draft in the source because the wording is new. Coder (Opus): 2 min, 7 tool calls. AI cost pending script.
 <!-- SECTION:FINAL_SUMMARY:END -->

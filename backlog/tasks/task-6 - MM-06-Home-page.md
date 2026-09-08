@@ -15,7 +15,7 @@ ordinal: 6000
 ## Description
 
 <!-- SECTION:DESCRIPTION:BEGIN -->
-Effort: M. Estimate: 3 h. Actual: . Billable: no. AI cost: pending script. AI time: 12 min. Intro section with the headshot (from jekyll branch, WebP via Astro Image, eager, fetchpriority high) and the approved two paragraphs verbatim. Workshop announcement block: Unsplash empty classroom photo with credit overlay (left), eyebrow 18 September · 12:20 · Dom Omladine Beograda, title, catchy two-sentence intro (draft, marked), CTA to /speaking/2026/wordcamp-belgrade-ddev-ai/ (right). WebSite + Person JSON-LD. Spec: Pages 1.
+Effort: M. Estimate: 3 h. Actual: . Billable: no. AI cost: pending script. AI time: 7 min. Intro section with the headshot (from jekyll branch, WebP via Astro Image, eager, fetchpriority high) and the approved two paragraphs verbatim. Workshop announcement block: Unsplash empty classroom photo with credit overlay (left), eyebrow 18 September · 12:20 · Dom Omladine Beograda, title, catchy two-sentence intro (draft, marked), CTA to /speaking/2026/wordcamp-belgrade-ddev-ai/ (right). WebSite + Person JSON-LD. Spec: Pages 1.
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
@@ -70,11 +70,13 @@ carry ISO datetime values.
 Not verified here: the 360/1440 px visual check and Lighthouse, which need the
 server Mladen starts (MM-11).
 
-Effort: 12 min, 15 tool calls after the task went In Progress.
+Effort: 7 min wall clock (4 min on the task, 3 min of shared reading:
+AGENTS.md, docs/spec-v1.md, tasks 6-9, the existing components and CSS),
+15 tool calls after the task went In Progress.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
 
 <!-- SECTION:FINAL_SUMMARY:BEGIN -->
-Done 2026-09-08. Home page built: intro split (headshot + the two approved paragraphs) and the workshop announcement split (Unsplash room photo with credit overlay, eyebrow with two <time> elements, h2, draft-marked two-sentence teaser, primary CTA to the workshop page and a secondary link to WordCamp Belgrade 2026), WebSite + Person JSON-LD from src/lib/schema.ts. Added src/lib/schema.ts, src/lib/dates.ts, person.intro, .section--alt and .media in components.css, and both images under src/assets. Build clean; home page 72.8 kB total, no executable JavaScript, JSON-LD parses. Coder (Opus): 12 min, 15 tool calls. AI cost pending script.
+Done 2026-09-08. Home page built: intro split (headshot + the two approved paragraphs) and the workshop announcement split (Unsplash room photo with credit overlay, eyebrow with two <time> elements, h2, draft-marked two-sentence teaser, primary CTA to the workshop page and a secondary link to WordCamp Belgrade 2026), WebSite + Person JSON-LD from src/lib/schema.ts. Added src/lib/schema.ts, src/lib/dates.ts, person.intro, .section--alt and .media in components.css, and both images under src/assets. Build clean; home page 72.8 kB total, no executable JavaScript, JSON-LD parses. Coder (Opus): 7 min including the shared reading, 15 tool calls. AI cost pending script.
 <!-- SECTION:FINAL_SUMMARY:END -->

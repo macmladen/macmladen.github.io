@@ -15,7 +15,7 @@ ordinal: 9000
 ## Description
 
 <!-- SECTION:DESCRIPTION:BEGIN -->
-Effort: M. Estimate: 3 h. Actual: . Billable: no. AI cost: pending script. AI time: 34 min. POST /api/register (prerender false): Turnstile server-side verify, validation, duplicate email check, D1 insert first, MailerLite upsert with fields and group (skipped with status skipped when key empty), mailerlite_status recorded, errors re-render the form with values preserved. migrations/0001_registrations.sql, wrangler.toml with the D1 binding, .dev.vars.example. Spec: Endpoint behaviour.
+Effort: M. Estimate: 3 h. Actual: . Billable: no. AI cost: pending script. AI time: 8 min. POST /api/register (prerender false): Turnstile server-side verify, validation, duplicate email check, D1 insert first, MailerLite upsert with fields and group (skipped with status skipped when key empty), mailerlite_status recorded, errors re-render the form with values preserved. migrations/0001_registrations.sql, wrangler.toml with the D1 binding, .dev.vars.example. Spec: Endpoint behaviour.
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
@@ -120,11 +120,11 @@ Also fixed here, one line: the sitemap serialize filter now drops /api/, which h
 started appearing in sitemap-0.xml as a trailing-slash URL. The sitemap is back to
 exactly the three pages.
 
-Effort: 34 min, 24 tool calls.
+Effort: 8 min, 24 tool calls.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
 
 <!-- SECTION:FINAL_SUMMARY:BEGIN -->
-Done 2026-09-08. The registration endpoint works end to end in the built worker: POST only, pure validation in src/lib/validate.ts with 36 passing node checks, Turnstile verified server-side and failing closed, duplicate email caught with a friendly message, D1 insert first and MailerLite after with its outcome recorded in mailerlite_status, and a failed submission re-rendering the same form component with every error and every typed value preserved. migrations/0001_registrations.sql, the D1 binding in wrangler.toml, IP_HASH_SALT in .dev.vars.example, and README sections for D1 and Secrets are in place. The endpoint is an Astro page rather than a .ts endpoint, so its responses carry the site's inlined CSS and chrome; the form therefore posts to /api/register/ with a trailing slash. Acceptance criteria 1, 3 and 4 stay unticked: they need a real local D1 and a real Turnstile round trip on Mladen's preview server, though all three were exercised against a fake D1 and a stubbed fetch. Coder (Opus): 34 min, 24 tool calls. AI cost pending script.
+Done 2026-09-08. The registration endpoint works end to end in the built worker: POST only, pure validation in src/lib/validate.ts with 36 passing node checks, Turnstile verified server-side and failing closed, duplicate email caught with a friendly message, D1 insert first and MailerLite after with its outcome recorded in mailerlite_status, and a failed submission re-rendering the same form component with every error and every typed value preserved. migrations/0001_registrations.sql, the D1 binding in wrangler.toml, IP_HASH_SALT in .dev.vars.example, and README sections for D1 and Secrets are in place. The endpoint is an Astro page rather than a .ts endpoint, so its responses carry the site's inlined CSS and chrome; the form therefore posts to /api/register/ with a trailing slash. Acceptance criteria 1, 3 and 4 stay unticked: they need a real local D1 and a real Turnstile round trip on Mladen's preview server, though all three were exercised against a fake D1 and a stubbed fetch. Coder (Opus): 8 min, 24 tool calls. AI cost pending script.
 <!-- SECTION:FINAL_SUMMARY:END -->

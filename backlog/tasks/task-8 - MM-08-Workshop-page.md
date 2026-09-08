@@ -15,7 +15,7 @@ ordinal: 8000
 ## Description
 
 <!-- SECTION:DESCRIPTION:BEGIN -->
-Effort: M. Estimate: 3 h. Actual: . Billable: no. AI cost: pending script. AI time: 26 min. /speaking/2026/wordcamp-belgrade-ddev-ai/: header from workshop.ts, venue line, held in Serbian, WordCamp link; EN abstract from the handover section 2 with the two fixes; prerequisites checklist; prep guide placeholder line; registration close line; the form (nine fields, labels, fieldset, autocomplete, aria-describedby, aria-invalid, Turnstile widget); inline success state; closed state when past closeDate. Event (EducationEvent) + BreadcrumbList JSON-LD. Spec: Pages 3, Form fields.
+Effort: M. Estimate: 3 h. Actual: . Billable: no. AI cost: pending script. AI time: 9 min. /speaking/2026/wordcamp-belgrade-ddev-ai/: header from workshop.ts, venue line, held in Serbian, WordCamp link; EN abstract from the handover section 2 with the two fixes; prerequisites checklist; prep guide placeholder line; registration close line; the form (nine fields, labels, fieldset, autocomplete, aria-describedby, aria-invalid, Turnstile widget); inline success state; closed state when past closeDate. Event (EducationEvent) + BreadcrumbList JSON-LD. Spec: Pages 3, Form fields.
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
@@ -100,11 +100,11 @@ Verified statically after npm run build (clean, 3 pages):
 Not verified here: anything that needs a running server — Turnstile actually rendering,
 submitting the form, Lighthouse. Those are MM-11 against Mladen's preview.
 
-Effort: 26 min, 21 tool calls.
+Effort: 9 min, 21 tool calls.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
 
 <!-- SECTION:FINAL_SUMMARY:BEGIN -->
-Done 2026-09-08. The workshop page is built: article header from workshop.ts (date and time in <time> elements, venue, held in Serbian, WordCamp link), the EN abstract with the two flagged fixes, the audience paragraph, the mandatory prerequisites checklist with DDEV added, the placeholder-marked preparation line, the close date, and the nine-field registration form as a reusable component that takes values and errors. Event + Person + BreadcrumbList JSON-LD parses and uses the reserved /speaking/ index paths. Success and closed-state components added; the closed state was exercised by building with a past close date. Fixed a real defect on the way: registrationOpen was computed at module scope, where workerd reports Date.now() as 0, so it was permanently true; openness is now asked at render time through isRegistrationOpen(). The form posts to /api/register/ with a trailing slash — see MM-09. Coder (Opus): 26 min, 21 tool calls. AI cost pending script.
+Done 2026-09-08. The workshop page is built: article header from workshop.ts (date and time in <time> elements, venue, held in Serbian, WordCamp link), the EN abstract with the two flagged fixes, the audience paragraph, the mandatory prerequisites checklist with DDEV added, the placeholder-marked preparation line, the close date, and the nine-field registration form as a reusable component that takes values and errors. Event + Person + BreadcrumbList JSON-LD parses and uses the reserved /speaking/ index paths. Success and closed-state components added; the closed state was exercised by building with a past close date. Fixed a real defect on the way: registrationOpen was computed at module scope, where workerd reports Date.now() as 0, so it was permanently true; openness is now asked at render time through isRegistrationOpen(). The form posts to /api/register/ with a trailing slash — see MM-09. Coder (Opus): 9 min, 21 tool calls. AI cost pending script.
 <!-- SECTION:FINAL_SUMMARY:END -->
