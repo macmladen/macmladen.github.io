@@ -37,3 +37,6 @@
 node_modules
 .idea
 .DS_Store
+
+# API tokens kept next to docs, never committed
+/docs/*_token.txt
