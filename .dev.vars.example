@@ -4,3 +4,7 @@ MAILERLITE_GROUP_ID=
 # Cloudflare Turnstile's documented always-pass test keys, safe to commit.
 TURNSTILE_SECRET=1x0000000000000000000000000000000AA
 TURNSTILE_SITE_KEY=1x00000000000000000000AA
+# Any long random string. IP addresses are stored only as SHA-256 of salt + IP,
+# and without a salt nothing is stored at all.
+IP_HASH_SALT=
+

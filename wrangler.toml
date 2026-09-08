@@ -10,8 +10,13 @@ compatibility_date = "2026-09-08"
 # decide Pages vs Workers in MM-11 and set the build output to `dist/client`
 # in the Cloudflare project settings.
 
-# D1: MM-09 creates the database and fills in database_id.
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "macmladen-registrations"
-# database_id = ""
+# D1 holds the workshop registrations. The binding name DB is what
+# src/pages/api/register.astro reads off Astro.locals.runtime.env.
+# database_id is a placeholder: M5 runs `wrangler d1 create macmladen-registrations`
+# on Mladen's account and pastes the real id here. Local development does not use
+# the id at all — `wrangler d1 ... --local` keys off database_name.
+[[d1_databases]]
+binding = "DB"
+database_name = "macmladen-registrations"
+database_id = "00000000-0000-0000-0000-000000000000" # replaced in M5
+migrations_dir = "migrations"

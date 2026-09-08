@@ -17,10 +17,12 @@ export default defineConfig({
   }),
   integrations: [
     sitemap({
-      // Pages only: anything that is not a trailing-slash URL (endpoints,
-      // files such as /robots.txt or /og.png) never reaches the sitemap.
+      // Pages only. Anything that is not a trailing-slash URL (files such as
+      // /robots.txt or /og.png) is dropped, and so is /api/, which is a form's
+      // POST target rather than a page anyone should be sent to.
       serialize(item) {
         if (!item.url.endsWith('/')) return undefined;
+        if (new URL(item.url).pathname.startsWith('/api/')) return undefined;
         return item;
       },
     }),
