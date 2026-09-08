@@ -1,0 +1,86 @@
+---
+import { Image, getImage } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import StructuredData from '../components/StructuredData.astro';
+import headshot from '../assets/mladen-head-2020.jpg';
+import { person } from '../data/person';
+import { appearances, summaryLine } from '../data/speaking';
+import { graph, personNode, profilePageNode } from '../lib/schema';
+
+/** The Person node points at the same 560px headshot the home page renders,
+ *  so both pages describe the entity with one image file. */
+const headshotFile = await getImage({
+  src: headshot,
+  width: 560,
+  height: 560,
+  format: 'webp',
+});
+
+const schema = graph(profilePageNode(Astro.site, personNode(Astro.site, headshotFile.src)));
+
+const speakerDeck = person.profiles.find((profile) => profile.name === 'Speaker Deck')!;
+
+// draft: Mladen to approve — meta description for /about/.
+const description =
+  'Senior developer and architect in Novi Sad: the longer story, what he speaks ' +
+  'about, and where he is active in the WordPress and Drupal communities.';
+---
+
+<BaseLayout title="About" description={description} canonical="/about/" ogType="profile">
+  <StructuredData slot="head" data={schema} />
+
+  <section class="section" aria-labelledby="about-title">
+    <div class="container container--narrow flow">
+      <h1 id="about-title">About</h1>
+      <Image
+        src={headshot}
+        width={240}
+        height={240}
+        densities={[1, 2]}
+        format="webp"
+        alt="Mladen Đurić"
+        loading="lazy"
+        class="portrait"
+      />
+      <p>{person.bio}</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="speaking-title">
+    <div class="container container--narrow flow">
+      <h2 id="speaking-title">Speaking</h2>
+      <ul class="appearances">
+        {
+          appearances.map((appearance) => (
+            <li>
+              <span class="appearances__event">
+                {appearance.year ? `${appearance.event} ${appearance.year}` : appearance.event}
+              </span>
+              {appearance.title && (
+                <span class="appearances__title">
+                  {appearance.url ? (
+                    <a href={appearance.url}>{appearance.title}</a>
+                  ) : (
+                    appearance.title
+                  )}
+                </span>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+      <p>{summaryLine}. Slides on <a href={speakerDeck.url}>{speakerDeck.name}</a>.</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="community-title">
+    <div class="container container--narrow flow">
+      <h2 id="community-title">Community</h2>
+      <!-- draft: Mladen to approve -->
+      <p>
+        He founded DaFED, organises Drupal Camp Novi Sad and the Drupal meetup, and is
+        active in both the WordPress and Drupal communities.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

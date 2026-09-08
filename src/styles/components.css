@@ -13,6 +13,31 @@
   border-radius: var(--radius-sm);
 }
 
+/* A portrait at its own intrinsic width, never stretched to the column. */
+.portrait {
+  border-radius: var(--radius-sm);
+}
+
+/* Speaking history: the event line, then the title under it. */
+.appearances {
+  padding-inline-start: 0;
+  list-style: none;
+}
+
+.appearances li + li {
+  margin-block-start: var(--space-4);
+}
+
+.appearances__event {
+  display: block;
+  font-weight: var(--weight-semibold);
+}
+
+.appearances__title {
+  display: block;
+  color: var(--color-ink-soft);
+}
+
 /* Buttons */
 .button {
   display: inline-flex;
