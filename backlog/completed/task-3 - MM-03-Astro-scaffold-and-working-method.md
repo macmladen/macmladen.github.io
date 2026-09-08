@@ -1,10 +1,10 @@
 ---
 id: TASK-3
 title: 'MM-03: Astro scaffold and working method'
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-09-08 06:53'
-updated_date: '2026-09-08 07:12'
+updated_date: '2026-09-08 10:09'
 labels:
   - chore
 milestone: m-0
@@ -33,3 +33,9 @@ Effort: M. Estimate: 3 h. Actual: . Billable: no. AI cost: . AI time: . Astro 7 
 <!-- SECTION:NOTES:BEGIN -->
 Fable review 2026-09-08: scaffold verified by the coder (build clean, preview 200, DDEV primary and dev port both 200, ddev stopped). Material decision recorded in docs/decisions/M1-DEPLOY-TARGET.md: deploy target is Workers static assets, not Pages; spec, AGENTS.md and README wording updated. Effort figures: main loop ~10 min (Fable); coder subagent 116,780 tokens, 57 tool calls, 16.7 min (Opus). AI cost: pending costing script.
 <!-- SECTION:NOTES:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+Done 2026-09-08. Astro 7.3.1 scaffold with Cloudflare adapter, sitemap, robots; backlog and agent instructions; deploy target decided as Workers static assets (docs/decisions/M1-DEPLOY-TARGET.md); DDEV added then removed after it broke the host dev server twice. Commits 271a3fb..81383f0. Coder: ~117k tokens, 57 tool calls, 17 min; Fable orchestration ~25 min. AI cost pending script.
+<!-- SECTION:FINAL_SUMMARY:END -->
