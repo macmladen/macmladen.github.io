@@ -1,0 +1,50 @@
+---
+/** Everything that goes in <head> for a page. Absolute URLs are built from
+ *  Astro.site, so nothing hard-codes the origin. */
+interface Props {
+  /** Page name; " · Mladen Đurić" is appended unless fullTitle is set. */
+  title: string;
+  description: string;
+  /** Path of this page, e.g. "/about/". */
+  canonical: string;
+  ogType?: 'website' | 'article' | 'profile';
+  /** Path of the sharing image. Defaults to the site-wide OG image. */
+  image?: string;
+  /** The home page passes its own complete title. */
+  fullTitle?: boolean;
+}
+
+import { person } from '../data/person';
+
+const {
+  title,
+  description,
+  canonical,
+  ogType = 'website',
+  image = '/og.png',
+  fullTitle = false,
+} = Astro.props;
+
+const pageTitle = fullTitle ? title : `${title} · ${person.name}`;
+const canonicalUrl = new URL(canonical, Astro.site).href;
+const imageUrl = new URL(image, Astro.site).href;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{pageTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalUrl} />
+<meta name="theme-color" content="#FED" />
+
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:locale" content="en_US" />
+<meta property="og:site_name" content={person.name} />
+
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />

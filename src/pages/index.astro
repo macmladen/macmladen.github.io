@@ -1,18 +1,18 @@
 ---
-import '../styles/global.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { person } from '../data/person';
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>macmladen.com — rebuilding</title>
-    <meta name="description" content="Personal site of Mladen Đurić (MacMladen), being rebuilt." />
-    <link rel="canonical" href="https://macmladen.com/" />
-  </head>
-  <body>
-    <main>
-      <h1>macmladen.com — rebuilding</h1>
-    </main>
-  </body>
-</html>
+<BaseLayout
+  title={`${person.name} · ${person.alternateName}`}
+  description={person.bioShort}
+  canonical="/"
+  ogType="website"
+  fullTitle
+>
+  <section class="section" aria-labelledby="home-title">
+    <div class="container flow">
+      <h1 id="home-title">{person.name}</h1>
+    </div>
+  </section>
+</BaseLayout>

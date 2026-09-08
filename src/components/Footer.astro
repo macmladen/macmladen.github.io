@@ -1,0 +1,58 @@
+---
+import { person } from '../data/person';
+
+const links = [
+  ...person.profiles.map((link) => ({ ...link, me: true })),
+  ...person.brands.map((link) => ({ ...link, me: false })),
+];
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container flow">
+    <h2 class="visually-hidden">Elsewhere</h2>
+    <ul class="site-footer__links">
+      {
+        links.map((link) => (
+          <li>
+            <a href={link.url} rel={link.me ? 'me' : undefined}>
+              {link.name}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <address>
+      <a href={`mailto:${person.email}`}>{person.email}</a>
+    </address>
+    <p class="site-footer__copy">© {year} {person.name}</p>
+  </div>
+</footer>
+
+<style>
+  @layer components {
+    .site-footer {
+      border-block-start: var(--border-width) solid var(--color-border);
+      margin-block-start: var(--space-16);
+      padding-block: var(--space-8);
+      font-size: var(--text-sm);
+    }
+
+    .site-footer__links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2) var(--space-6);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .site-footer__links li + li {
+      margin-block-start: 0;
+    }
+
+    .site-footer__copy {
+      color: var(--color-ink-soft);
+    }
+  }
+</style>

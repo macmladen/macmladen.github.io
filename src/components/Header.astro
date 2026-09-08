@@ -1,0 +1,73 @@
+---
+import { person } from '../data/person';
+
+const nav = [{ label: 'About', href: '/about/' }];
+const here = Astro.url.pathname.replace(/\/+$/, '');
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="site-header__name" href="/">{person.name}</a>
+    <nav aria-label="Main">
+      <ul class="site-header__nav">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={here === item.href.replace(/\/+$/, '') ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  @layer components {
+    .site-header {
+      border-block-end: var(--border-width) solid var(--color-border);
+      padding-block: var(--space-4);
+    }
+
+    .site-header__inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-4);
+    }
+
+    .site-header__name {
+      color: var(--color-ink);
+      font-size: var(--text-lg);
+      font-weight: var(--weight-bold);
+      text-decoration: none;
+    }
+
+    .site-header__name:hover {
+      color: var(--color-accent-strong);
+    }
+
+    .site-header__nav {
+      display: flex;
+      gap: var(--space-4);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .site-header__nav li + li {
+      margin-block-start: 0;
+    }
+
+    .site-header__nav [aria-current='page'] {
+      color: var(--color-accent-strong);
+      font-weight: var(--weight-semibold);
+    }
+  }
+</style>
