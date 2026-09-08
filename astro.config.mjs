@@ -15,13 +15,6 @@ export default defineConfig({
   adapter: cloudflare({
     imageService: 'compile',
   }),
-  vite: {
-    server: {
-      // DDEV serves the dev server on https://macmladen.ddev.site:4321;
-      // Vite blocks unknown hosts by default.
-      allowedHosts: ['.ddev.site'],
-    },
-  },
   integrations: [
     sitemap({
       // Pages only: anything that is not a trailing-slash URL (endpoints,

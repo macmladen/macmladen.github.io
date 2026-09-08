@@ -14,48 +14,12 @@ Tasks: `backlog/`, managed with the `backlog` CLI.
 
 Node version is pinned in `.nvmrc` (Node 26; `package.json` requires >= 22).
 
-### With npm
-
 ```sh
 npm install
 npm run dev
 ```
 
 The dev server runs at <http://localhost:4321/> with hot module reloading.
-
-### With DDEV
-
-```sh
-ddev start
-```
-
-DDEV gives you **two URLs, and they are not the same thing**:
-
-| URL | What it serves |
-|---|---|
-| <https://macmladen.ddev.site> | The **last production build** — nginx serving the files in `dist/client/`. Static, no HMR. Run `npm run build` (or `ddev exec npm run build`) to refresh it. |
-| <https://macmladen.ddev.site:4321> | The **Astro dev server** running as a DDEV extra daemon, with hot module reloading. Source edits appear immediately; `dist/` is not involved. |
-
-Use the dev-server port while writing code, and the primary URL to check what a
-real visitor gets from a production build. On first start the extra daemon runs
-`npm install`, and the post-start hook builds the site if `dist/client/` is missing.
-
-There is no database container (`omit_containers: [db]`); registrations live in
-Cloudflare D1, not MySQL.
-
-`node_modules/` is excluded from the DDEV file sync (`.ddev/mutagen/mutagen.yml`).
-The container runs Linux and the host runs macOS, and packages such as `rolldown`
-and `esbuild` ship platform-specific native binaries; syncing one over the other
-breaks whichever side installed first, with `Cannot find native binding`. The
-container installs and keeps its own copy. If you ever run `ddev mutagen reset`,
-DDEV regenerates the default sync config and you must re-apply that file, then
-`npm install` on the host to repair the bindings.
-
-```sh
-ddev stop      # stop the project
-ddev describe  # URLs, ports and daemon status
-ddev logs -f   # container logs, including the dev-server daemon
-```
 
 ## Build
 

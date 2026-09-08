@@ -21,7 +21,7 @@ Decisions taken 2026-09-07:
 - No CSS framework, no client-side framework, no Tailwind, no React. Plain CSS with tokens, cascade layers `reset, base, layout, components, utilities`, per `~/Sites/altervictus/docs/FRONTEND-CHARTER.md` (section/container model, layout vs appearance separated). The existing `src/styles/tokens.css` is the starting token set; adjust values, keep the names. Astro config `build.inlineStylesheets: 'always'` so the page ships one HTML file and no external CSS.
 - Integrations: `@astrojs/sitemap` (with a `serialize` filter that drops non-page URLs), `astro-robots-txt`. Nothing else in v1.
 - `public/_redirects` (handled natively by Workers static assets, same format as Pages) holds the aliases and legacy redirects.
-- Local development runs in DDEV (`type: generic`, `docroot: dist`, `web_extra_daemons` running `npm run dev -- --host`, pattern from `ddev/ddev.com`). The site the participants register on is itself developed the way the workshop teaches. `npm run dev` outside DDEV must keep working.
+- Local development is plain Node: `npm run dev`. No DDEV; nothing here needs PHP or a database container (decision 2026-09-08).
 
 ### Design (fixed for v1)
 
