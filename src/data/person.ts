@@ -41,6 +41,21 @@ export const bioShort =
   'WordPress and Drupal sites alongside modern stacks like Astro, Next.js, and React ' +
   'Native.';
 
+/** The home page intro, two paragraphs. Approved by Mladen 2026-09-08 and
+ *  reproduced verbatim from docs/spec-v1.md; this is a different, shorter text
+ *  than the EN bio above, which belongs to /about/. */
+export const intro: string[] = [
+  'Mladen Đurić (MacMladen) is a senior developer and architect with more than two ' +
+    'decades of building for the web, and a computing story that starts with assembly ' +
+    'on 8-bit machines. He lives in Novi Sad, where he builds solutions for clients ' +
+    'with WordPress and Drupal, side by side with modern technologies such as Astro, ' +
+    'Next.js and React Native.',
+  'A pragmatist of the "right tool for the right job" school, he cares about ' +
+    'performance, sustainability, and the UNIX principle of eliminating everything ' +
+    'that is not necessary. He organises meetups, workshops and conferences, and is ' +
+    'active in the IT community: WordPress, Drupal, JavaScript, AI.',
+];
+
 export const person = {
   name: 'Mladen Đurić',
   alternateName: 'MacMladen',
@@ -55,6 +70,7 @@ export const person = {
   brands,
   bio,
   bioShort,
+  intro,
 } as const;
 
 export default person;

@@ -1,5 +1,18 @@
 /* Appearance only. Every colour and every size is a token. */
 
+/* An alternate full-width band. .section reads --section-bg in the layout
+   layer; the colour itself is appearance, so it is set here. */
+.section--alt {
+  --section-bg: var(--color-bg-alt);
+}
+
+/* Images that fill the column they sit in. */
+.media {
+  inline-size: 100%;
+  block-size: auto;
+  border-radius: var(--radius-sm);
+}
+
 /* Buttons */
 .button {
   display: inline-flex;

@@ -1,18 +1,92 @@
 ---
+import { Image, getImage } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import StructuredData from '../components/StructuredData.astro';
+import headshot from '../assets/mladen-head-2020.jpg';
+import roomPhoto from '../assets/workshop-room.jpg';
 import { person } from '../data/person';
+import { workshop } from '../data/workshop';
+import { dayAndMonth, timeOfDay } from '../lib/dates';
+import { graph, personNode, webSiteNode } from '../lib/schema';
+
+/** One set of options for the headshot, used both by <Image> and by the
+ *  Person node, so the JSON-LD points at the file the page actually renders. */
+const headshotOptions = { src: headshot, width: 560, height: 560, format: 'webp' } as const;
+const headshotFile = await getImage(headshotOptions);
+
+const schema = graph(webSiteNode(Astro.site), personNode(Astro.site, headshotFile.src));
+
+// draft: Mladen to approve — purpose-written meta description for the home page.
+const description =
+  'Senior developer and architect in Novi Sad: WordPress, Drupal and modern ' +
+  'JavaScript, and a hands-on WordCamp Belgrade 2026 workshop on Docker and AI agents.';
 ---
 
 <BaseLayout
   title={`${person.name} · ${person.alternateName}`}
-  description={person.bioShort}
+  description={description}
   canonical="/"
   ogType="website"
   fullTitle
 >
-  <section class="section" aria-labelledby="home-title">
-    <div class="container flow">
-      <h1 id="home-title">{person.name}</h1>
+  <StructuredData slot="head" data={schema} />
+
+  <section class="section" aria-labelledby="intro-title">
+    <div class="container split split--media-first">
+      <div class="flow">
+        <h1 id="intro-title">{person.name}</h1>
+        {person.intro.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+      <Image
+        {...headshotOptions}
+        alt="Mladen Đurić"
+        loading="eager"
+        fetchpriority="high"
+        decoding="sync"
+        class="media"
+      />
+    </div>
+  </section>
+
+  <section class="section section--alt" aria-labelledby="workshop-title">
+    <div class="container split split--media-first">
+      <div class="flow">
+        <p class="eyebrow">
+          <time datetime={workshop.date}>{dayAndMonth(workshop.start)}</time>{' · '}<time
+            datetime={workshop.start}>{timeOfDay(workshop.start)}</time>{` · ${workshop.venue}`}
+        </p>
+        <h2 id="workshop-title">{workshop.title}</h2>
+        <!-- draft: Mladen to approve -->
+        <p>
+          Bring a laptop and leave with a running local WordPress, a project under
+          version control, and an AI agent set up to work on your own code. One full
+          loop, live: plan the task, let the agent build and check it, review, deploy.
+        </p>
+        <div class="row">
+          <a class="button" href={workshop.path}>Register for the workshop</a>
+          <a class="button button--secondary" href={workshop.wordcampUrl}>
+            WordCamp Belgrade 2026
+          </a>
+        </div>
+      </div>
+      <figure class="credit-frame">
+        <Image
+          src={roomPhoto}
+          width={800}
+          height={534}
+          format="webp"
+          alt="Rows of empty desks in a modern conference room"
+          loading="lazy"
+          class="media"
+        />
+        <figcaption class="credit">
+          Photo: <a
+            href="https://unsplash.com/photos/rows-of-empty-desks-in-a-modern-conference-room-8seo3zZSoBM"
+            >runda choo / Unsplash</a
+          >
+        </figcaption>
+      </figure>
     </div>
   </section>
 </BaseLayout>
+
