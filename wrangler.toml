@@ -1,0 +1,17 @@
+name = "macmladen"
+compatibility_date = "2026-09-08"
+
+# NOTE (MM-11/MM-12): @astrojs/cloudflare v14 is a Cloudflare *Workers* adapter.
+# It writes the static site to `dist/client` and the worker to `dist/server`, and
+# generates its own worker config with an `ASSETS` binding. Adding
+# `pages_build_output_dir` here turns this file into a Pages project config, which
+# makes wrangler reject that reserved binding and the build fails. So the build
+# output directory is a deploy-target setting, not a key in this file (yet):
+# decide Pages vs Workers in MM-11 and set the build output to `dist/client`
+# in the Cloudflare project settings.
+
+# D1: MM-09 creates the database and fills in database_id.
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "macmladen-registrations"
+# database_id = ""
