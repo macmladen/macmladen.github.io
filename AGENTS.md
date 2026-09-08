@@ -4,7 +4,17 @@ Personal site of Mladen Đurić (MacMladen): Astro 7, static output deployed as 
 
 ## Working model
 
-Discuss → agree → **green light from Mladen** → implement. Work is green-lit per milestone; within a milestone, run autonomously and stop at its end. Mladen reviews, we iterate, close the milestone, move on.
+Discuss → agree → **green light from Mladen** → implement. Work is green-lit per milestone. The milestone procedure:
+
+1. Start the milestone.
+2. Lay the tasks in the backlog.
+3. The work, per task: set In Progress → implement → check acceptance criteria → write Actual, AI cost, AI time → set Done → commit → next task.
+4. Stop at the end of the milestone.
+5. Brief summary.
+6. Questions and dilemmas.
+7. A verification plan for Mladen: URL and what to check, briefly.
+8. Add tasks if needed and work them the same way.
+9. When everything is done, clean up the board (done tasks to `backlog/completed/`, milestone archived, commit) and move to the next milestone.
 
 Roles per task:
 - **Fable** (main loop) — planning, orchestration, review of delegated work
