@@ -49,7 +49,7 @@ workshop.summary and the placeholder prep link are marked in the source (draft a
 placeholder respectively) — prepRepoUrl points at github.com/macmladen until the
 scaffolding repository is public.
 
-Form: src/components/RegistrationForm.astro takes optional  and 
+Form: src/components/RegistrationForm.astro takes optional values and errors
 props, so the same component renders the empty form on this page and the filled-in
 form with errors from /api/register/ (MM-09). Nine fields with the spec's names:
 name, email, github (pattern [A-Za-z0-9-]{1,39}), os, tool, ssh_key, own_hosting,
