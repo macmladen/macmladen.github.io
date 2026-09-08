@@ -26,6 +26,7 @@ Never spawn a subagent that inherits the session model; set model and effort exp
 ## Conventions
 
 - Commits: `type [MM-nn] One-line description.` + `Co-Authored-By: <running model display name> <noreply@anthropic.com>`. Types: feat, fix, chore, docs, refactor, test. Commit in whole chunks: a coherent unit of work, whether three lines or many files; several commits per task are normal. Tasks added after the first run are referenced by name in commits and text, not by ID.
+- Task lifecycle: the first step of any task is `backlog task edit <n> -s "In Progress"`; the last step is administration (tick acceptance criteria, notes with effort figures, final summary) and `-s Done`. Never work on a task that is not In Progress.
 - Tasks: every Description carries `Effort` (XS–XL), `Estimate` (h), `Actual` (h, Mladen's own time incl. thinking, review, prompting), `Billable` (no throughout, own site), `AI cost` (USD at API list price, approximate until the costing script exists), `AI time` (minutes of agent activity). Final Summary filled when done, with the raw figures the agent has (subagent tokens, durations, session reference).
 - Task IDs `MM-nn` for the first run (MM-01 to MM-12), sequential, never reused.
 - `docs/` — spec, decisions (`docs/decisions/`), procedures verified **here**; nothing copied from sibling projects unverified.
