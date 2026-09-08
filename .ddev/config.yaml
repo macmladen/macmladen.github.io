@@ -1,0 +1,41 @@
+name: macmladen
+type: generic
+# The Astro + Cloudflare adapter build writes the static site to dist/client
+# (dist/server holds the worker). The primary URL serves the last build.
+docroot: dist/client
+webserver_type: nginx-fpm
+php_version: "8.3"
+omit_containers: [db]
+use_dns_when_possible: true
+# nodejs_version reads .nvmrc
+nodejs_version: auto
+corepack_enable: false
+disable_upload_dirs_warning: true
+
+hooks:
+    post-start:
+        - exec: bash -c 'while [ ! -f /var/tmp/npm-install-done ]; do sleep 1; done'
+        - exec: bash -c 'if [ ! -d /var/www/html/dist/client ]; then npm run build; fi'
+        - exec: echo -e "                                  NOTICE                                        "
+        - exec: echo -e "================================================================================"
+        - exec: echo -e "The Astro dev container is ready"
+        - exec: echo -e "The primary URL \e[32m${DDEV_PRIMARY_URL_WITHOUT_PORT}\e[0m serves the last dist/client build"
+        - exec: echo -e "The dev server with HMR is at \e[32m${DDEV_PRIMARY_URL_WITHOUT_PORT}:4321\e[0m"
+        - exec: echo -e "To troubleshoot any issues run \e[35mddev describe\e[0m or \e[35mddev logs --follow --time\e[0m"
+        - exec: echo -e "================================================================================"
+
+web_extra_exposed_ports:
+    - name: astro-dev
+      container_port: 4321
+      http_port: 4322
+      https_port: 4321
+
+web_extra_daemons:
+    - name: astro-dev-daemon
+      # The extra -- in `npm run dev -- --host` is a Vite requirement
+      # See https://github.com/vitejs/vite/discussions/3396
+      # 4321 is Astro's default port; set it explicitly anyway
+      command: bash -c 'npm install && touch /var/tmp/npm-install-done && npm run dev -- --host --port 4321'
+      directory: /var/www/html
+
+ddev_version_constraint: '>= v1.24.10'
