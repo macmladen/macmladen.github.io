@@ -27,22 +27,55 @@ Decisions taken 2026-09-07:
 
 Confident, plain, professional. No animation, no decoration that does not carry meaning. Mobile-first: every rule is written for 360 px and widened with `min-width` queries or `clamp()`.
 
-**Colour.** Web-safe short hex only. Light scheme only in v1 (`color-scheme: light`); dark is reserved, not built. All pairs below are checked against the sand background.
+**Colour.** Short hex only. Three colour states, decided 2026-09-08, replacing the original "light scheme only in v1, dark reserved": **Auto** (follows `prefers-color-scheme`), **Light** and **Dark**, chosen from a control in the header and remembered in `localStorage` under the key `theme`. Auto is the absence of that key and the absence of `data-theme` on `<html>`; Light and Dark set `data-theme` and win over the OS. `color-scheme` follows the state, so form controls and scrollbars follow with it, and `<meta name="theme-color">` is two tags, one per `prefers-color-scheme`.
 
-| Token | Value | Use | Contrast on `--color-bg` |
+Light scheme, on `:root`. Pairs checked against `--color-bg` unless stated:
+
+| Token | Value | Use | Contrast |
 |---|---|---|---|
 | `--color-bg` | `#FED` | page background, sand | |
 | `--color-bg-alt` | `#EDC` | alternate section band, form fields' surroundings | |
-| `--color-border` | `#CBA` | rules, input borders | |
+| `--color-border` | `#CBA` | rules, input borders | 1.7 : 1, non-text separation |
 | `--color-ink` | `#111` | text | 16.7 : 1 |
 | `--color-ink-soft` | `#444` | secondary text, dates, captions | 8.6 : 1 |
 | `--color-accent` | `#909` | links, primary button background | 6.6 : 1 (AA; links are underlined) |
 | `--color-accent-strong` | `#606` | link hover and active, focus ring | 10.6 : 1 |
 | `--color-accent-ink` | `#FFF` | text on the accent | 7.5 : 1 on `#909` |
-| `--color-ok-bg` / `--color-ok-ink` | `#DED` / `#151` | success state | |
-| `--color-error-bg` / `--color-error-ink` | `#FDD` / `#900` | field errors | |
+| `--color-ok-bg` / `--color-ok-ink` | `#DED` / `#151` | success state | 7.4 : 1 |
+| `--color-error-bg` / `--color-error-ink` | `#FDD` / `#900` | field errors | 7.1 : 1 |
+| `--color-field-bg` | `#FFF` | input, select and textarea fill | |
 
-Links are underlined in body text (`text-decoration-thickness` from a token, `text-underline-offset` set), never colour alone. Focus: a 2 px outline in `--color-accent-strong` with a 2 px offset, on every interactive element.
+Dark scheme, declared twice — once under `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) }` for Auto, once under `:root[data-theme="dark"]` for the explicit choice — because a selector list cannot cross a media-query boundary. The two blocks must stay in sync. Every text pair clears 4.5 : 1 and every accent pair clears 7 : 1 on both the background and the alternate band:
+
+| Token | Value | Use | On `--color-bg` `#222` | On `--color-bg-alt` `#333` |
+|---|---|---|---|---|
+| `--color-bg` | `#222` | page background | | |
+| `--color-bg-alt` | `#333` | alternate section band | | |
+| `--color-border` | `#555` | rules, input borders | 2.1 : 1, non-text separation | 1.7 : 1 |
+| `--color-ink` | `#FED` | text | 14.0 : 1 | 11.2 : 1 |
+| `--color-ink-soft` | `#CBA` | secondary text, dates, captions | 8.5 : 1 | 6.8 : 1 |
+| `--color-accent` | `#FAF` | links, primary button background | 9.4 : 1 | 7.5 : 1 |
+| `--color-accent-strong` | `#FCF` | link hover and active, focus ring | 11.6 : 1 | 9.2 : 1 |
+| `--color-accent-ink` | `#111` | text on the accent | 11.2 : 1 on `#FAF` | 13.8 : 1 on `#FCF` |
+| `--color-ok-bg` / `--color-ok-ink` | `#131` / `#CFC` | success state | 12.5 : 1 | |
+| `--color-error-bg` / `--color-error-ink` | `#311` / `#FCC` | field errors | 12.0 : 1 (and `--color-ink` on it, an invalid field's fill, 15.1 : 1) | |
+| `--color-field-bg` | `#111` | input, select and textarea fill | `--color-ink` on it 16.7 : 1 | |
+
+`--color-accent` is `#FAF` rather than `#F9F`: `#F9F` reaches 8.5 : 1 on the background but only 6.8 : 1 on the alternate band, and links have to clear 7 : 1 on both surfaces.
+
+Scheme-independent tokens, declared once and never redefined:
+
+| Token | Value | Use | Contrast |
+|---|---|---|---|
+| `--color-bar-bg` | `#111` | header and footer bars, in every scheme | |
+| `--color-bar-ink` | `#FFF` | text and links on a bar | 18.9 : 1 |
+| `--color-bar-hover` | `#C0C` | the outline a bar link shows on hover and focus | 4.0 : 1 on the bar, 4.7 : 1 on the white it surrounds |
+| `--color-overlay` | `rgb(0 0 0 / 0.7)` | the credit strip's scrim over a photograph | |
+| `--color-overlay-ink` | `#FFF` | text on that scrim | |
+
+Links are underlined in body text (`text-decoration-thickness` from a token, `text-underline-offset` set), never colour alone. Focus: a 2 px outline in `--color-accent-strong` with a 2 px offset, on every interactive element; inside the two bars the outline is `--color-bar-hover`, because `--color-accent-strong` is invisible on ink.
+
+Bar links are the one exception to the underline rule: they are white, underline on hover, and both hover and focus draw the outline. The header wordmark never underlines; the current nav item is marked with weight and a permanent underline rather than a colour.
 
 **Type.** System fonts, nothing loaded over the network: `--font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`; `--font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace`. Headings use the body family at heavier weight (600 to 700), no display face. Fluid scale with a 1.2 ratio, so steps are noticeable but not dramatic:
 
@@ -57,7 +90,7 @@ Links are underlined in body text (`text-decoration-thickness` from a token, `te
 
 Line height 1.55 for body, 1.2 for headings. Reading measure is a layout concern: prose sits in `.container--narrow` (720 px), never a `max-width` on paragraphs. Vertical rhythm from the existing space scale (4 px base). Radius 4 px on inputs and buttons, nothing rounder.
 
-**Layout.** One column on mobile. Header: name as the home link on the left, one nav item on the right ("About"), no hamburger. The workshop is reached from the home block's CTA, not from the menu. Sections are full-width bands, content in `.container` (1200 px) or `.container--narrow`. Footer: link list plus `<address>` with the email.
+**Layout.** One column on mobile. Header: name as the home link on the left, one nav item on the right ("About") and the colour-scheme control beside it, no hamburger. The control is a `<select>` with a visually hidden label and the options Auto, Light and Dark — chosen over a cycling button because all three states are visible and selectable at once, the native semantics need no `aria-live`, and nothing has to be guessed before pressing. It ships with the `hidden` attribute and only the inline head script removes it, so with JavaScript off there is no dead control and the page is Auto. The workshop is reached from the home block's CTA, not from the menu. Sections are full-width bands, content in `.container` (1200 px) or `.container--narrow`. Footer: link list plus `<address>` with the email.
 
 **Prototyping.** Straight in Astro components, no separate static HTML pass. The charter's "ship CSS first" rule still applies: components carry final CSS from the first commit, and no CSS is written for content that does not exist yet.
 
@@ -132,7 +165,7 @@ D1 table `registrations` additionally has `id`, `created_at`, `ip_hash`, `mailer
 ### Markup, SEO, machine readability
 - Landmarks on every page: `header` with `nav aria-label="Main"`, one `main`, `footer`. Exactly one `h1` per page; heading levels never skip. Each section is `<section aria-labelledby>` its own heading. A skip link to `main` is the first focusable element.
 - Dates in `<time datetime="2026-09-18T12:20:00+02:00">`. The workshop page is an `<article>`; prerequisites are a real `<ul>`; the form uses `<label for>`, `<fieldset>` for the checkbox group, `autocomplete` attributes, `aria-describedby` for hints and errors, and `aria-invalid` on failed fields.
-- Head, per page: `<title>` as "Page · Mladen Đurić" (home: "Mladen Đurić · MacMladen"), `meta description`, `link rel="canonical"`, `lang="en"`, `meta name="theme-color"` set to the sand, Open Graph (`og:type` website or article, title, description, url, image, `og:locale` en_US) and `twitter:card summary_large_image`. One static OG image `public/og.png` (1200×630, name and positioning line) for v1; per-page generation is reserved.
+- Head, per page: `<title>` as "Page · Mladen Đurić" (home: "Mladen Đurić · MacMladen"), `meta description`, `link rel="canonical"`, `lang="en"`, two `meta name="theme-color"` tags (`#FED` under `media="(prefers-color-scheme: light)"`, `#222` under `media="(prefers-color-scheme: dark)"`; the tag can only follow the OS, not an in-page Light or Dark choice), Open Graph (`og:type` website or article, title, description, url, image, `og:locale` en_US) and `twitter:card summary_large_image`. One static OG image `public/og.png` (1200×630, name and positioning line) for v1; per-page generation is reserved.
 - `rel="me"` on the LinkedIn, GitHub and Speaker Deck links in the footer, so the profiles verify back to the site.
 - JSON-LD via `StructuredData.astro`, one block per page, values from the same data objects the visible content uses, never duplicated by hand:
   - `/`: `WebSite` and `Person` (name, alternateName "MacMladen", jobTitle, url, image, email, sameAs [LinkedIn, GitHub, Speaker Deck], worksFor Blue Fish, address locality Novi Sad).
@@ -163,7 +196,7 @@ D1 table `registrations` additionally has `id`, `created_at`, `ip_hash`, `mailer
 - [ ] The workshop page shows the corrected EN abstract, the mandatory checklist, the GitHub placeholder line, the close date, and the form with all nine fields; the JSON-LD validates as an `Event`.
 - [ ] Submitting valid data locally inserts one row into local D1 (query documented in README) and renders the inline success state.
 - [ ] Missing required field, bad GitHub username, malformed SSH key, or duplicate email re-renders the form with field-level errors and preserves entered values.
-- [ ] Form submits and validates with JavaScript disabled; `/` and `/about/` ship no JavaScript.
+- [ ] Form submits and validates with JavaScript disabled. `/` and `/about/` ship exactly one script: the inline colour-scheme script in `<head>` (`src/components/ThemeScript.astro`), which loads nothing over the network. Nothing else, and no external JavaScript anywhere.
 - [ ] Turnstile renders; a request without a valid token is rejected.
 - [ ] Empty `MAILERLITE_API_KEY` → registration succeeds with status `skipped`; with a key the subscriber call is made with the fields above.
 - [ ] With the close-date constant set in the past, the form is replaced by the closed notice.
@@ -180,4 +213,4 @@ D1 table `registrations` additionally has `id`, `created_at`, `ip_hash`, `mailer
 - [ ] `git log` shows exactly one commit; `git status` clean; no `.dev.vars` in the tree; no token values anywhere.
 
 ## Out of scope
-Serbian version, blog, other sites and sections, per-page OG images, theme toggle, search, the confirmation email copy (MailerLite), the GitHub scaffold repo for the workshop, the participant VPS, the DNS change itself.
+Serbian version, blog, other sites and sections, per-page OG images, search, the confirmation email copy (MailerLite), the GitHub scaffold repo for the workshop, the participant VPS, the DNS change itself.

@@ -1,6 +1,7 @@
 /* Design tokens — the single source of truth for colour, space, type, radius.
    Unlayered on purpose: custom properties resolve the same in any cascade layer.
-   Light scheme only in v1; a dark scheme is reserved, not built. */
+   Three colour states: Auto (follows the OS), Light and Dark. Light lives here
+   on :root; the dark values are at the bottom of this file. */
 :root {
   color-scheme: light;
 
@@ -18,7 +19,11 @@
   --color-error-bg: #FDD;
   --color-error-ink: #900;
   --color-field-bg: #FFF;
+
+  /* The credit strip's dark scrim over a photograph, and the ink on it. Both
+     are the same in every scheme: the scrim is dark whatever the page does. */
   --color-overlay: rgb(0 0 0 / 0.7);
+  --color-overlay-ink: #FFF;
 
   /* The header and footer bars. Ink with white links, checked against
      --color-bar-bg rather than the page background:
@@ -75,4 +80,68 @@
   --border-width: 1px;
   --focus-width: 2px;
   --focus-offset: 2px;
+}
+
+/* Dark scheme.
+   Two conditions produce it and a CSS selector list cannot cross a media
+   query boundary, so the same declarations are written twice: once for Auto
+   (the OS asks for dark and the reader has not chosen Light) and once for an
+   explicit Dark choice. THE TWO BLOCKS MUST STAY IN SYNC — change one, change
+   the other. light-dark() would collapse them into one definition per token
+   and is the obvious next move if this ever grows.
+
+   The bar tokens and the overlay tokens are absent on purpose: header, footer
+   and the photo scrim are ink in every scheme, so they are declared once above.
+
+   Measured against the surface each pair actually lands on:
+     --color-ink          #FED  14.04:1 on bg, 11.15:1 on alt
+     --color-ink-soft     #CBA   8.53:1 on bg,  6.77:1 on alt
+     --color-accent       #FAF   9.43:1 on bg,  7.49:1 on alt
+     --color-accent-strong #FCF 11.62:1 on bg,  9.23:1 on alt
+     --color-accent-ink   #111  11.19:1 on the accent, 13.79:1 on accent-strong
+     --color-ink on --color-field-bg          16.66:1
+     --color-ok-ink on --color-ok-bg          12.45:1
+     --color-error-ink on --color-error-bg    12.01:1
+     --color-ink on --color-error-bg          15.07:1 (an invalid field's fill)
+   --color-accent is #FAF rather than the #F9F the ladder gives for the page
+   background alone: #F9F is 8.53:1 there but only 6.77:1 on the alternate
+   band, and links have to clear 7:1 on both. --color-border #555 is 2.13:1 on
+   the background — non-text separation, deliberately quiet, and no worse than
+   the light scheme's #CBA at 1.65:1. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+
+    --color-bg: #222;
+    --color-bg-alt: #333;
+    --color-border: #555;
+    --color-ink: #FED;
+    --color-ink-soft: #CBA;
+    --color-accent: #FAF;
+    --color-accent-strong: #FCF;
+    --color-accent-ink: #111;
+    --color-ok-bg: #131;
+    --color-ok-ink: #CFC;
+    --color-error-bg: #311;
+    --color-error-ink: #FCC;
+    --color-field-bg: #111;
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-bg: #222;
+  --color-bg-alt: #333;
+  --color-border: #555;
+  --color-ink: #FED;
+  --color-ink-soft: #CBA;
+  --color-accent: #FAF;
+  --color-accent-strong: #FCF;
+  --color-accent-ink: #111;
+  --color-ok-bg: #131;
+  --color-ok-ink: #CFC;
+  --color-error-bg: #311;
+  --color-error-ink: #FCC;
+  --color-field-bg: #111;
 }
