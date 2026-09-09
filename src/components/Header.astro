@@ -34,9 +34,8 @@ const here = Astro.url.pathname.replace(/\/+$/, '');
 <style>
   @layer components {
     /* An ink bar: the colour itself separates it from the page, so it needs
-       no bottom rule. Bar links are white and only underline on hover, and
-       both hover and focus-visible draw the fuchsia outline, so a pointer and
-       a keyboard get the same signal. */
+       no bottom rule. Bar links are white; nav links underline in the accent
+       on hover and when current; only keyboard focus draws an outline. */
     .site-header {
       background-color: var(--color-bar-bg);
       color: var(--color-bar-ink);
@@ -48,8 +47,6 @@ const here = Astro.url.pathname.replace(/\/+$/, '');
       text-decoration: none;
     }
 
-    .site-header a:hover,
-    .site-header a:active,
     .site-header a:focus-visible {
       color: var(--color-bar-ink);
       outline: var(--focus-width) solid var(--color-bar-hover);
@@ -72,8 +69,12 @@ const here = Astro.url.pathname.replace(/\/+$/, '');
     }
 
     .site-header__nav a:hover,
-    .site-header__nav a:active {
+    .site-header__nav a:active,
+    .site-header__nav [aria-current='page'] {
       text-decoration: underline;
+      text-decoration-color: var(--color-accent);
+      text-decoration-thickness: var(--underline-thickness-strong);
+      text-underline-offset: var(--underline-offset-nav);
     }
 
     .site-header__nav {
@@ -91,10 +92,6 @@ const here = Astro.url.pathname.replace(/\/+$/, '');
     /* "You are here": weight plus a thick accent rule under the white link. */
     .site-header__nav [aria-current='page'] {
       font-weight: var(--weight-semibold);
-      text-decoration: underline;
-      text-decoration-color: var(--color-accent);
-      text-decoration-thickness: var(--underline-thickness-strong);
-      text-underline-offset: var(--underline-offset-nav);
     }
   }
 </style>
