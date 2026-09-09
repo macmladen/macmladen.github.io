@@ -4,7 +4,7 @@
    are not allowed in media query conditions. */
 .section {
   background-color: var(--section-bg, transparent);
-  padding-block: var(--space-12);
+  padding-block: var(--space-18);
 }
 
 .container {
@@ -47,7 +47,7 @@
   --split-media: 1fr;
 
   display: grid;
-  gap: var(--space-6);
+  gap: var(--space-9);
 }
 
 .split--media-first > :nth-child(2),
@@ -61,13 +61,13 @@
 
 @media (min-width: 768px) {
   .section {
-    padding-block: var(--space-16);
+    padding-block: var(--space-24);
   }
 
   .split {
     grid-template-columns: var(--split-media) 1fr;
     align-items: center;
-    gap: var(--space-8);
+    gap: var(--space-12);
   }
 
   .split--media-right {
