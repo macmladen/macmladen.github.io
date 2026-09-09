@@ -112,9 +112,11 @@
   color: var(--color-accent-hover);
 }
 
-/* Eyebrow — the small line above a heading. Sentence case, never uppercased. */
+/* Eyebrow — the small line above a heading. Sentence case, never uppercased.
+   Muted orange rather than soft ink: it is the accent's quiet step, and at
+   4.67:1 on the alternate band it still passes as body text. */
 .eyebrow {
-  color: var(--color-ink-soft);
+  color: var(--color-accent-muted);
   font-size: var(--text-sm);
   text-transform: none;
 }
