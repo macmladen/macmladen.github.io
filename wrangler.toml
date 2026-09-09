@@ -1,14 +1,17 @@
 name = "macmladen"
 compatibility_date = "2026-09-08"
 
-# NOTE (MM-11/MM-12): @astrojs/cloudflare v14 is a Cloudflare *Workers* adapter.
-# It writes the static site to `dist/client` and the worker to `dist/server`, and
-# generates its own worker config with an `ASSETS` binding. Adding
-# `pages_build_output_dir` here turns this file into a Pages project config, which
-# makes wrangler reject that reserved binding and the build fails. So the build
-# output directory is a deploy-target setting, not a key in this file (yet):
-# decide Pages vs Workers in MM-11 and set the build output to `dist/client`
-# in the Cloudflare project settings.
+# Custom domains: the deploy attaches the Worker to the zone and writes the DNS
+# records itself, replacing the GitHub Pages records. Mladen runs that deploy.
+routes = [
+  { pattern = "macmladen.com", custom_domain = true },
+  { pattern = "www.macmladen.com", custom_domain = true },
+]
+
+# Deploy target: Cloudflare Worker with static assets (docs/decisions/M1-DEPLOY-TARGET.md).
+# The adapter writes dist/client (assets) and dist/server (worker) and generates
+# dist/server/wrangler.json from this file; deploy with
+#   npx wrangler deploy --config dist/server/wrangler.json
 
 # D1 holds the workshop registrations. The binding name DB is what
 # src/pages/api/register.astro reads off Astro.locals.runtime.env.
@@ -27,3 +30,7 @@ migrations_dir = "migrations"
 [[kv_namespaces]]
 binding = "SESSION"
 id = "aa96701073304957be05068faa6f1b6b"
+
+# Plain (non-secret) variables read by the Worker.
+[vars]
+MAILERLITE_GROUP_ID = "198135774424598339"
