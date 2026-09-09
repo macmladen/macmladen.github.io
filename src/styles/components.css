@@ -18,7 +18,15 @@
   border-radius: var(--radius-sm);
 }
 
-/* Speaking history: the event line, the title under it, then the kind. */
+/* Speaking history: one section per year, and inside it one entry per line —
+   the title, the event and city under it, then the kind and the marks. The
+   year is the h2, so the entries themselves never repeat it. */
+.appearances-year {
+  /* Beats the flow layer's own step between siblings: a year is a bigger break
+     than the one between a heading and its list. */
+  margin-block-start: var(--space-8);
+}
+
 .appearances {
   padding-inline-start: 0;
   list-style: none;
@@ -28,21 +36,47 @@
   margin-block-start: var(--space-4);
 }
 
-.appearances__event {
+/* What was given: the loudest line of the entry, and the link when the event
+   or the session still has a page. */
+.appearances__title {
   display: block;
   font-weight: var(--weight-semibold);
 }
 
-.appearances__title {
+/* Where it was given. */
+.appearances__event {
   display: block;
   color: var(--color-ink-soft);
 }
 
-/* Talk or workshop, the quietest line of the three. */
+/* The kind and the marks on one line, the quietest of the three. */
+.appearances__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block-start: var(--space-1);
+}
+
+/* Talk, workshop, panel, podcast or lecture. */
 .appearances__kind {
   display: block;
   color: var(--color-ink-soft);
   font-size: var(--text-sm);
+}
+
+/* Slides and recording. The mark is the whole link and carries no text, so it
+   cannot underline; the padding is what makes the tap target bigger than the
+   20px glyph, and the colour deepens on hover as the buttons' does. */
+.appearances__mark {
+  display: inline-flex;
+  padding: var(--space-1);
+  text-decoration: none;
+}
+
+.appearances__mark:hover,
+.appearances__mark:active {
+  color: var(--color-accent-hover);
 }
 
 /* The call to action inside the highlighted entry. The entry is a .notice, so

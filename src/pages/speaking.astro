@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import StructuredData from '../components/StructuredData.astro';
 import { person } from '../data/person';
-import { appearancesNewestFirst, summaryLine } from '../data/speaking';
+import { appearancesByYear, summaryLine, type Appearance } from '../data/speaking';
 import { isRegistrationOpen, workshop } from '../data/workshop';
 import { graph, speakingPageNode } from '../lib/schema';
 
@@ -15,7 +15,65 @@ const speakerDeck = person.profiles.find((profile) => profile.name === 'Speaker 
 
 /** Visible labels for Appearance['kind']. Presentation, so they live here and
  *  not in the data file. */
-const kindLabel = { talk: 'Talk', workshop: 'Workshop' } as const;
+const kindLabel = {
+  talk: 'Talk',
+  workshop: 'Workshop',
+  panel: 'Panel',
+  podcast: 'Podcast',
+  lecture: 'Lecture',
+} as const;
+
+/** The one appearance that has a page of its own on this site. It is lifted
+ *  out of its year and shown at the top with the register link, and the year
+ *  sections below leave it out, so nothing is listed twice. When 2026 holds
+ *  nothing else, the 2026 section disappears with it. */
+const current = appearancesByYear
+  .flatMap((group) => group.items)
+  .find((appearance) => appearance.url === workshop.path);
+
+const years = appearancesByYear
+  .map((group) => ({
+    year: group.year,
+    items: group.items.filter((appearance) => appearance !== current),
+  }))
+  .filter((group) => group.items.length > 0);
+
+/** The two marks an entry can carry, in the order they appear. Both are drawn
+ *  here — a projector screen for the slides, a play button for the recording —
+ *  on the footer's pattern: one path on a 24px grid filled with currentColor,
+ *  `aria-hidden`, and the label beside it as visually hidden text, because the
+ *  mark alone is not a link name. Each needs `fill-rule="evenodd"`: the screen
+ *  and the disc are outlines, and the second subpath is what punches the hole.
+ *
+ *  `field` is the key on the Appearance the href comes from, which is what
+ *  lets one loop render both. */
+const marks = [
+  {
+    field: 'deck',
+    label: 'Slides on Speaker Deck',
+    d:
+      'M4 4h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z' +
+      'M4 6v8h16V6H4z' +
+      'M11 17h2v3h4v2H7v-2h4v-3z',
+  },
+  {
+    field: 'video',
+    label: 'Recording on YouTube',
+    d: 'M12 2a10 10 0 1 0 0 20a10 10 0 1 0 0-20zM10 7.5v9l7-4.5-7-4.5z',
+  },
+] as const satisfies readonly { field: keyof Appearance; label: string; d: string }[];
+
+/** The line under the title: where it was given. Half the event names already
+ *  carry the city — WordCamp Apatin, DrupalJam Utrecht, Drupal Dev Days Burgas
+ *  — so the city is appended only when it says something the event name does
+ *  not. The `location` in the JSON-LD carries it either way. `year` is passed
+ *  only for the entry above the year headings, which has none to sit under. */
+const placeLine = (appearance: Appearance, year?: number): string => {
+  const event = year ? `${appearance.event} ${year}` : appearance.event;
+  const city =
+    appearance.city && !appearance.event.includes(appearance.city) ? appearance.city : null;
+  return [event, city].filter(Boolean).join(', ');
+};
 
 // draft: Mladen to approve — meta description for /speaking/.
 const description =
@@ -33,49 +91,88 @@ const closedLinkText = 'The workshop page';
     <div class="container container--narrow flow">
       <h1 id="speaking-title">Speaking</h1>
       <p>{summaryLine}. Slides on <a href={speakerDeck.url}>{speakerDeck.name}</a>.</p>
-      <ul class="appearances">
-        {
-          appearancesNewestFirst.map((appearance) => {
-            /* The one appearance that has a page of its own on this site. */
-            const current = appearance.url === workshop.path;
-            return (
-              <li class={current ? 'notice' : undefined}>
-                <span class="appearances__event">
-                  {appearance.year ? `${appearance.event} ${appearance.year}` : appearance.event}
-                </span>
-                {appearance.title && (
-                  <span class="appearances__title">
-                    {appearance.url ? (
-                      <a href={appearance.url}>{appearance.title}</a>
-                    ) : (
-                      appearance.title
-                    )}
-                  </span>
-                )}
-                <span class="appearances__kind">{kindLabel[appearance.kind]}</span>
-                {current && (
-                  <p class="appearances__cta">
-                    {registrationOpen ? (
-                      <a class="button" href={`${workshop.path}#register`}>
-                        Register for the workshop
-                      </a>
-                    ) : (
-                      <a href={workshop.path}>{closedLinkText}</a>
-                    )}
-                  </p>
-                )}
-              </li>
-            );
-          })
-        }
-      </ul>
+      {
+        /* The next one, first: the workshop with a page and a form of its own.
+           It carries the year in its own line, because it sits above the year
+           headings rather than under one. */
+        current && (
+          <div class="notice">
+            <span class="appearances__title">
+              {current.url ? <a href={current.url}>{current.title}</a> : current.title}
+            </span>
+            <span class="appearances__event">{placeLine(current, current.year)}</span>
+            <span class="appearances__kind">{kindLabel[current.kind]}</span>
+            <p class="appearances__cta">
+              {registrationOpen ? (
+                <a class="button" href={`${workshop.path}#register`}>
+                  Register for the workshop
+                </a>
+              ) : (
+                <a href={workshop.path}>{closedLinkText}</a>
+              )}
+            </p>
+          </div>
+        )
+      }
+      {
+        years.map((group) => (
+          <section class="appearances-year flow" aria-labelledby={`year-${group.year}`}>
+            <h2 id={`year-${group.year}`}>{group.year}</h2>
+            <ul class="appearances">
+              {group.items.map((appearance) => {
+                /* With a title the line names the event and the place; without
+                   one the event has already been used as the title, so only the
+                   place is left to say. */
+                const secondary = appearance.title
+                  ? placeLine(appearance)
+                  : (appearance.city ?? '');
+                return (
+                  <li>
+                    <span class="appearances__title">
+                      {appearance.url ? (
+                        <a href={appearance.url}>{appearance.title ?? appearance.event}</a>
+                      ) : (
+                        (appearance.title ?? appearance.event)
+                      )}
+                    </span>
+                    {secondary && <span class="appearances__event">{secondary}</span>}
+                    <span class="appearances__meta">
+                      <span class="appearances__kind">{kindLabel[appearance.kind]}</span>
+                      {marks.map((mark) => {
+                        const href = appearance[mark.field];
+                        return (
+                          href && (
+                            <a class="appearances__mark" href={href}>
+                              <svg
+                                viewBox="0 0 24 24"
+                                width="20"
+                                height="20"
+                                fill="currentColor"
+                                fill-rule="evenodd"
+                                aria-hidden="true"
+                              >
+                                <path d={mark.d} />
+                              </svg>
+                              <span class="visually-hidden">{mark.label}</span>
+                            </a>
+                          )
+                        );
+                      })}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        ))
+      }
       {
         /* The list of past appearances ends by asking for the next one. The
            topic key is the stored one from src/data/contact.ts, so /contact/
            can preselect it. */
       }
       <!-- draft: Mladen to approve — the CTA label at the end of /speaking/. -->
-      <p><a class="button" href="/contact/?topic=speaking">Invite me to speak</a></p>
+      <p class="cta"><a class="button" href="/contact/?topic=speaking">Invite me to speak</a></p>
     </div>
   </section>
 </BaseLayout>
