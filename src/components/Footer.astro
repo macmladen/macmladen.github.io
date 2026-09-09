@@ -1,29 +1,59 @@
 ---
+import { nav } from '../data/nav';
 import { person } from '../data/person';
 
-/** The footer shows the profiles it has a mark for; the rest of
- *  person.profiles still feeds sameAs in the JSON-LD, and person.brands and
- *  person.email are data for the structured data, not footer links.
- *  Both marks are the official brand glyphs on a 24px grid, one path each,
- *  filled with currentColor so they follow the surrounding text. */
-const marks: Record<string, string> = {
-  LinkedIn:
-    'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 ' +
-    '2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 ' +
-    '4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 ' +
-    '2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 ' +
-    '13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 ' +
-    '24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z',
-  GitHub:
-    'M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 ' +
-    '0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 ' +
-    '17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 ' +
-    '1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 ' +
-    '0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 ' +
-    '1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 ' +
-    '2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 ' +
-    '2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 ' +
-    '12.297c0-6.627-5.373-12-12-12',
+/** One row: the three sections of the site, a thin rule, then the profiles the
+ *  footer has a mark for. The section links are the header's own list, read
+ *  from src/data/nav.ts so the two bars can never disagree; the header marks
+ *  the current page and the footer does not, because a row of three at the very
+ *  bottom is a way out, not a position indicator.
+ *
+ *  The rest of person.profiles still feeds sameAs in the JSON-LD, and
+ *  person.brands and person.email are data for the structured data, not footer
+ *  links. Every mark is one path on a 24px grid filled with currentColor, so it
+ *  follows the surrounding text.
+ *
+ *  LinkedIn and GitHub are the official brand glyphs. Speaker Deck is not: it
+ *  is drawn here, an approximation of its mark — a rounded frame with a
+ *  diagonal band through it — so nothing has to be lifted from their site. It
+ *  needs `fill-rule="evenodd"` because the frame's hole is a second subpath
+ *  wound the same way as the first, which is also what lets the band inside the
+ *  hole paint again. */
+interface Mark {
+  d: string;
+  fillRule?: 'evenodd';
+}
+
+const marks: Record<string, Mark> = {
+  LinkedIn: {
+    d:
+      'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 ' +
+      '2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 ' +
+      '4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 ' +
+      '2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 ' +
+      '13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 ' +
+      '24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z',
+  },
+  GitHub: {
+    d:
+      'M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 ' +
+      '0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 ' +
+      '17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 ' +
+      '1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 ' +
+      '0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 ' +
+      '1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 ' +
+      '2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 ' +
+      '2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 ' +
+      '12.297c0-6.627-5.373-12-12-12',
+  },
+  'Speaker Deck': {
+    d:
+      'M5 4h14a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z' +
+      'M5.5 6h13a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 16.5v-9A1.5 ' +
+      '1.5 0 0 1 5.5 6z' +
+      'M6 16h3l9-8h-3z',
+    fillRule: 'evenodd',
+  },
 };
 
 const social = person.profiles.filter((profile) => profile.name in marks);
@@ -32,27 +62,36 @@ const year = new Date().getFullYear();
 
 <footer class="site-footer">
   <div class="container flow">
-    <h2 class="visually-hidden">Elsewhere</h2>
-    <ul class="site-footer__links">
-      {
-        social.map((profile) => (
-          <li>
-            <a class="site-footer__icon" href={profile.url} rel="me">
-              <svg
-                viewBox="0 0 24 24"
-                width="24"
-                height="24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path d={marks[profile.name]} />
-              </svg>
-              <span class="visually-hidden">{profile.name}</span>
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+    <nav aria-label="Footer">
+      <ul class="site-footer__links">
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+        <li class="site-footer__separator" aria-hidden="true"></li>
+        {
+          social.map((profile) => (
+            <li>
+              <a class="site-footer__icon" href={profile.url} rel="me">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path d={marks[profile.name].d} fill-rule={marks[profile.name].fillRule} />
+                </svg>
+                <span class="visually-hidden">{profile.name}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
     <p class="site-footer__copy">© {year} {person.name}</p>
   </div>
 </footer>
@@ -61,8 +100,9 @@ const year = new Date().getFullYear();
   @layer components {
     /* The second ink bar. Same rules as the header: the colour separates it
        from the page, so no top rule, and hover and focus-visible both draw
-       the fuchsia outline. Nothing here underlines, because both links are
-       marks with no visible text. */
+       the fuchsia outline. Nothing underlines here — the row is a short list
+       of destinations, like the header's, and half of it is marks with no
+       visible text at all. */
     .site-footer {
       background-color: var(--color-bar-bg);
       color: var(--color-bar-ink);
@@ -90,8 +130,9 @@ const year = new Date().getFullYear();
     .site-footer__links {
       display: flex;
       flex-wrap: wrap;
+      align-items: center;
       justify-content: center;
-      gap: var(--space-2);
+      gap: var(--space-2) var(--space-4);
       margin: 0;
       padding: 0;
       list-style: none;
@@ -99,6 +140,27 @@ const year = new Date().getFullYear();
 
     .site-footer__links li + li {
       margin-block-start: 0;
+    }
+
+    /* The rule between the words and the marks. Below 480px it stops being a
+       rule and becomes the wrap point instead: an empty full-width item, which
+       is what pushes the three marks onto a second row and puts them there in
+       one predictable place rather than wherever the words happen to run out.
+       480px is the width the site already breaks the registration choices at;
+       the row itself is about 400px wide, so it clears it comfortably. The
+       rule takes --color-border, the one rule colour in the token table; it is
+       decoration, so it carries aria-hidden and no text. */
+    .site-footer__separator {
+      flex-basis: 100%;
+      block-size: 0;
+    }
+
+    @media (min-width: 480px) {
+      .site-footer__separator {
+        flex-basis: auto;
+        block-size: var(--space-5);
+        border-inline-start: var(--border-width) solid var(--color-border);
+      }
     }
 
     /* The mark is the whole link; the padding is what makes the tap target

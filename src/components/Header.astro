@@ -1,11 +1,7 @@
 ---
+import { nav } from '../data/nav';
 import { person } from '../data/person';
 
-const nav = [
-  { label: 'About', href: '/about/' },
-  { label: 'Speaking', href: '/speaking/' },
-  { label: 'Contact', href: '/contact/' },
-];
 const here = Astro.url.pathname.replace(/\/+$/, '');
 ---
 
