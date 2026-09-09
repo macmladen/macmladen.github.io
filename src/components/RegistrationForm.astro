@@ -114,55 +114,57 @@ const hasErrors = Object.keys(errors).length > 0;
     {errors.github && <p class="field__error" id="github-error">{errors.github}</p>}
   </div>
 
-  <fieldset class="flow" aria-describedby={describedBy('os')}>
-    <legend>Operating system <span class="field__required">required</span></legend>
-    <div class="choices">
-      {
-        osOptions.map((option) => (
-          <div class="checkbox">
-            <input
-              id={`os-${option.value}`}
-              name="os"
-              type="radio"
-              value={option.value}
-              required
-              checked={value.os === option.value}
-            />
-            <label for={`os-${option.value}`}>{option.label}</label>
-          </div>
-        ))
-      }
-    </div>
-    {errors.os && <p class="field__error" id="os-error">{errors.os}</p>}
-  </fieldset>
+  <div class="fieldset-row">
+    <fieldset class="flow" aria-describedby={describedBy('os')}>
+      <legend>Operating system <span class="field__required">required</span></legend>
+      <div class="choices">
+        {
+          osOptions.map((option) => (
+            <div class="checkbox">
+              <input
+                id={`os-${option.value}`}
+                name="os"
+                type="radio"
+                value={option.value}
+                required
+                checked={value.os === option.value}
+              />
+              <label for={`os-${option.value}`}>{option.label}</label>
+            </div>
+          ))
+        }
+      </div>
+      {errors.os && <p class="field__error" id="os-error">{errors.os}</p>}
+    </fieldset>
 
-  <fieldset class="flow" aria-describedby={describedBy('tool', true)}>
-    <legend>AI tool</legend>
-    <div class="choices">
-      {
-        toolOptions.map((option) => (
-          <div class="checkbox">
-            <input
-              id={`tool-${option.value}`}
-              name="tool"
-              type="checkbox"
-              value={option.value}
-              checked={tools.includes(option.value)}
-            />
-            <label for={`tool-${option.value}`}>{option.label}</label>
-          </div>
-        ))
-      }
-    </div>
-    <!-- draft: Mladen to approve — the first sentence is new: the group takes
-         several answers now and at least one is required, and nothing else on
-         the page says so. -->
-    <p class="field__hint" id="tool-hint">
-      Tick every one you will have with you — at least one. Have it installed and
-      logged in before you arrive.
-    </p>
-    {errors.tool && <p class="field__error" id="tool-error">{errors.tool}</p>}
-  </fieldset>
+    <fieldset class="flow" aria-describedby={describedBy('tool', true)}>
+      <legend>AI tool</legend>
+      <div class="choices">
+        {
+          toolOptions.map((option) => (
+            <div class="checkbox">
+              <input
+                id={`tool-${option.value}`}
+                name="tool"
+                type="checkbox"
+                value={option.value}
+                checked={tools.includes(option.value)}
+              />
+              <label for={`tool-${option.value}`}>{option.label}</label>
+            </div>
+          ))
+        }
+      </div>
+      <!-- draft: Mladen to approve — the first sentence is new: the group takes
+           several answers now and at least one is required, and nothing else on
+           the page says so. -->
+      <p class="field__hint" id="tool-hint">
+        Tick every one you will have with you — at least one. Have it installed and
+        logged in before you arrive.
+      </p>
+      {errors.tool && <p class="field__error" id="tool-error">{errors.tool}</p>}
+    </fieldset>
+  </div>
 
   <fieldset class="flow" aria-describedby={describedBy('terminal')}>
     <legend>Terminal experience <span class="field__required">required</span></legend>

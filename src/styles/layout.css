@@ -56,9 +56,18 @@
   gap: var(--space-2) var(--space-6);
 }
 
+/* Two fieldsets side by side (OS and AI tool on the registration form);
+   each keeps its options in one column. */
 @media (min-width: 480px) {
-  .choices {
+  .fieldset-row {
+    display: grid;
     grid-template-columns: 1fr 1fr;
+    gap: var(--space-4) var(--space-6);
+    align-items: start;
+  }
+
+  .fieldset-row > * + * {
+    margin-block-start: 0;
   }
 }
 
