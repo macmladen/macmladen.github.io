@@ -64,4 +64,30 @@ const description =
       <ContactForm />
     </div>
   </section>
+
+  {
+    /* The site's only script, and only on this page. /about/ and /speaking/ link
+       here with ?topic=…; this reads that key and preselects the matching
+       option, so the visitor lands on the form already pointed the right way.
+       Pure enhancement: without JavaScript the select simply opens on "Choose
+       one", as it does for anyone arriving without the parameter.
+
+       The guard is the select's own value. The placeholder option carries
+       value="", so an untouched form reads as empty; anything else means a topic
+       is already chosen — which is what /api/contact/ renders after a failed
+       submission — and the query string must not overwrite the visitor's pick.
+       That page renders its own copy of the form and does not include this
+       script, so the guard is belt as well as braces, and stays correct if the
+       script ever moves into the component. */
+  }
+  <script is:inline>
+    (() => {
+      const select = document.getElementById('topic');
+      if (!select || select.value !== '') return;
+      const wanted = new URLSearchParams(location.search).get('topic');
+      if (wanted && [...select.options].some((option) => option.value === wanted)) {
+        select.value = wanted;
+      }
+    })();
+  </script>
 </BaseLayout>
