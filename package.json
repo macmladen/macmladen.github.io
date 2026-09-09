@@ -13,6 +13,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "check:csp": "node scripts/check-csp.mjs",
     "test": "node scripts/test-validate.mjs && node scripts/test-validate-contact.mjs"
   },
   "dependencies": {

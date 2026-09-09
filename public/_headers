@@ -1,0 +1,32 @@
+# Response headers for Cloudflare's static-asset server. Every rule whose
+# pattern matches is applied, so the /_astro/* immutable Cache-Control rule the
+# Cloudflare adapter appends at build time sits alongside this one rather than
+# replacing it. Copied verbatim into dist/client/ by the build.
+#
+# No Strict-Transport-Security here: HSTS is Cloudflare's own setting, on the
+# zone, and setting it twice invites the two to disagree.
+#
+# The Content-Security-Policy, term by term:
+#   default-src 'self'        everything not named below comes from this origin
+#   img-src 'self' data:      site images; data: for any inlined SVG or favicon
+#   style-src 'unsafe-inline' the build inlines every stylesheet into the page
+#                             (build.inlineStylesheets: 'always'), and Astro
+#                             component styles are inline by nature
+#   script-src                Turnstile's api.js, plus the one inline script on
+#                             /contact/ by hash — see below
+#   frame-src, connect-src    the Turnstile widget's iframe and its callbacks
+#   base-uri, form-action     no injected <base>, no cross-origin form posts;
+#                             both forms post to /api/ on this origin
+#   frame-ancestors 'none'    the site is never framed
+#
+# The sha256 covers the topic-preselect script in src/pages/contact.astro
+# exactly as Astro emits it, whitespace and indentation included, so reindenting
+# that block changes the hash. `npm run check:csp` recomputes the hashes from
+# the built HTML and fails if this file has fallen behind. The JSON-LD blocks
+# need no hash: type="application/ld+json" is data, not script, and the policy
+# does not apply to it.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' https://challenges.cloudflare.com 'sha256-fRHl85QdtBhJRtJKFXcWtpmWojToC3hZzoFuIEBMyBM='; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'

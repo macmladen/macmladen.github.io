@@ -1,0 +1,15 @@
+# Mladen Djuric (MacMladen)
+
+> Mladen Đurić (MacMladen) is a senior developer and architect with two decades of building for the web — and a computing story that starts with assembly on 8-bit machines. He runs Blue Fish, a full-service digital agency in Novi Sad, shipping WordPress and Drupal sites alongside modern stacks like Astro, Next.js, and React Native.
+
+Personal site, five pages, English only. Based in Novi Sad, Serbia. Reachable
+at mladen@macmladen.com, on LinkedIn (rs.linkedin.com/in/macmladen) and on
+GitHub (github.com/macmladen). Slides are on speakerdeck.com/macmladen.
+
+## Pages
+
+- [Home](https://macmladen.com/): who Mladen is, and the workshop coming next.
+- [About](https://macmladen.com/about/): the long-form story, from 8-bit assembly and fifteen years of typography to WordPress, Drupal and the web.
+- [Speaking](https://macmladen.com/speaking/): talks and workshops at WordPress and Drupal events across Europe, newest first.
+- [WordPress, Docker and AI agents — hands-on](https://macmladen.com/speaking/2026/wordcamp-belgrade-ddev-ai/): the WordCamp Belgrade 2026 workshop, 18 September 2026 at Dom Omladine Beograda, held in Serbian, with the prerequisites and the registration form.
+- [Contact](https://macmladen.com/contact/): email, the profile links, and a contact form.
