@@ -67,7 +67,7 @@ const schema = graph(
     <section class="section section--compact" aria-labelledby="prerequisites-title">
       <div class="container container--narrow flow">
         <h2 id="prerequisites-title">Prerequisites</h2>
-        <p>It is perfectly fine if you wish to watch and participate by following and asking.</p>
+        <p>It is perfectly fine to just watch, follow along and ask.</p>
         <p>
           All of these are mandatory if you want to work along on your own laptop. We will
           not have enough time to install it all in the workshop, so please follow the{' '}
@@ -77,11 +77,7 @@ const schema = graph(
           {workshop.prerequisites.map((item) => <li>{item}</li>)}
         </ul>
         <p>{workshop.optionalPrerequisite}</p>
-        <p>
-          Preparation guide and materials will be{' '}<a href={workshop.repoUrl}
-            >on GitHub</a
-          >{' '}by {workshop.prepDeadline}.
-        </p>
+        <p>Preparation guide and materials will be on GitHub by {workshop.prepDeadline}.</p>
       </div>
     </section>
 
