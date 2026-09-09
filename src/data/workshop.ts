@@ -3,7 +3,7 @@
  *  belgrade.wordcamp.org, 2026-09-08. */
 
 /** End of the day registration closes, in Europe/Belgrade. */
-const closesAt = '2026-09-15T23:59:59+02:00';
+const closesAt = '2026-09-17T23:59:59+02:00';
 
 /** Street and city are kept apart so the PostalAddress in the JSON-LD and the
  *  visible venue line come from the same two values. */
@@ -68,7 +68,6 @@ const optionalPrerequisite =
 
 export const workshop = {
   title: 'WordPress, Docker and AI agents — hands-on',
-  subtitle: 'Workshop · WordCamp Belgrade 2026',
   date: '2026-09-18',
   start: '2026-09-18T12:20:00+02:00',
   end: '2026-09-18T13:40:00+02:00',

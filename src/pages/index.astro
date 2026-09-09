@@ -63,7 +63,12 @@ const description =
   <section class="section section--alt section--tight" aria-labelledby="workshop-title">
     <div class="container split split--media-first">
       <div class="flow">
+        {
+          /* Two lines in one eyebrow: the conference first, so the block reads
+             as part of WordCamp before it reads as a date. */
+        }
         <p class="eyebrow">
+          <strong>{workshop.wordcampName}</strong>{' · workshop'}<br />
           <time datetime={workshop.date}>{dayAndMonth(workshop.start)}</time>{' · '}<time
             datetime={workshop.start}>{timeOfDay(workshop.start)}</time>{` · ${workshop.venue}`}
         </p>
@@ -75,9 +80,9 @@ const description =
           loop, live: plan the task, let the agent build and check it, review, deploy.
         </p>
         <div class="row">
-          <a class="button" href={workshop.path}>Register for the workshop</a>
+          <a class="button" href={`${workshop.path}#register`}>Register for the workshop</a>
           <a class="button button--secondary" href={workshop.sessionUrl}>
-            Session at {workshop.wordcampName}
+            {workshop.wordcampName}
           </a>
         </div>
       </div>

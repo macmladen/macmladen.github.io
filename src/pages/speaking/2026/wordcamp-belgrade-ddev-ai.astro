@@ -45,7 +45,12 @@ const schema = graph(
   <article>
     <section class="section section--compact" aria-labelledby="workshop-title">
       <div class="container container--narrow flow">
-        <p class="eyebrow">{workshop.subtitle}</p>
+        {
+          /* The conference first and in bold: this page is one session of
+             WordCamp Belgrade 2026, and the eyebrow should say so before it
+             says what kind of session it is. */
+        }
+        <p class="eyebrow"><strong>{workshop.wordcampName}</strong> · Workshop</p>
         <h1 id="workshop-title">{workshop.title}</h1>
         <Facts />
         {workshop.abstract.map((paragraph) => <p>{paragraph}</p>)}
@@ -62,9 +67,11 @@ const schema = graph(
     <section class="section section--compact" aria-labelledby="prerequisites-title">
       <div class="container container--narrow flow">
         <h2 id="prerequisites-title">Prerequisites</h2>
+        <p>It is perfectly fine if you wish to watch and participate by following and asking.</p>
         <p>
-          All of these are mandatory if you want to work along on your own laptop.
-          Installing them in the room costs everybody their workshop.
+          All of these are mandatory if you want to work along on your own laptop. We will
+          not have enough time to install it all in the workshop, so please follow the{' '}
+          <a href={workshop.repoUrl}>preparation guide on GitHub</a>.
         </p>
         <ul>
           {workshop.prerequisites.map((item) => <li>{item}</li>)}
@@ -78,7 +85,15 @@ const schema = graph(
       </div>
     </section>
 
-    <section class="section section--alt section--compact" aria-labelledby="register-title">
+    {
+      /* id="register": every "Register for the workshop" link on the site
+         points at this band, not at the top of the page. */
+    }
+    <section
+      id="register"
+      class="section section--alt section--compact"
+      aria-labelledby="register-title"
+    >
       <div class="container container--narrow flow">
         <h2 id="register-title">Registration</h2>
         {
