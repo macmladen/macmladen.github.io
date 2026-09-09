@@ -1,0 +1,142 @@
+---
+/** The contact form. Rendered twice: on the static /contact/ page with empty
+ *  props, and by /api/contact/ with the values the visitor typed and the errors
+ *  the server found, so a failed submission comes back filled in. Same shape as
+ *  RegistrationForm.astro, down to the describedBy and invalid helpers. */
+import {
+  emptyValues,
+  topicOptions,
+  type ContactErrors,
+  type ContactValues,
+} from '../data/contact';
+import { limits } from '../lib/validate-contact';
+import { person } from '../data/person';
+
+interface Props {
+  values?: Partial<ContactValues>;
+  errors?: ContactErrors;
+}
+
+const { values = {}, errors = {} } = Astro.props;
+const value = { ...emptyValues, ...values };
+
+/** Hints are permanent; error messages appear only after a failed submission.
+ *  Both are announced through aria-describedby. */
+const describedBy = (field: keyof ContactErrors, hasHint = false): string | undefined => {
+  const ids = [hasHint ? `${field}-hint` : null, errors[field] ? `${field}-error` : null];
+  const joined = ids.filter(Boolean).join(' ');
+  return joined === '' ? undefined : joined;
+};
+
+const invalid = (field: keyof ContactErrors): 'true' | undefined =>
+  errors[field] ? 'true' : undefined;
+
+/** Cloudflare's documented always-pass test key is the fallback, so the form
+ *  works locally without any configuration. The real key is a build-time
+ *  environment variable, PUBLIC_TURNSTILE_SITE_KEY. */
+const turnstileSiteKey =
+  import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '1x00000000000000000000AA';
+
+const hasErrors = Object.keys(errors).length > 0;
+---
+
+<form class="flow" method="post" action="/api/contact/">
+  {
+    hasErrors && (
+      <p class="notice notice--error" role="alert">
+        {errors.form ?? 'Something below needs a second look. The details are next to the fields.'}
+      </p>
+    )
+  }
+
+  <div class="field">
+    <label for="name">Name</label>
+    <input
+      id="name"
+      name="name"
+      type="text"
+      required
+      autocomplete="name"
+      maxlength={limits.name}
+      value={value.name === '' ? undefined : value.name}
+      aria-describedby={describedBy('name')}
+      aria-invalid={invalid('name')}
+    />
+    {errors.name && <p class="field__error" id="name-error">{errors.name}</p>}
+  </div>
+
+  <div class="field">
+    <label for="email">Email</label>
+    <input
+      id="email"
+      name="email"
+      type="email"
+      required
+      autocomplete="email"
+      maxlength={limits.email}
+      value={value.email === '' ? undefined : value.email}
+      aria-describedby={describedBy('email', true)}
+      aria-invalid={invalid('email')}
+    />
+    <p class="field__hint" id="email-hint">The reply goes to this address.</p>
+    {errors.email && <p class="field__error" id="email-error">{errors.email}</p>}
+  </div>
+
+  <div class="field">
+    <label for="topic">What is this about</label>
+    <select
+      id="topic"
+      name="topic"
+      required
+      aria-describedby={describedBy('topic')}
+      aria-invalid={invalid('topic')}
+    >
+      <option value="" disabled selected={value.topic === ''}>Choose one</option>
+      {
+        topicOptions.map((option) => (
+          <option value={option.value} selected={value.topic === option.value}>
+            {option.label}
+          </option>
+        ))
+      }
+    </select>
+    {errors.topic && <p class="field__error" id="topic-error">{errors.topic}</p>}
+  </div>
+
+  <div class="field field--prose">
+    <label for="message">Message</label>
+    <textarea
+      id="message"
+      name="message"
+      rows="8"
+      required
+      minlength={limits.messageMin}
+      maxlength={limits.messageMax}
+      aria-describedby={describedBy('message', true)}
+      aria-invalid={invalid('message')}>{value.message}</textarea
+    >
+    <p class="field__hint" id="message-hint">
+      A few lines are enough. Up to {limits.messageMax} characters.
+    </p>
+    {errors.message && <p class="field__error" id="message-error">{errors.message}</p>}
+  </div>
+
+  <div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="light"></div>
+  <noscript>
+    <p class="field__hint">
+      The anti-spam check needs JavaScript. With JavaScript off, write to{' '}<a
+        href={`mailto:${person.email}`}>{person.email}</a
+      >{' '}instead.
+    </p>
+  </noscript>
+
+  <div class="row">
+    <button class="button" type="submit">Send the message</button>
+  </div>
+</form>
+
+<script
+  is:inline
+  src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+  async
+  defer></script>

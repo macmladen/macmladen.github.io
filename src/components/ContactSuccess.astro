@@ -1,0 +1,23 @@
+---
+/** Shown in place of the form once a message is in the database. It says the
+ *  message was received, not that the email arrived: delivery is a separate
+ *  step whose outcome lands in messages.mail_status, and the visitor's business
+ *  is finished either way. */
+import { topicLabel } from '../data/contact';
+
+interface Props {
+  email: string;
+  topic: string;
+}
+
+const { email, topic } = Astro.props;
+---
+
+<!-- draft: Mladen to approve -->
+<div class="notice notice--ok flow">
+  <p><strong>Your message is here.</strong></p>
+  <p>
+    It is filed under "{topicLabel(topic)}" and the reply goes to {email}. Expect an
+    answer within a couple of days; if it matters sooner, say so in a second message.
+  </p>
+</div>

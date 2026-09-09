@@ -201,6 +201,15 @@
   resize: vertical;
 }
 
+/* A textarea that holds prose rather than a pasted key. The mono rule above was
+   written for the SSH key field, where character-by-character legibility is the
+   whole point; a contact message set in mono at the small size reads as a
+   terminal, so it takes the body face at body size. */
+.field--prose textarea {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+}
+
 .field input:focus-visible,
 .field select:focus-visible,
 .field textarea:focus-visible {

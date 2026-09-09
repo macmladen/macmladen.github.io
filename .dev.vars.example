@@ -1,6 +1,9 @@
 # Copy to .dev.vars (gitignored) and fill in. Never commit real values.
 MAILERLITE_API_KEY=
 MAILERLITE_GROUP_ID=
+# MailerSend, for the contact form. Empty means the message is stored but no
+# email goes out and the row records 'skipped'.
+MAILERSEND_API_KEY=
 # Cloudflare Turnstile's documented always-pass test keys, safe to commit.
 TURNSTILE_SECRET=1x0000000000000000000000000000000AA
 TURNSTILE_SITE_KEY=1x00000000000000000000AA

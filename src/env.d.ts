@@ -1,12 +1,13 @@
 /// <reference path="../.astro/types.d.ts" />
 
-/** What the registration endpoint reads off the Cloudflare runtime. The D1
- *  binding is typed structurally in src/lib/registrations.ts, so no Cloudflare
- *  types package is needed for these few uses. */
+/** What the two form endpoints read off the Cloudflare runtime. The D1 binding
+ *  is typed structurally in src/lib/registrations.ts, so no Cloudflare types
+ *  package is needed for these few uses; both endpoints share the one binding. */
 interface WorkerEnv {
   DB?: import('./lib/registrations').D1Like;
   MAILERLITE_API_KEY?: string;
   MAILERLITE_GROUP_ID?: string;
+  MAILERSEND_API_KEY?: string;
   TURNSTILE_SECRET?: string;
   IP_HASH_SALT?: string;
 }

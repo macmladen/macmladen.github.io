@@ -1,0 +1,105 @@
+---
+/** The contact form's POST target, and the site's second server-rendered route.
+ *  An Astro page rather than a .ts endpoint for the same reason /api/register/
+ *  is one: the answer to a submission is a rendered page — the form again with
+ *  its errors, or the success state — and only a page gets the site's inlined
+ *  stylesheet and the shared header and footer. Because trailingSlash is
+ *  'always', the route is /api/contact/ and that is what the form's action says. */
+export const prerender = false;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import ContactSuccess from '../../components/ContactSuccess.astro';
+import { emptyValues, type ContactErrors, type ContactValues } from '../../data/contact';
+import { hasErrors, messages, readForm, validate } from '../../lib/validate-contact';
+import { verifyTurnstile } from '../../lib/turnstile';
+import { sendMessage } from '../../lib/mailersend';
+import { hashIp, insertMessage, setMailStatus } from '../../lib/messages';
+
+if (Astro.request.method !== 'POST') {
+  return new Response('This address only accepts the contact form (POST).', {
+    status: 405,
+    headers: { Allow: 'POST', 'Content-Type': 'text/plain; charset=utf-8' },
+  });
+}
+
+const env = Astro.locals.runtime?.env ?? {};
+const ip = Astro.request.headers.get('CF-Connecting-IP');
+
+let values: ContactValues = emptyValues;
+let errors: ContactErrors = {};
+let sent = false;
+let status = 422;
+
+const form = await Astro.request.formData();
+values = readForm(form);
+errors = validate(values);
+
+if (!hasErrors(errors)) {
+  const token = form.get('cf-turnstile-response');
+  const passed = await verifyTurnstile(
+    typeof token === 'string' ? token : '',
+    env.TURNSTILE_SECRET,
+    ip,
+  );
+  if (!passed) errors.form = messages.turnstile;
+}
+
+if (!hasErrors(errors)) {
+  const db = env.DB;
+  if (!db) {
+    // No binding: say so instead of pretending the message was received.
+    errors.form = messages.unavailable;
+    status = 503;
+  } else {
+    try {
+      // D1 first: the stored message is what matters. MailerSend comes after and
+      // only decides what goes in mail_status — a send that fails must never
+      // lose a message that is already safely written down.
+      const id = await insertMessage(db, values, await hashIp(ip, env.IP_HASH_SALT));
+      const mail = await sendMessage(values, env);
+      await setMailStatus(db, id, mail);
+      sent = true;
+      status = 200;
+    } catch (error) {
+      console.error('[contact] database error', error);
+      errors.form = messages.unavailable;
+      status = 503;
+    }
+  }
+}
+
+Astro.response.status = status;
+Astro.response.headers.set('Cache-Control', 'no-store');
+
+const title = sent ? 'Message sent' : 'Contact';
+
+// draft: Mladen to approve — the line above the re-rendered form.
+const retry = 'Nearly there. What is marked below still needs a moment.';
+---
+
+<BaseLayout
+  title={title}
+  description="The contact form on macmladen.com."
+  canonical="/contact/"
+  ogType="website"
+>
+  <meta name="robots" content="noindex" slot="head" />
+
+  <section class="section" aria-labelledby="result-title">
+    <div class="container container--narrow flow">
+      <h1 id="result-title">{title}</h1>
+
+      {sent && <ContactSuccess email={values.email} topic={values.topic} />}
+
+      {
+        !sent && (
+          <Fragment>
+            <p>{retry}</p>
+            <ContactForm values={values} errors={errors} />
+          </Fragment>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
