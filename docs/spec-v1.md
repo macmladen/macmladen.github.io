@@ -216,7 +216,7 @@ D1 table `messages` additionally has `id`, `created_at`, `ip_hash`, `mail_status
 - [ ] Empty `MAILERLITE_API_KEY` → registration succeeds with status `skipped`; with a key the subscriber call is made with the fields above.
 - [ ] With the close-date constant set in the past, the form is replaced by the closed notice.
 - [ ] `_redirects`: `/radionica` and `/workshop` → the workshop page, 302; `/about` and `/about.html` → `/about/`, 301.
-- [ ] `npm run build` produces the static site plus one server function, no Astro warnings; sitemap contains exactly the three pages.
+- [ ] `npm run build` produces the static site plus one server function, no Astro warnings; sitemap contains exactly the five pages.
 - [ ] No external CSS or JS except Turnstile's script; `/` under 150 KB including the WebP headshot.
 - [ ] Layout works at 360 px and 1440 px; no horizontal scroll; the intro and the announcement halves stack on mobile and sit side by side at 768 px and up.
 - [ ] Every colour pair in the token table meets the stated contrast; links are underlined; every interactive element shows the focus outline.
