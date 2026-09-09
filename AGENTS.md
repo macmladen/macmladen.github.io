@@ -1,6 +1,6 @@
 # macmladen.com
 
-Personal site of Mladen Đurić (MacMladen): Astro 7, static output deployed as a Cloudflare Worker with static assets, one server endpoint for the workshop registration form. English only. Spec: `docs/spec-v1.md`. Estate vision: `docs/analisys/f-2.md`.
+Personal site of Mladen Đurić (MacMladen): Astro 7, static output deployed as a Cloudflare Worker with static assets, two server endpoints, the workshop registration and the contact form. English only. Spec: `docs/spec-v1.md`. Estate vision: `docs/analisys/f-2.md`.
 
 ## Working model
 
