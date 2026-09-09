@@ -6,7 +6,7 @@ Repo: `~/Sites/macmladen` (remote `macmladen/macmladen.github.io`), branch `main
 
 ## What
 
-A three-page English personal site for a senior developer and speaker, static, with exactly one server endpoint (the workshop registration form). Small on purpose. The full estate plan (`docs/analisys/f-2.md`) stays the vision; only these three pages are built now.
+A three-page English personal site for a senior developer and speaker, static, with two server endpoints (the workshop registration form and, since MM-36, the contact form). Small on purpose. The full estate plan (`docs/analisys/f-2.md`) stays the vision; only these three pages are built now.
 
 Decisions taken 2026-09-07:
 - Language: English only. The workshop itself is held in Serbian; the page says so in one line.
@@ -14,9 +14,10 @@ Decisions taken 2026-09-07:
 - Repo: clean Astro build at the root of this repo on `main`; legacy removed.
 
 ### Stack (fixed)
-- Astro 7, `output: 'static'`, `@astrojs/cloudflare` adapter; only the form endpoint opts out of prerendering. Deploy target: Cloudflare Workers with static assets, git-triggered Workers Build (decision: `docs/decisions/M1-DEPLOY-TARGET.md`).
+- Astro 7, `output: 'static'`, `@astrojs/cloudflare` adapter; only the two form endpoints opt out of prerendering. Deploy target: Cloudflare Workers with static assets, git-triggered Workers Build (decision: `docs/decisions/M1-DEPLOY-TARGET.md`).
 - Cloudflare D1 stores registrations; local development uses wrangler's local D1.
 - MailerLite API upserts each registrant as a subscriber with custom fields and a group. The confirmation email is a MailerLite automation configured in the dashboard, not code. Keys and ids: see `docs/mail-setup.md`.
+- MailerSend API delivers each contact message to Mladen's inbox. The domain `macmladen.com` is verified there (DKIM, SPF, return-path); keys and the smoke test: see `docs/mail-setup.md`.
 - Cloudflare Turnstile on the form; locally the documented always-pass test keys.
 - No CSS framework, no client-side framework, no Tailwind, no React. Plain CSS with tokens, cascade layers `reset, base, layout, components, utilities`, per `~/Sites/altervictus/docs/FRONTEND-CHARTER.md` (section/container model, layout vs appearance separated). The existing `src/styles/tokens.css` is the starting token set; adjust values, keep the names. Astro config `build.inlineStylesheets: 'always'` so the page ships one HTML file and no external CSS.
 - Integrations: `@astrojs/sitemap` (with a `serialize` filter that drops non-page URLs), `astro-robots-txt`. Nothing else in v1.
@@ -94,8 +95,9 @@ Built now:
 | `/about/` | the long-form story |
 | `/speaking/` | the appearances index, generated from `src/data/speaking.ts` |
 | `/speaking/2026/wordcamp-belgrade-ddev-ai/` | the workshop page with the registration form |
-| `/contact/` | email and the profile links; the form is future work |
-| `/api/register` | form endpoint (POST only, server-rendered) |
+| `/contact/` | email, the profile links and the contact form |
+| `/api/register` | registration form endpoint (POST only, server-rendered) |
+| `/api/contact` | contact form endpoint (POST only, server-rendered) |
 | `/radionica`, `/workshop` | 302 → `/speaking/2026/wordcamp-belgrade-ddev-ai/` |
 | `/about`, `/about.html` | 301 → `/about/` |
 | `/sitemap-index.xml`, `/robots.txt` | generated |
@@ -128,6 +130,10 @@ Trailing-slash form is canonical for pages (`trailingSlash: 'always'`); Workers 
 - JSON-LD `Event` (name, startDate, endDate, location, organizer, performer, url) via a ten-line `StructuredData.astro` component (pattern from `ddev/ddev.com`, `src/components/meta/StructuredData.astro`).
 - Footer as above.
 
+**4. `/contact/`.** Narrow container, two bands. The first is the h1 "Contact", one short line in Mladen's voice (draft, marked) and a `<dl>` with the email as a `mailto:` and the LinkedIn and GitHub profiles with `rel="me"`, all read from `src/data/person.ts`; Speaker Deck is left out because it is a slide archive and is linked from `/speaking/` instead. The second is a `.section--alt` band holding the contact form: h2 "Or write from here", one introductory line (draft, marked) and the form itself. `ContactPage` JSON-LD whose `mainEntity` is the shared Person node.
+
+The form is `src/components/ContactForm.astro`, the same shape as `RegistrationForm.astro`: `<label for>`, `autocomplete` on name and email, `aria-describedby` for hints and errors, `aria-invalid` on failed fields, Turnstile, and a submit button. Four fields and no `<fieldset>` — there is no group of related controls to name. It renders twice, on the static page with empty props and by `/api/contact/` with the visitor's values and the server's errors. The success state, `ContactSuccess.astro`, replaces the form inline and says the message was received (not that the email arrived — delivery is recorded separately in `mail_status`).
+
 ### Form fields (names are the D1 column names)
 
 | field | type | required |
@@ -144,11 +150,29 @@ Trailing-slash form is canonical for pages (`trailingSlash: 'always'`); Workers 
 
 D1 table `registrations` additionally has `id`, `created_at`, `ip_hash`, `mailerlite_status`.
 
+### Contact form fields (names are the D1 column names)
+
+| field | type | required |
+|---|---|---|
+| name | text, 1–100 characters | yes |
+| email | email, up to 254 characters | yes |
+| topic | select: chat / website / training / speaking, labelled "Casual chat", "We need a website", "We need training", "We are calling you as a speaker" | yes |
+| message | textarea, 10–2000 characters | yes |
+
+D1 table `messages` additionally has `id`, `created_at`, `ip_hash`, `mail_status`. Values are the stored keys and labels are display only, so a label may be reworded without rewriting rows.
+
 ### Endpoint behaviour (`/api/register`)
 - Accepts POST only. Verifies Turnstile server-side. Validates fields. Rejects duplicate email with a friendly message.
 - Inserts into D1 first. Then MailerLite: upsert subscriber with fields `name`, `github`, `os`, `tool`, `own_hosting`, `watch_only`, add to the group from env. Records the outcome in `mailerlite_status`. A MailerLite failure never fails the registration.
 - Env: `MAILERLITE_API_KEY`, `MAILERLITE_GROUP_ID`, `TURNSTILE_SECRET`, `TURNSTILE_SITE_KEY`. Locally `.dev.vars` (gitignored) with `.dev.vars.example` committed. Empty `MAILERLITE_API_KEY` skips the call, status `skipped`.
 - Progressive enhancement: works without JavaScript (full-page POST, server renders success or errors back on the page URL). A small inline script may enhance it. No JavaScript is shipped on `/` or `/about/`.
+
+### Endpoint behaviour (`/api/contact`)
+- Accepts POST only (GET answers 405 with `Allow: POST`). Verifies Turnstile server-side, with the same `src/lib/turnstile.ts` and the same `TURNSTILE_SECRET`, failing closed. Validates fields with `src/lib/validate-contact.ts`, a sibling of the registration validator rather than a generalisation of it. No duplicate check: the same person may write more than once.
+- Inserts into D1 first, `mail_status` `'pending'`. Then MailerSend: `POST https://api.mailersend.com/v1/email` with a Bearer token, `from` `no-reply@macmladen.com`, `to` the address in `person.email`, `reply_to` the sender, subject `[macmladen.com] <topic label> from <name>`, a plain-text body, and per-message `settings.track_clicks`/`track_opens` false because the plan refuses to turn tracking off at domain level. The outcome overwrites `mail_status` as `sent`, `skipped` or `failed:<reason>`. A MailerSend failure never fails the submission — the message is already stored.
+- Env: `MAILERSEND_API_KEY`, `TURNSTILE_SECRET`, `IP_HASH_SALT`, and the shared `DB` binding. Empty `MAILERSEND_API_KEY` skips the call, status `skipped`.
+- Status codes: 200 success, 422 validation or a failed anti-spam check, 503 when the `DB` binding or the table is missing, 405 for anything but POST. `Cache-Control: no-store` and a `robots` `noindex` on every response.
+- Progressive enhancement: works without JavaScript (full-page POST, server renders the success state or the form with its errors and the typed values preserved). The only script on `/contact/` is Turnstile's.
 
 ### Markup, SEO, machine readability
 - Landmarks on every page: `header` with `nav aria-label="Main"`, one `main`, `footer`. Exactly one `h1` per page; heading levels never skip. Each section is `<section aria-labelledby>` its own heading. A skip link to `main` is the first focusable element.
@@ -184,7 +208,7 @@ D1 table `registrations` additionally has `id`, `created_at`, `ip_hash`, `mailer
 - [ ] The workshop page shows the corrected EN abstract, the mandatory checklist, the GitHub placeholder line, the close date, and the form with all nine fields; the JSON-LD validates as an `Event`.
 - [ ] Submitting valid data locally inserts one row into local D1 (query documented in README) and renders the inline success state.
 - [ ] Missing required field, bad GitHub username, malformed SSH key, or duplicate email re-renders the form with field-level errors and preserves entered values.
-- [ ] Form submits and validates with JavaScript disabled. `/` and `/about/` ship no script at all; the workshop page ships only Turnstile. No external JavaScript anywhere.
+- [ ] Both forms submit and validate with JavaScript disabled. `/` and `/about/` ship no script at all; the workshop page and `/contact/` ship only Turnstile. No external JavaScript anywhere.
 - [ ] Turnstile renders; a request without a valid token is rejected.
 - [ ] Empty `MAILERLITE_API_KEY` → registration succeeds with status `skipped`; with a key the subscriber call is made with the fields above.
 - [ ] With the close-date constant set in the past, the form is replaced by the closed notice.
