@@ -56,29 +56,33 @@ export const intro: string[] = [
     'active in the IT community: WordPress, Drupal, JavaScript, AI.',
 ];
 
-/** The body of /about/, verbatim from the 2014 site — `git show jekyll:about.html`,
- *  front matter and <p> wrappers removed, nothing else touched. Mladen's own
- *  copy, so it carries no draft marker. Typos and turns of phrase are his and
- *  stay as written.
+/** The body of /about/. The 2014 text, rewritten by Mladen himself on
+ *  2026-09-09 and supplied verbatim; his punctuation and his British spelling
+ *  ("socialise", "optimisation", "practising") stay as written. His own copy,
+ *  so it carries no draft marker.
  *
- *  Each entry may contain the inline markup the original carried: <em>, <strong>
- *  and one <code> (the Ruby `gem` of the second paragraph). Render with
- *  set:html, never as plain text, or the markup ships as literal angle brackets.
- *  This is fixed authored content in the repo, not input from anywhere. */
+ *  The only markup added on top of his text: <code> around the Ruby gem,
+ *  <strong> around About in the penultimate paragraph, and one <a> on the
+ *  first occurrence of each named technology, machine or cultural reference —
+ *  Wikipedia or the vendor's own page, same tab, no rel. Every URL was checked
+ *  with curl on 2026-09-09. Render with set:html, never as plain text, or the
+ *  markup ships as literal angle brackets. Template literals throughout so the
+ *  href quotes and the apostrophes both sit in the source unescaped. This is
+ *  fixed authored content in the repo, not input from anywhere. */
 export const about: string[] = [
-  'I am an IT man with many skills, still open to learn new ones.',
-  'Although challenges may suck my energy below absolute zero I still enjoy taking them. Sometimes, it is server task about making machine operate beyond what seems possible. Then it could be some border on CSS element defying common sense. Or Ruby <code>gem</code> that drives someone nuts. Or just showing how Macs are magnificent beyond their captivating shell beauty.',
-  'But I am not exclusively an IT guy. Just some geek or nerd living in piles of comic books, watching Star Wars while downloading <em>Deep Space 9</em>. Not only regularly socialized, just like anyone else, I enjoy debating on humanities, questioning reality, ability of knowledge or practicing logic and oral skills. If you meet me, make me happy by bringing up these or some other essential questions on God and existence.',
-  "I'm a gnostic. Maybe Buddhist but not a true one. I do not believe, I know, question, reason. You may have your way but this is mine, this is my choice.",
-  "I've started thinking analytically since I'm aware of myself but conceived first algorithms somewhere in 1978 with Texas Instruments TI-57 and soon was making first steps in BASIC and assembly of Z80 in Tandy Radio Shack TRS-80. Brief episodes with Sinclair ZX-81 and Spectrum led me to Commodore 64 whose architecture, kernel and API was theme of my high school graduation. Yes, I've done C and assembly on x86 DOS too, felt like my last Commodore 128D which I ran on CP/M.",
-  'Those limited environments learned me a lot about appreciation of limited resources, optimization and battle for every single cycle. Imagine your CPU running at 1MHz? That was our 6502 baby, friends and I called RISC when we <em>fought</em> the other tribe with their Z80 we called CISC.',
-  "I know about Macs. I've seen Apple ][ and very first Macintoshes but got first one somewhere in 1995 and never looked back. I was fascinated with simplicity, beauty and overall philosophy. And I still am. Others may like the case or some fancy UI tricks but I know and understand ticking under the hood. And I like that.",
-  "DTP was my escape to aesthetics. I enjoyed type, that strange marriage of mathematics and aesthetics, ruled by splines and psychology and incomprehensible logic for rhythm. I've done that for a decade and half, went pretty deep and still I am very proficient in Adobe Photoshop, Illustrator and InDesign.",
-  'Just as I thought hardware industry was dead in 1990 and switched to DTP, I also figured that DTP will go down as everyone thinks they can do it and declining need for printed anything.',
-  "So I finally decided to jump on web wagon in 2006 although I've used mail from late eighties, on academic net long before Internet became <em>public</em> (I even remember debate and disgust on opening web sites for commercial entities!)",
-  'And here I am right now, split between front end development, Drupal site building and development and server building, tuining and maintaining.',
-  "You've read so far? Rarely anyone does but then again, what would <strong>About</strong> page on personal Blog be if not all about a person who owns it?",
-  'If you are interested in something more particular, have some Indecent (job) Proposal or just wonder about a Meaning of Life, feel free to contact me somehow. Even better meet me in person. Somewhere.',
+  `I am an IT guy with many skills, and I'm always open to learning new ones.`,
+  `Although challenges may suck my energy below absolute zero, I still enjoy taking them on. Sometimes, it is a server task about making a machine operate beyond what seems possible. Then it could be some border on a CSS element defying common sense. Or a <a href="https://rubygems.org/">Ruby <code>gem</code></a> that drives someone up the wall. Or it could be showing how Macs are magnificent beyond their captivating shell beauty.`,
+  `But I am not exclusively an IT guy. Just some geek or nerd living in piles of comic books, watching <a href="https://en.wikipedia.org/wiki/Star_Wars">Star Wars</a> while downloading <a href="https://en.wikipedia.org/wiki/Star_Trek:_Deep_Space_Nine">Deep Space 9</a>. Not only do I socialise regularly, just like anyone else, but I also enjoy debating the humanities, questioning reality and the limits of knowledge, or practising logic and oral skills. If you meet me, make me happy by bringing up these or some other essential questions on God and existence.`,
+  `I'm a <a href="https://en.wikipedia.org/wiki/Gnosticism">gnostic</a>. Maybe <a href="https://en.wikipedia.org/wiki/Buddhism">Buddhist</a>, but not a true one. I do not believe, I know, question, or reason. You may have your way, but this is mine; this is my choice.`,
+  `I've started thinking analytically since I became aware of myself. Still, I conceived my first algorithms somewhere in the late seventies with <a href="https://en.wikipedia.org/wiki/TI-57">Texas Instruments TI-57</a> and soon took first steps in <a href="https://en.wikipedia.org/wiki/BASIC">BASIC</a> and <a href="https://en.wikipedia.org/wiki/Zilog_Z80">Z80</a> assembly on <a href="https://en.wikipedia.org/wiki/TRS-80">Tandy Radio Shack TRS-80</a>. Brief episodes with <a href="https://en.wikipedia.org/wiki/ZX81">Sinclair ZX-81</a> and <a href="https://en.wikipedia.org/wiki/ZX_Spectrum">Spectrum</a> led me to the <a href="https://en.wikipedia.org/wiki/Commodore_64">Commodore 64</a>, whose architecture, kernel and API were the theme of my high school graduation. Yes, I've done <a href="https://en.wikipedia.org/wiki/C_(programming_language)">C</a> and assembly on <a href="https://en.wikipedia.org/wiki/X86">x86</a> <a href="https://en.wikipedia.org/wiki/MS-DOS">DOS</a> too; it felt like my last <a href="https://en.wikipedia.org/wiki/Commodore_128">Commodore 128D</a>, which I ran on <a href="https://en.wikipedia.org/wiki/CP/M">CP/M</a>.`,
+  `Those limited environments taught me a lot about appreciating limited resources, optimisation, and a battle for every single byte and CPU cycle. Imagine your CPU running at 1MHz? That was our <a href="https://en.wikipedia.org/wiki/MOS_Technology_6502">6502</a> baby; friends and I called <a href="https://en.wikipedia.org/wiki/Reduced_instruction_set_computer">RISC</a> when we fought the other tribe with their Z80, which we called <a href="https://en.wikipedia.org/wiki/Complex_instruction_set_computer">CISC</a>.`,
+  `I know about Macs. I've seen <a href="https://en.wikipedia.org/wiki/Apple_II">Apple ][</a> and the very first <a href="https://en.wikipedia.org/wiki/Macintosh">Macintoshes</a>, but got my first one somewhere in 1995 and never looked back. I was fascinated with simplicity, beauty and overall philosophy. And I still am. Others may like the case or some fancy UI tricks, but I know and understand what's ticking under the hood. And I like that.`,
+  `<a href="https://en.wikipedia.org/wiki/Desktop_publishing">DTP</a> was my escape to aesthetics. I enjoyed type, that strange marriage of mathematics and aesthetics, ruled by splines and psychology and incomprehensible logic for rhythm. I've done that for a decade and a half, went pretty deep, and I am still very proficient in <a href="https://www.adobe.com/products/photoshop.html">Adobe Photoshop</a>, <a href="https://www.adobe.com/products/illustrator.html">Illustrator</a> and <a href="https://www.adobe.com/products/indesign.html">InDesign</a>.`,
+  `Just as I thought the hardware industry was dead in 1990 and switched to DTP, I figured DTP would go down too, as everyone thinks they can do it and the need for printed anything declines.`,
+  `So I finally decided to jump on the web wagon in 2006. However, I've used mail since the late eighties, on academic net long before the Internet became public (I even remember debate and disgust on opening web sites for commercial entities!)`,
+  `And here I am right now, split between front-end development, <a href="https://www.drupal.org/">Drupal</a> site building and development and server building, tuning and maintaining.`,
+  `You've read so far? Rarely anyone does, but then again, what would an <strong>About</strong> page on a personal Blog be if not all about a person who owns it?`,
+  `If you are interested in something more specific, have an <a href="https://en.wikipedia.org/wiki/Indecent_Proposal">Indecent (job) Proposal</a> or wonder about <a href="https://en.wikipedia.org/wiki/Meaning_of_life">The Meaning of Life</a>, feel free to contact me somehow. Even better, meet me in person. Somewhere.`,
 ];
 
 export const person = {

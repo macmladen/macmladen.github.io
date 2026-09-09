@@ -32,6 +32,7 @@ const description =
   <section class="section" aria-labelledby="about-title">
     <div class="container container--narrow flow">
       <h1 id="about-title">About</h1>
+      <p class="subtitle">This is what I do.</p>
       <Image
         src={headshot}
         width={240}
@@ -43,9 +44,9 @@ const description =
         class="portrait"
       />
       {
-        /* The 2014 about text, verbatim. set:html because the paragraphs carry
-           the original's own <em>, <strong> and one <code>; the strings are
-           fixed content in src/data/person.ts, not input. */
+        /* Mladen's about text, verbatim. set:html because the paragraphs carry
+           inline markup — <strong>, one <code> and the source links; the
+           strings are fixed content in src/data/person.ts, not input. */
         person.about.map((paragraph) => (
           <p>
             <Fragment set:html={paragraph} />

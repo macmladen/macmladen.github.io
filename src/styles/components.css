@@ -101,6 +101,16 @@
   text-transform: none;
 }
 
+/* Subtitle — the standfirst line under a page h1. Soft ink at the lead size,
+   pulled close to the heading with the flow layer's own --flow-space so the
+   two read as one block. */
+.subtitle {
+  --flow-space: var(--space-2);
+
+  color: var(--color-ink-soft);
+  font-size: var(--text-lg);
+}
+
 /* Image attribution overlay: a figure wraps the image, .credit-frame gives
    the strip its positioning context, and the figcaption is the strip. White
    on a 70% black scrim reads at 8.5:1 even over a white photograph, so the
