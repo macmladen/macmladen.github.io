@@ -10,6 +10,7 @@ const schema = graph(contactPageNode(Astro.site, personNode(Astro.site)));
 /** The two profiles that are places to reach him. Speaker Deck is a slide
  *  archive, not an inbox, and is linked from /speaking/ instead. */
 const reachableAt = ['LinkedIn', 'GitHub'];
+// SSH public keys are published at /keys.txt (public/), as the 2017 site did with /id_rsa.pub.
 const contactProfiles = person.profiles.filter((profile) => reachableAt.includes(profile.name));
 
 /** Link text is the address itself, without the scheme, so the visible line
@@ -48,6 +49,8 @@ const description =
             </Fragment>
           ))
         }
+        <dt>SSH keys</dt>
+        <dd><a href="/keys.txt">macmladen.com/keys.txt</a> (ed25519 and RSA)</dd>
       </dl>
     </div>
   </section>
