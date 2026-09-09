@@ -87,7 +87,7 @@ console.log('validate — accepts');
   );
   check('all four tools ticked', !hasErrors(validate(everyTool)));
 
-  for (const level of ['beginner', 'comfortable', 'fluent']) {
+  for (const level of ['beginner', 'comfortable', 'fluent', 'expert']) {
     check(`terminal ${level}`, validate(readForm(form({ ...complete, terminal: level }))).terminal === undefined);
   }
 

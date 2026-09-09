@@ -44,6 +44,7 @@ export const terminalOptions: Option[] = [
     label: 'Comfortable: npm, npx and git from the terminal are routine',
   },
   { value: 'fluent', label: 'Fluent: the terminal is where I work' },
+  { value: 'expert', label: 'Expert: I have full control of the machine' },
 ];
 
 export type TextField =

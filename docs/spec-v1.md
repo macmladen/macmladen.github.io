@@ -148,7 +148,7 @@ The form is `src/components/ContactForm.astro`, the same shape as `RegistrationF
 | github | text, GitHub username, `^[a-zA-Z0-9-]{1,39}$` | yes |
 | os | radio group "Operating system": macos / windows / linux | yes |
 | tool | checkbox group "AI tool": claude-code / codex / cursor / other, several allowed; the ticked values are stored in the one column, comma-joined, e.g. `claude-code,cursor` | yes, at least one |
-| terminal | radio group "Terminal experience": beginner / comfortable / fluent, labelled "Beginner: I have pasted a command or two", "Comfortable: npm, npx and git from the terminal are routine", "Fluent: the terminal is where I work" (draft, marked) | yes |
+| terminal | radio group "Terminal experience": beginner / comfortable / fluent / expert, labelled "Beginner: I have pasted a command or two", "Comfortable: npm, npx and git from the terminal are routine", "Fluent: the terminal is where I work", "Expert: I have full control of the machine" (draft, marked) | yes |
 | ssh_key | textarea, optional; must start with `ssh-ed25519 ` or `ssh-rsa ` if present; one-line hint on how to print it | no |
 | own_hosting | checkbox "I have my own hosting with SSH access" | no |
 | watch_only | checkbox "I will watch, not work on my own laptop" | no |
