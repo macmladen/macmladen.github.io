@@ -50,6 +50,25 @@
   gap: var(--space-2) var(--space-6);
 }
 
+/* Event facts: the same label-and-value shape as .contact, but the values are
+   long enough that two columns would not hold at 360px, so it stacks and only
+   goes side by side from 768px. One grid over the whole list rather than one
+   per row, which is what keeps the values in a single column once they are
+   beside their labels.
+
+   Stacked, a label has to sit closer to its own value than the rows sit to
+   each other, and a single grid gap cannot say that; the space between rows is
+   therefore a margin on the label that opens one. It is undone once the rows
+   are side by side and the row gap takes over. */
+.facts {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.facts dd + dt {
+  margin-block-start: var(--space-4);
+}
+
 /* Two halves: stacked on mobile, side by side from 768px.
    --split-media is the width of the media column; the text column takes
    whatever is left. It defaults to 1fr, which makes the two halves equal.
@@ -96,6 +115,16 @@
 @media (min-width: 768px) {
   .section {
     padding-block: var(--space-24);
+  }
+
+  .facts {
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    gap: var(--space-3) var(--space-6);
+  }
+
+  .facts dd + dt {
+    margin-block-start: 0;
   }
 
   .split {

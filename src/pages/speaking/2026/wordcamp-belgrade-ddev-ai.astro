@@ -2,11 +2,12 @@
 import { getImage } from 'astro:assets';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import StructuredData from '../../../components/StructuredData.astro';
+import Facts from '../../../components/Facts.astro';
 import RegistrationForm from '../../../components/RegistrationForm.astro';
 import RegistrationClosed from '../../../components/RegistrationClosed.astro';
 import headshot from '../../../assets/mladen-head-2020.jpg';
 import { workshop, isRegistrationOpen } from '../../../data/workshop';
-import { fullDate, timeOfDay } from '../../../lib/dates';
+import { fullDate } from '../../../lib/dates';
 import { breadcrumbNode, eventNode, graph, personNode } from '../../../lib/schema';
 
 /** Asked at render time, not at module scope: see isRegistrationOpen. */
@@ -46,16 +47,8 @@ const schema = graph(
       <div class="container container--narrow flow">
         <p class="eyebrow">{workshop.subtitle}</p>
         <h1 id="workshop-title">{workshop.title}</h1>
-        <ul class="facts">
-          <li>
-            <time datetime={workshop.start}
-              >{fullDate(workshop.start)}, {timeOfDay(workshop.start)}</time
-            >–<time datetime={workshop.end}>{timeOfDay(workshop.end)}</time>
-          </li>
-          <li>{workshop.venue}, {workshop.address}</li>
-          <li>Held in Serbian</li>
-          <li><a href={workshop.sessionUrl}>Session at {workshop.wordcampName}</a></li>
-        </ul>
+        <Facts />
+        <p><a href={workshop.sessionUrl}>Session at {workshop.wordcampName}</a></p>
         {workshop.abstract.map((paragraph) => <p>{paragraph}</p>)}
       </div>
     </section>

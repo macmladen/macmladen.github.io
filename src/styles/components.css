@@ -56,15 +56,30 @@
   font-weight: var(--weight-semibold);
 }
 
-/* The facts under an event title: date, venue, language, link. */
-.facts {
-  padding-inline-start: 0;
-  list-style: none;
-  color: var(--color-ink-soft);
+/* The facts under an event title: when, where, in what language. The label is
+   the eyebrow's voice — --color-accent-muted at --text-sm — so the three of
+   them read as one quiet column beside values that stay in full body ink.
+   Placement is in the layout layer, next to .contact. */
+.facts dt {
+  color: var(--color-accent-muted);
+  font-size: var(--text-sm);
 }
 
-.facts li + li {
-  margin-block-start: var(--space-1);
+.facts dd {
+  color: var(--color-ink);
+}
+
+/* The map pin before the venue name. Sized in em so it tracks whatever step
+   the line is set at, and dropped onto the baseline by hand; the reset makes
+   every svg a block, so it has to be put back inline. It sits outside the
+   anchor: it is decoration, the venue name is the link, and inside the anchor
+   it would collect the underline every body link carries. */
+.facts__pin {
+  display: inline-block;
+  inline-size: 1em;
+  block-size: 1em;
+  margin-inline-end: var(--space-1);
+  vertical-align: -0.125em;
 }
 
 /* Buttons */

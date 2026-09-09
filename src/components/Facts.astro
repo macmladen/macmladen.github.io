@@ -1,0 +1,45 @@
+---
+/** The event facts under the workshop title: when, where, in what language.
+ *  Every value is read from src/data/workshop.ts — the same object the page's
+ *  Event JSON-LD reads — so the visible block and the structured data cannot
+ *  disagree. A definition list rather than a bare list: each line is a labelled
+ *  fact, which is what a <dl> is for, and the label is then available to a
+ *  screen reader instead of being inferred from the shape of the text. */
+import { workshop } from '../data/workshop';
+import { fullDate, timeOfDay } from '../lib/dates';
+
+/** The venue as a Maps search rather than a place id or an embed: a search for
+ *  the name and the street keeps working when Google renumbers its places, it
+ *  needs no key, and it loads nothing into this page. The query is the Serbian
+ *  spelling of the address, which is what the map is indexed under. */
+const mapsUrl =
+  'https://www.google.com/maps/search/?api=1&query=' +
+  'Dom+omladine+Beograda%2C+Makedonska+22%2C+Beograd';
+
+/** Material Design's "place" mark on a 24px grid: one path, with the inner
+ *  circle cut out by the nonzero fill rule. Inline for the same reason the
+ *  footer's brand marks are — one small icon is not worth a network request. */
+const pin =
+  'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 ' +
+  '9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z';
+---
+
+<dl class="facts">
+  <dt>When</dt>
+  <dd>
+    <time datetime={workshop.start}
+      >{fullDate(workshop.start)}, {timeOfDay(workshop.start)}</time
+    >–<time datetime={workshop.end}>{timeOfDay(workshop.end)}</time>
+  </dd>
+
+  <dt>Where</dt>
+  <dd>
+    <svg class="facts__pin" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d={pin}></path>
+    </svg>
+    <a href={mapsUrl}>{workshop.venue}</a>, {workshop.address}
+  </dd>
+
+  <dt>Language</dt>
+  <dd>Serbian</dd>
+</dl>
