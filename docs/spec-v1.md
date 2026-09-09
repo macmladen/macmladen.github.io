@@ -177,7 +177,7 @@ D1 table `registrations` additionally has `id`, `created_at`, `ip_hash`, `mailer
 ## Acceptance criteria
 - [ ] `npm run dev` serves `/`, `/about/`, `/speaking/2026/wordcamp-belgrade-ddev-ai/` locally; `ddev start` does the same under DDEV.
 - [ ] `/` shows intro, workshop announcement and footer in order; the announcement carries the classroom image with no credit overlay, eyebrow, title, intro and CTA to the workshop page; every footer link resolves to the stated URL.
-- [ ] `/about/` shows headshot, the thirteen paragraphs of the 2014 about text verbatim and in order, the speaking list with the Apatin and Speaker Deck links, and the community paragraph.
+- [ ] `/about/` shows the subtitle, the floated portrait and the thirteen paragraphs verbatim with their links; `/speaking/` renders the appearances from `speaking.ts` newest first.
 - [ ] The workshop page shows the corrected EN abstract, the mandatory checklist, the GitHub placeholder line, the close date, and the form with all nine fields; the JSON-LD validates as an `Event`.
 - [ ] Submitting valid data locally inserts one row into local D1 (query documented in README) and renders the inline success state.
 - [ ] Missing required field, bad GitHub username, malformed SSH key, or duplicate email re-renders the form with field-level errors and preserves entered values.
