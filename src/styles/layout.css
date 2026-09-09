@@ -163,5 +163,5 @@
    article split into four bands, so the full --space-18/--space-24 rhythm
    pulls it apart; 3rem keeps the bands reading as one page. */
 .section--compact {
-  padding-block: var(--space-12);
+  padding-block: var(--space-6);
 }
