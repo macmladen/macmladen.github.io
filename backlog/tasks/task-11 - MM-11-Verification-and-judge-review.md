@@ -1,9 +1,10 @@
 ---
 id: TASK-11
-title: 'MM-11: Verification and judge review'
+title: 'MM-11: Verification (deferred)'
 status: To Do
 assignee: []
 created_date: '2026-09-08 06:53'
+updated_date: '2026-09-09 12:28'
 labels:
   - test
 milestone: m-3
@@ -14,7 +15,7 @@ ordinal: 11000
 ## Description
 
 <!-- SECTION:DESCRIPTION:BEGIN -->
-Effort: M. Estimate: 2 h. Actual: . Billable: no. AI cost: . AI time: . Browser checks of all three pages at 360 and 1440 px; form runs against local D1 for valid, invalid, duplicate and no-JavaScript cases; Lighthouse mobile on the production build for all three pages; JSON-LD validation; judge review against every acceptance criterion in docs/spec-v1.md; fix list worked through.
+Effort: M. Actual: . Billable: no. AI cost: pending script. AI time: . Mladen decided 2026-09-09 to go live without the runtime form test and Lighthouse pass; this task runs after launch against the live site.
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria

@@ -1,10 +1,10 @@
 ---
 id: TASK-10
-title: 'MM-10: Redirects, headers, llms.txt, OG image'
+title: 'MM-10: SEO pack: per-page OG images, headers, llms.txt, redirects'
 status: To Do
 assignee: []
 created_date: '2026-09-08 06:53'
-updated_date: '2026-09-09 11:06'
+updated_date: '2026-09-09 12:28'
 labels:
   - feature
 milestone: m-3
@@ -15,7 +15,7 @@ ordinal: 10000
 ## Description
 
 <!-- SECTION:DESCRIPTION:BEGIN -->
-Effort: S. Estimate: 1.5 h. Actual: . Billable: no. AI cost: . AI time: . public/_redirects (/radionica and /workshop → workshop page 302; /about and /about.html → /about/ 301), public/_headers (nosniff, referrer policy, permissions policy, CSP allowing self, inline styles, Turnstile script and frame), public/llms.txt, static public/og.png 1200×630 with name and one line, robots allowing all crawlers with the sitemap. Spec: URL hierarchy, Markup section.
+Effort: M. Actual: . Billable: no. AI cost: pending script. AI time: . Per-page OG images generated at build (1200x630, name, page title, sand and ink, accent rule) and referenced by each page's og:image; public/_redirects (/radionica and /workshop → workshop page 302; /about, /about.html → /about/ 301); public/_headers (nosniff, referrer policy, permissions policy, CSP allowing self, inline styles, Turnstile script and frame on the form pages, and the contact page's inline script by hash); public/llms.txt; robots allowing all with the sitemap. Spec: URL hierarchy, Markup section.
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria

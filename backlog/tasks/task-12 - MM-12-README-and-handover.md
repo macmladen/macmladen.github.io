@@ -1,9 +1,10 @@
 ---
 id: TASK-12
-title: 'MM-12: README and handover'
+title: 'MM-12: README deploy section'
 status: To Do
 assignee: []
 created_date: '2026-09-08 06:53'
+updated_date: '2026-09-09 12:28'
 labels:
   - docs
 milestone: m-3
@@ -14,7 +15,7 @@ ordinal: 12000
 ## Description
 
 <!-- SECTION:DESCRIPTION:BEGIN -->
-Effort: S. Estimate: 1 h. Actual: . Billable: no. AI cost: . AI time: . README: local run under DDEV and plain npm, deploy to Cloudflare Pages, D1 create/bind/migrate, secrets and where they go, CSV export in one wrangler command, DNS change last. Handover list of what only Mladen does for M5 (Pages source switch off master, wrangler login, Pages project, D1, secrets, MailerLite group and automation, test registration, DNS flip, disable GitHub Pages).
+Effort: XS. Actual: . Billable: no. AI cost: pending script. AI time: . Fill the README deploy, export and DNS placeholders with the exact commands used in M5 (wrangler deploy from the build, secrets list, D1 remote migration, custom domain). Nothing else.
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
