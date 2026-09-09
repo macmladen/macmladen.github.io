@@ -78,6 +78,7 @@
   --leading-normal: 1.55;
 
   --weight-normal: 400;
+  --weight-medium: 500;
   --weight-semibold: 600;
   --weight-bold: 700;
 
@@ -103,6 +104,9 @@
   --width-content: 1200px;
   --width-narrow: 720px;
   --width-portrait: 240px;
+  /* The home portrait, which stands alone under the name and carries more of
+     the section than the about page's does. */
+  --width-portrait-lg: 280px;
   --gutter: var(--space-6);
 
   /* Radius — 4px on inputs and buttons, nothing rounder */

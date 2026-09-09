@@ -131,6 +131,14 @@
   font-size: var(--text-lg);
 }
 
+/* The home standfirst, one step up. The tagline is the only line between the
+   name and the story, so it takes --text-xl and a medium weight; it is always
+   used together with .subtitle, which is where its soft ink comes from. */
+.subtitle--lead {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-medium);
+}
+
 /* Image attribution overlay: a figure wraps the image, .credit-frame gives
    the strip its positioning context, and the figcaption is the strip. White
    on a 70% black scrim reads at 8.5:1 even over a white photograph, so the

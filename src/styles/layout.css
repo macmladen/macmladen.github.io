@@ -87,6 +87,12 @@
   margin-inline: auto;
 }
 
+/* The same float, wider: the home page's portrait. It overrides nothing but
+   the token the float reads, so the placement rules stay in one place. */
+.portrait--float-lg {
+  --width-portrait: var(--width-portrait-lg);
+}
+
 @media (min-width: 768px) {
   .section {
     padding-block: var(--space-24);

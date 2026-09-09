@@ -10,7 +10,14 @@ import { dayAndMonth, timeOfDay } from '../lib/dates';
 import { graph, personNode, webSiteNode } from '../lib/schema';
 
 /** One set of options for the headshot, used both by <Image> and by the
- *  Person node, so the JSON-LD points at the file the page actually renders. */
+ *  Person node, so the JSON-LD points at the file the page actually renders.
+ *  560px covers every slot the portrait occupies. From 768px it floats at
+ *  --width-portrait-lg 280px, so 560 is exactly 2x there. Below 768px it is a
+ *  block that fills the narrow container, whose widest case is a 767px
+ *  viewport: 720px capped less the 48px gutter, 672px. 560 is 0.83x of that
+ *  worst case, on a screen that is almost always 2x or 3x anyway, and holding
+ *  the number where it is keeps one emitted file for the page image, the
+ *  Person node and /about/. */
 const headshotOptions = { src: headshot, width: 560, height: 560, format: 'webp' } as const;
 const headshotFile = await getImage(headshotOptions);
 
@@ -32,21 +39,24 @@ const description =
   <StructuredData slot="head" data={schema} />
 
   <section class="section" aria-labelledby="intro-title">
-    <div class="container container--narrow split split--media-right split--media-quarter">
-      <div class="flow">
-        <h1 id="intro-title">{person.name}</h1>
-        <!-- draft: Mladen to approve -->
-        <p class="subtitle">{person.tagline}</p>
-        {person.intro.map((paragraph) => <p>{paragraph}</p>)}
-      </div>
+    {
+      /* One column, no grid: the portrait is a float, so the paragraphs wrap
+         around it from 768px and sit under it below that. .flow-root closes
+         the container over the float, since nothing follows it to clear. */
+    }
+    <div class="container container--narrow flow flow-root">
+      <h1 id="intro-title">{person.name}</h1>
+      <!-- draft: Mladen to approve -->
+      <p class="subtitle subtitle--lead">{person.tagline}</p>
       <Image
         {...headshotOptions}
         alt="Mladen Djuric"
         loading="eager"
         fetchpriority="high"
         decoding="sync"
-        class="media"
+        class="portrait portrait--float portrait--float-lg"
       />
+      {person.intro.map((paragraph) => <p>{paragraph}</p>)}
     </div>
   </section>
 
