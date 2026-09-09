@@ -14,7 +14,10 @@
 #                             component styles are inline by nature
 #   script-src                Turnstile's api.js, plus the one inline script on
 #                             /contact/ by hash — see below
-#   frame-src, connect-src    the Turnstile widget's iframe and its callbacks
+#   frame-src, connect-src    the Turnstile widget's iframe and its callbacks;
+#                             connect-src also takes Cloudflare Web Analytics,
+#                             whose beacon the zone injects into every page
+#                             (script-src allows static.cloudflareinsights.com)
 #   base-uri, form-action     no injected <base>, no cross-origin form posts;
 #                             both forms post to /api/ on this origin
 #   frame-ancestors 'none'    the site is never framed
@@ -29,4 +32,4 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' https://challenges.cloudflare.com 'sha256-fRHl85QdtBhJRtJKFXcWtpmWojToC3hZzoFuIEBMyBM='; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' https://challenges.cloudflare.com https://static.cloudflareinsights.com 'sha256-fRHl85QdtBhJRtJKFXcWtpmWojToC3hZzoFuIEBMyBM='; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com https://cloudflareinsights.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
