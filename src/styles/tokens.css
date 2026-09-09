@@ -85,6 +85,7 @@
   /* Layout */
   --width-content: 1200px;
   --width-narrow: 720px;
+  --width-portrait: 240px;
   --gutter: var(--space-6);
 
   /* Radius — 4px on inputs and buttons, nothing rounder */

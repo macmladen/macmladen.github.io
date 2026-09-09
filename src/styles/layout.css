@@ -29,6 +29,13 @@
   margin-block-start: var(--flow-space, var(--space-4));
 }
 
+/* Closes a block over its floats, so a floated child can never spill past the
+   end of its container. Written next to .flow because the two are used
+   together: the about page's portrait floats inside a .flow container. */
+.flow-root {
+  display: flow-root;
+}
+
 .grid {
   display: grid;
   gap: var(--grid-gap, var(--space-6));
@@ -59,6 +66,19 @@
   --split-media: 25%;
 }
 
+/* The about page portrait. Below 768px it is a block of its own above the
+   text, centred in the column; from 768px it floats to the end of the line
+   and the paragraphs wrap around it. Its container carries .flow-root, so the
+   float is closed over even though no heading follows it to clear against.
+   Appearance — the corner radius — stays on .portrait in the components
+   layer. `float: inline-end` rather than `right` for the same reason every
+   other rule here is logical; where it is not understood the portrait simply
+   stays a block above the text, which is the mobile layout. */
+.portrait--float {
+  display: block;
+  margin-inline: auto;
+}
+
 @media (min-width: 768px) {
   .section {
     padding-block: var(--space-24);
@@ -76,6 +96,13 @@
 
   .split--media-right > :nth-child(2) {
     order: 0;
+  }
+
+  .portrait--float {
+    float: inline-end;
+    inline-size: var(--width-portrait);
+    margin-inline: var(--space-6) 0;
+    margin-block-end: var(--space-4);
   }
 }
 
