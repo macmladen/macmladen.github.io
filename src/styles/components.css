@@ -101,8 +101,11 @@
   text-transform: none;
 }
 
-/* Image attribution overlay. .credit-frame is the positioning context the
-   strip needs; put it on the figure that wraps the image. */
+/* Image attribution overlay: a figure wraps the image, .credit-frame gives
+   the strip its positioning context, and the figcaption is the strip. White
+   on a 70% black scrim reads at 8.5:1 even over a white photograph, so the
+   accent change of MM-22 does not reach it — the strip is scheme- and
+   accent-independent by design. */
 .credit-frame {
   position: relative;
 }
@@ -116,12 +119,6 @@
   color: var(--color-overlay-ink);
   font-size: var(--text-sm);
   line-height: var(--leading-tight);
-}
-
-.credit a {
-  color: var(--color-overlay-ink);
-  text-decoration-thickness: var(--underline-thickness);
-  text-underline-offset: var(--underline-offset);
 }
 
 /* Notices */
