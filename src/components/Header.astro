@@ -88,11 +88,13 @@ const here = Astro.url.pathname.replace(/\/+$/, '');
       margin-block-start: 0;
     }
 
-    /* "You are here" carries weight and a rule, not a colour, so it survives
-       on an ink bar where every link is already white. */
+    /* "You are here": weight plus a thick accent rule under the white link. */
     .site-header__nav [aria-current='page'] {
       font-weight: var(--weight-semibold);
       text-decoration: underline;
+      text-decoration-color: var(--color-accent);
+      text-decoration-thickness: var(--underline-thickness-strong);
+      text-underline-offset: var(--underline-offset-nav);
     }
   }
 </style>

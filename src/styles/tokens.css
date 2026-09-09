@@ -85,6 +85,7 @@
   --underline-thickness: 1px;
   --underline-thickness-strong: 2px;
   --underline-offset: 0.15em;
+  --underline-offset-nav: 0.35em;
 
   /* Space — 4px base */
   --space-1: 0.25rem;

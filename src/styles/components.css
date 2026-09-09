@@ -288,3 +288,8 @@
 .skip-link:focus {
   transform: translateY(0);
 }
+
+/* A closing call to action gets more air above it than body flow gives. */
+.cta {
+  --flow-space: var(--space-12);
+}
