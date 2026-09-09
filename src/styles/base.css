@@ -88,6 +88,12 @@ pre {
   font-size: var(--text-sm);
 }
 
+code,
+kbd,
+samp {
+  color: var(--color-code);
+}
+
 time {
   font-variant-numeric: tabular-nums;
 }
