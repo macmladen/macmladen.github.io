@@ -146,14 +146,17 @@ The form is `src/components/ContactForm.astro`, the same shape as `RegistrationF
 | name | text | yes |
 | email | email | yes |
 | github | text, GitHub username, `^[a-zA-Z0-9-]{1,39}$` | yes |
-| os | select: macos / windows / linux | yes |
-| tool | select: claude-code / codex / cursor / other | yes |
+| os | radio group "Operating system": macos / windows / linux | yes |
+| tool | checkbox group "AI tool": claude-code / codex / cursor / other, several allowed; the ticked values are stored in the one column, comma-joined, e.g. `claude-code,cursor` | yes, at least one |
+| terminal | radio group "Terminal experience": beginner / comfortable / fluent, labelled "Beginner: I have pasted a command or two", "Comfortable: npm, npx and git from the terminal are routine", "Fluent: the terminal is where I work" (draft, marked) | yes |
 | ssh_key | textarea, optional; must start with `ssh-ed25519 ` or `ssh-rsa ` if present; one-line hint on how to print it | no |
 | own_hosting | checkbox "I have my own hosting with SSH access" | no |
 | watch_only | checkbox "I will watch, not work on my own laptop" | no |
 | newsletter | checkbox "Send me news about Koder workshops, meetups and the Razgovori podcast" | no, unchecked by default |
 
-D1 table `registrations` additionally has `id`, `created_at`, `ip_hash`, `mailerlite_status`.
+D1 table `registrations` additionally has `id`, `created_at`, `ip_hash`, `mailerlite_status`. `terminal` arrived after the first deploy, in `migrations/0003_registrations_terminal.sql`, and is therefore nullable: rows written before it carry no answer, every row written after it does.
+
+The word "required" (`.field__required`, as on the contact form) marks name, email, github and the legends of the operating system and terminal groups. The AI tool group is required by the validator but carries the constraint in its hint rather than a mark on the legend.
 
 ### Contact form fields (names are the D1 column names)
 
@@ -168,7 +171,7 @@ D1 table `messages` additionally has `id`, `created_at`, `ip_hash`, `mail_status
 
 ### Endpoint behaviour (`/api/register`)
 - Accepts POST only. Verifies Turnstile server-side. Validates fields. Rejects duplicate email with a friendly message.
-- Inserts into D1 first. Then MailerLite: upsert subscriber with fields `name`, `github`, `os`, `tool`, `own_hosting`, `watch_only`, add to the group from env. Records the outcome in `mailerlite_status`. A MailerLite failure never fails the registration.
+- Inserts into D1 first. Then MailerLite: upsert subscriber with fields `name`, `github`, `os`, `tool` (the comma-joined list), `terminal`, `own_hosting`, `watch_only`, add to the group from env. Each field has to exist on the MailerLite account; one that does not is dropped silently and the call still answers 2xx. Records the outcome in `mailerlite_status`. A MailerLite failure never fails the registration.
 - Env: `MAILERLITE_API_KEY`, `MAILERLITE_GROUP_ID`, `TURNSTILE_SECRET`, `TURNSTILE_SITE_KEY`. Locally `.dev.vars` (gitignored) with `.dev.vars.example` committed. Empty `MAILERLITE_API_KEY` skips the call, status `skipped`.
 - Progressive enhancement: works without JavaScript (full-page POST, server renders success or errors back on the page URL). A small inline script may enhance it. No JavaScript is shipped on `/` or `/about/`.
 
@@ -181,7 +184,7 @@ D1 table `messages` additionally has `id`, `created_at`, `ip_hash`, `mail_status
 
 ### Markup, SEO, machine readability
 - Landmarks on every page: `header` with `nav aria-label="Main"`, one `main`, `footer`. Exactly one `h1` per page; heading levels never skip. Each section is `<section aria-labelledby>` its own heading. A skip link to `main` is the first focusable element.
-- Dates in `<time datetime="2026-09-18T12:20:00+02:00">`. The workshop page is an `<article>`; prerequisites are a real `<ul>`; the form uses `<label for>`, `<fieldset>` for the checkbox group, `autocomplete` attributes, `aria-describedby` for hints and errors, and `aria-invalid` on failed fields.
+- Dates in `<time datetime="2026-09-18T12:20:00+02:00">`. The workshop page is an `<article>`; prerequisites are a real `<ul>`; the form uses `<label for>`, a `<fieldset>` with a `<legend>` for each group of choices (operating system, AI tool, terminal experience, "Anything else"), `autocomplete` attributes, `aria-describedby` for hints and errors — on the fieldset itself for a group — and `aria-invalid` on failed single fields.
 - Head, per page: `<title>` as "Page · Mladen Djuric" (home: "Mladen Djuric · MacMladen"), `meta description`, `link rel="canonical"`, `lang="en"`, one `meta name="theme-color"` tag (`#FED`, unconditional — the site is light in every scheme), Open Graph (`og:type` website or article, title, description, url, image with its type, width and height, `og:locale` en_US) and `twitter:card summary_large_image` with `twitter:image`. `og:image` is absolute and per page.
 - Sharing cards, one per page, 1200×630: sand ground, ink title set large, the `h1`'s accent rule at six pixels, and the name and site URL along the bottom. `scripts/og.mjs` draws them with satori and sharp into `public/og/<slug>.png` before every build (`npm run og`, wired as npm's `prebuild`); the directory is generated and git-ignored. `src/data/og.ts` is the registry both ends read — the script to know what to draw, `Head.astro` to know what to name, looked up by canonical path. Card titles come from the same data objects the pages use; the home card carries the standfirst rather than repeating the name its footer line already shows. Inter (latin, 400 and 700, SIL OFL) is checked into `src/assets/fonts/` because satori needs font data and the site itself loads no fonts. Not an Astro endpoint: `@astrojs/cloudflare` prerenders inside workerd, where a route can neither read a font off disk nor call an image library.
 - `rel="me"` on the LinkedIn, GitHub and Speaker Deck links in the footer, so the profiles verify back to the site.
