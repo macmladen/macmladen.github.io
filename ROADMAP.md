@@ -1,23 +1,44 @@
 # Roadmap
 
-Future work by name. An item becomes a backlog task when it is needed and gets the next MM number then; the number is written here at that moment. Nothing below has a number until that happens.
+Future work by name. An item becomes a backlog task when it is needed and gets the next MM number then; the number is written here at that moment. Nothing in the open sections has a number until that happens. Done items keep their numbers as the record.
 
-## After launch (v1 is live)
+## Done
 
-- AI cost script: price each task's transcript tokens at API list rates and print cost and active minutes per task; replace the approximate figures in the backlog.
-- Colour-scheme switcher: bring back Auto, Light and Dark. Built once in MM-16 and removed in MM-21 so v1 ships light only; the measured dark palette is parked in `docs/decisions/M3-DARK-SCHEME-PARKED.md` and kept dormant in `src/styles/tokens.css`. Reinstating it means the header control, the inline head script, the `prefers-color-scheme` block for Auto and a second `theme-color` tag — write it with `light-dark()` rather than two dark blocks. The next two items hang off it.
-- Turnstile widget follows the site's colour scheme instead of staying light.
-- Border contrast decision: `#CBA` on sand and `#555` on dark are below 3:1 for non-text boundaries; keep as deliberate softness or raise.
-- Serbian bio block on the about page if the WordCamp audience asks for it.
+**v1 live on macmladen.com, 2026-09-09.** Astro 7 as a Cloudflare Worker with static assets, D1, MailerLite, MailerSend, Turnstile. Five pages: home, about, speaking, contact, the WordCamp Belgrade 2026 workshop page with registration. Per-page OG cards, security headers, llms.txt, redirects, SSH keys published. GitHub Pages retired, `main` is the default branch, Dependabot clean.
 
-## Sections reserved in the URL hierarchy (see `docs/spec-v1.md`)
+- M1 Repo reset (MM-01–03): legacy Drupal/Next archived and removed, Astro scaffold, backlog and agent method, Workers-not-Pages decision.
+- M2 Design system and shell (MM-04–05): tokens, cascade layers, base layout, head, header, footer, structured data, shared data.
+- M3 Pages (MM-06–44): the five pages and two endpoints; sand and Koder orange (#F40) palette by decision with the ratios known; ink bars; system fonts; About text from the 2014 site with source links; contact form with topic; light only, dark palette parked.
+- M4 Quality (MM-10, MM-12): generated OG images, headers with hashed inline scripts, README deploy section. MM-11 verification deferred (below).
+- M5 Live (MM-45–50): Cloudflare resources, secrets, preview, custom domains, keys.
+- M6 Refinements so far (MM-51–64): link previews, session link, facts block with map pin, section spacing, form rework (radios, checkboxes, terminal experience, copy buttons), footer nav and Speaker Deck, close date 17 September, speaking history researched from Speaker Deck, YouTube and LinkedIn (`docs/speaking-research.md`).
 
-- `/speaking/<year>/` indexes, generated from `src/data/speaking.ts`; talk decks and recordings under each appearance. The `/speaking/` index itself is built (index: MM-30).
-- `/work/`: three short write-ups.
-- `/writing/` with `/rss.xml`: the blog; first post is the rebuild.
-- `/now/`, `/cv/` with print stylesheet, `/colophon/`.
-- `/sr/` prefix if the site ever goes bilingual.
+## Next, before the camp (18 September 2026)
+
+- Speaking page from the researched history, grouped by year with deck and video icons (MM-65).
+- One live test registration and one contact message; Turnstile siteverify confirmed in the Cloudflare dashboard; MM-48 closed.
+- MailerLite: `terminal` custom field; confirmation automation on the workshop group (MM-49).
+- Verification pass on the live site: Lighthouse mobile on every page, forms with JavaScript off, 422 round trips (MM-11, deferred from M4).
+- Draft copy approvals still marked in source: tagline, workshop teaser, meta descriptions, CTA labels, contact line, success texts.
+
+## After the camp: v2
+
+The feedback on v1 is "okayish"; v2 has to be considerably better. Two reference points from the planning sessions: Peter Steinberger's site (steipete.me) is hacky and playful on purpose, a template left as it is, and it reads solid because it matches him; Mayank Gupta's site (mayankgupta.com) reads very professional: one positioning sentence, "what I'm hired for" blocks with an opinion each, a timeline, dated writing, a Now page. v2 should be as deliberate as either, in Mladen's own register.
+
+- **Design overhaul.** Keep the tokens and the charter; redo hierarchy, rhythm and the home narrative (positioning line, what I'm hired for, timeline, proof of activity). Decide a distinctive typographic or accent choice; consider warm light background kept, real photo kept, no scroll animation. A design canvas or mockups before code.
+- **Data structures.** Content collections with typed frontmatter for posts, talks, work and the CV; `src/data` for facts; one source feeding pages, JSON-LD, OG cards and RSS. Decide what stays TypeScript data and what becomes Markdown.
+- **Posts in Markdown** at `/writing/` with `/rss.xml`, dated, tags, reading time; first post is the rebuild story. One post a month keeps the site alive.
+- **CV** at `/cv/` with a print stylesheet and a PDF export; the timeline on the home page derives from it.
+- **Work** at `/work/`: three short write-ups (role, problem, decisions, outcome); community organising counts as delivery.
+- **Now** page, **colophon** (how this is built and why), `/speaking/<year>/` indexes.
+- **Colour-scheme switcher** (Auto, Light, Dark): built in MM-17, removed in MM-21; the measured dark palette is parked in `docs/decisions/M3-DARK-SCHEME-PARKED.md` and dormant in `src/styles/tokens.css`. Write it with `light-dark()`. Turnstile then follows the scheme.
+- **Border contrast decision**: `#CBA` on sand is below 3:1 for non-text boundaries; keep as deliberate softness or raise.
+- **Serbian bio block** on About if the WordCamp audience asks.
+- **AI cost script**: price each task's transcript tokens at API list rates, print cost and active minutes per task, replace the approximate figures in the backlog.
+- **Git-triggered deploys** (Workers Builds) instead of deploys from a developer machine.
+- **Workshop follow-ups** on the site: slides and recording on the workshop page after 18 September; the registration list handed to the Koder, meetup and Razgovori follow-ups.
 
 ## Estate (other properties, see `docs/analisys/f-2.md`)
 
 - bluefish.rs, koder.rs, razgovori.rs, the conference site: each in its own repo and session, sharing tokens and the subscribe spine.
+- `/sr/` prefix on this site only if it ever goes bilingual.
