@@ -35,11 +35,8 @@ const imageUrl = new URL(image, Astro.site).href;
 <title>{pageTitle}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalUrl} />
-{/* One tag per scheme. The browser uses the first whose media matches, so both
-    need a media attribute; these follow the OS, which is all the tag can do —
-    an explicit Light or Dark choice inside the page does not reach it. */}
-<meta name="theme-color" content="#FED" media="(prefers-color-scheme: light)" />
-<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)" />
+{/* The site is light in every scheme, so one unconditional tag says so. */}
+<meta name="theme-color" content="#FED" />
 
 <meta property="og:type" content={ogType} />
 <meta property="og:title" content={pageTitle} />

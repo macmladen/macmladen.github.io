@@ -2,7 +2,6 @@
 import '../styles/global.css';
 import Head from '../components/Head.astro';
 import SkipLink from '../components/SkipLink.astro';
-import ThemeScript from '../components/ThemeScript.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 
@@ -20,7 +19,6 @@ interface Props {
 <html lang="en">
   <head>
     <Head {...Astro.props} />
-    <ThemeScript />
     <slot name="head" />
   </head>
   <body>

@@ -27,7 +27,7 @@ Decisions taken 2026-09-07:
 
 Confident, plain, professional. No animation, no decoration that does not carry meaning. Mobile-first: every rule is written for 360 px and widened with `min-width` queries or `clamp()`.
 
-**Colour.** Short hex only. Three colour states, decided 2026-09-08, replacing the original "light scheme only in v1, dark reserved": **Auto** (follows `prefers-color-scheme`), **Light** and **Dark**, chosen from a control in the header and remembered in `localStorage` under the key `theme`. Auto is the absence of that key and the absence of `data-theme` on `<html>`; Light and Dark set `data-theme` and win over the OS. `color-scheme` follows the state, so form controls and scrollbars follow with it, and `<meta name="theme-color">` is two tags, one per `prefers-color-scheme`.
+**Colour.** Short hex only. Light only for now (decided 2026-09-09, replacing the three-state Auto/Light/Dark scheme built in MM-16): `:root` declares `color-scheme: light`, the site does not follow `prefers-color-scheme`, there is no scheme control and no inline script, and `<meta name="theme-color">` is one unconditional tag. The three-state scheme and its measured dark palette are parked — the palette is kept as a dormant `:root[data-theme="dark"]` block at the bottom of `src/styles/tokens.css` and written up in `docs/decisions/M3-DARK-SCHEME-PARKED.md`; the switcher is an "After launch" entry in `ROADMAP.md`.
 
 Light scheme, on `:root`. Pairs checked against `--color-bg` unless stated:
 
@@ -44,24 +44,6 @@ Light scheme, on `:root`. Pairs checked against `--color-bg` unless stated:
 | `--color-ok-bg` / `--color-ok-ink` | `#DED` / `#151` | success state | 7.4 : 1 |
 | `--color-error-bg` / `--color-error-ink` | `#FDD` / `#900` | field errors | 7.1 : 1 |
 | `--color-field-bg` | `#FFF` | input, select and textarea fill | |
-
-Dark scheme, declared twice — once under `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) }` for Auto, once under `:root[data-theme="dark"]` for the explicit choice — because a selector list cannot cross a media-query boundary. The two blocks must stay in sync. Every text pair clears 4.5 : 1 and every accent pair clears 7 : 1 on both the background and the alternate band:
-
-| Token | Value | Use | On `--color-bg` `#222` | On `--color-bg-alt` `#333` |
-|---|---|---|---|---|
-| `--color-bg` | `#222` | page background | | |
-| `--color-bg-alt` | `#333` | alternate section band | | |
-| `--color-border` | `#555` | rules, input borders | 2.1 : 1, non-text separation | 1.7 : 1 |
-| `--color-ink` | `#FED` | text | 14.0 : 1 | 11.2 : 1 |
-| `--color-ink-soft` | `#CBA` | secondary text, dates, captions | 8.5 : 1 | 6.8 : 1 |
-| `--color-accent` | `#FAF` | links, primary button background | 9.4 : 1 | 7.5 : 1 |
-| `--color-accent-strong` | `#FCF` | link hover and active, focus ring | 11.6 : 1 | 9.2 : 1 |
-| `--color-accent-ink` | `#111` | text on the accent | 11.2 : 1 on `#FAF` | 13.8 : 1 on `#FCF` |
-| `--color-ok-bg` / `--color-ok-ink` | `#131` / `#CFC` | success state | 12.5 : 1 | |
-| `--color-error-bg` / `--color-error-ink` | `#311` / `#FCC` | field errors | 12.0 : 1 (and `--color-ink` on it, an invalid field's fill, 15.1 : 1) | |
-| `--color-field-bg` | `#111` | input, select and textarea fill | `--color-ink` on it 16.7 : 1 | |
-
-`--color-accent` is `#FAF` rather than `#F9F`: `#F9F` reaches 8.5 : 1 on the background but only 6.8 : 1 on the alternate band, and links have to clear 7 : 1 on both surfaces.
 
 Scheme-independent tokens, declared once and never redefined:
 
@@ -90,7 +72,7 @@ Bar links are the one exception to the underline rule: they are white, underline
 
 Line height 1.55 for body, 1.2 for headings. Reading measure is a layout concern: prose sits in `.container--narrow` (720 px), never a `max-width` on paragraphs. Vertical rhythm from the existing space scale (4 px base). Radius 4 px on inputs and buttons, nothing rounder.
 
-**Layout.** One column on mobile. Header: name as the home link on the left, one nav item on the right ("About") and the colour-scheme control beside it, no hamburger. The control is a `<select>` with a visually hidden label and the options Auto, Light and Dark — chosen over a cycling button because all three states are visible and selectable at once, the native semantics need no `aria-live`, and nothing has to be guessed before pressing. It ships with the `hidden` attribute and only the inline head script removes it, so with JavaScript off there is no dead control and the page is Auto. The workshop is reached from the home block's CTA, not from the menu. Sections are full-width bands, content in `.container` (1200 px) or `.container--narrow`. Footer: link list plus `<address>` with the email.
+**Layout.** One column on mobile. Header: name as the home link on the left, one nav item on the right ("About"), no hamburger and no colour-scheme control. The workshop is reached from the home block's CTA, not from the menu. Sections are full-width bands, content in `.container` (1200 px) or `.container--narrow`. Footer: link list plus `<address>` with the email.
 
 **Prototyping.** Straight in Astro components, no separate static HTML pass. The charter's "ship CSS first" rule still applies: components carry final CSS from the first commit, and no CSS is written for content that does not exist yet.
 
@@ -165,7 +147,7 @@ D1 table `registrations` additionally has `id`, `created_at`, `ip_hash`, `mailer
 ### Markup, SEO, machine readability
 - Landmarks on every page: `header` with `nav aria-label="Main"`, one `main`, `footer`. Exactly one `h1` per page; heading levels never skip. Each section is `<section aria-labelledby>` its own heading. A skip link to `main` is the first focusable element.
 - Dates in `<time datetime="2026-09-18T12:20:00+02:00">`. The workshop page is an `<article>`; prerequisites are a real `<ul>`; the form uses `<label for>`, `<fieldset>` for the checkbox group, `autocomplete` attributes, `aria-describedby` for hints and errors, and `aria-invalid` on failed fields.
-- Head, per page: `<title>` as "Page · Mladen Đurić" (home: "Mladen Đurić · MacMladen"), `meta description`, `link rel="canonical"`, `lang="en"`, two `meta name="theme-color"` tags (`#FED` under `media="(prefers-color-scheme: light)"`, `#222` under `media="(prefers-color-scheme: dark)"`; the tag can only follow the OS, not an in-page Light or Dark choice), Open Graph (`og:type` website or article, title, description, url, image, `og:locale` en_US) and `twitter:card summary_large_image`. One static OG image `public/og.png` (1200×630, name and positioning line) for v1; per-page generation is reserved.
+- Head, per page: `<title>` as "Page · Mladen Đurić" (home: "Mladen Đurić · MacMladen"), `meta description`, `link rel="canonical"`, `lang="en"`, one `meta name="theme-color"` tag (`#FED`, unconditional — the site is light in every scheme), Open Graph (`og:type` website or article, title, description, url, image, `og:locale` en_US) and `twitter:card summary_large_image`. One static OG image `public/og.png` (1200×630, name and positioning line) for v1; per-page generation is reserved.
 - `rel="me"` on the LinkedIn, GitHub and Speaker Deck links in the footer, so the profiles verify back to the site.
 - JSON-LD via `StructuredData.astro`, one block per page, values from the same data objects the visible content uses, never duplicated by hand:
   - `/`: `WebSite` and `Person` (name, alternateName "MacMladen", jobTitle, url, image, email, sameAs [LinkedIn, GitHub, Speaker Deck], worksFor Blue Fish, address locality Novi Sad).
@@ -196,7 +178,7 @@ D1 table `registrations` additionally has `id`, `created_at`, `ip_hash`, `mailer
 - [ ] The workshop page shows the corrected EN abstract, the mandatory checklist, the GitHub placeholder line, the close date, and the form with all nine fields; the JSON-LD validates as an `Event`.
 - [ ] Submitting valid data locally inserts one row into local D1 (query documented in README) and renders the inline success state.
 - [ ] Missing required field, bad GitHub username, malformed SSH key, or duplicate email re-renders the form with field-level errors and preserves entered values.
-- [ ] Form submits and validates with JavaScript disabled. `/` and `/about/` ship exactly one script: the inline colour-scheme script in `<head>` (`src/components/ThemeScript.astro`), which loads nothing over the network. Nothing else, and no external JavaScript anywhere.
+- [ ] Form submits and validates with JavaScript disabled. `/` and `/about/` ship no script at all; the workshop page ships only Turnstile. No external JavaScript anywhere.
 - [ ] Turnstile renders; a request without a valid token is rejected.
 - [ ] Empty `MAILERLITE_API_KEY` → registration succeeds with status `skipped`; with a key the subscriber call is made with the fields above.
 - [ ] With the close-date constant set in the past, the form is replaced by the closed notice.

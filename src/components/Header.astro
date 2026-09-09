@@ -8,34 +8,22 @@ const here = Astro.url.pathname.replace(/\/+$/, '');
 <header class="site-header">
   <div class="container site-header__inner">
     <a class="site-header__name" href="/">{person.name}</a>
-    <div class="site-header__end">
-      <nav aria-label="Main">
-        <ul class="site-header__nav">
-          {
-            nav.map((item) => (
-              <li>
-                <a
-                  href={item.href}
-                  aria-current={here === item.href.replace(/\/+$/, '') ? 'page' : undefined}
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </nav>
-      {/* Ships hidden; ThemeScript.astro reveals it and wires it, so with
-          JavaScript off there is no dead control and the page is Auto. */}
-      <div class="theme" id="theme" hidden>
-        <label class="visually-hidden" for="theme-choice">Colour scheme</label>
-        <select class="theme__control" id="theme-choice">
-          <option value="auto">Auto</option>
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
-        </select>
-      </div>
-    </div>
+    <nav aria-label="Main">
+      <ul class="site-header__nav">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={here === item.href.replace(/\/+$/, '') ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
   </div>
 </header>
 
@@ -82,33 +70,6 @@ const here = Astro.url.pathname.replace(/\/+$/, '');
     .site-header__nav a:hover,
     .site-header__nav a:active {
       text-decoration: underline;
-    }
-
-    .site-header__end {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: var(--space-4);
-    }
-
-    /* .theme sets no display, so the `hidden` attribute it ships with keeps
-       working. The bar is ink in every scheme and so is the control, down to
-       the native option list, which follows color-scheme. */
-    .theme__control {
-      padding: var(--space-1) var(--space-2);
-      border: var(--border-width) solid var(--color-bar-ink);
-      border-radius: var(--radius-sm);
-      background-color: var(--color-bar-bg);
-      color: var(--color-bar-ink);
-      color-scheme: dark;
-      font-size: var(--text-sm);
-      cursor: pointer;
-    }
-
-    .theme__control:hover,
-    .theme__control:focus-visible {
-      outline: var(--focus-width) solid var(--color-bar-hover);
-      outline-offset: var(--focus-offset);
     }
 
     .site-header__nav {
