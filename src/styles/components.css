@@ -328,10 +328,27 @@
    page's inline script only when the clipboard API exists; the code stays
    plain selectable text otherwise. "Done" state paints the icon in the accent. */
 .copy {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
   white-space: nowrap;
+}
+
+/* "Copied!" bubble above the icon while the button carries the done class. */
+.copy__button--done::after {
+  content: 'Copied!';
+  position: absolute;
+  inset-block-end: calc(100% + var(--space-1));
+  inset-inline-end: 0;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-bar-bg);
+  color: var(--color-bar-ink);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  line-height: var(--leading-tight);
+  pointer-events: none;
 }
 
 .copy__button {
