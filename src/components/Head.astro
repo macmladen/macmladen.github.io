@@ -8,26 +8,29 @@ interface Props {
   /** Path of this page, e.g. "/about/". */
   canonical: string;
   ogType?: 'website' | 'article' | 'profile';
-  /** Path of the sharing image. Defaults to the site-wide OG image. */
-  image?: string;
+  /** Sharing card to use, by slug. Defaults to the card registered for this
+   *  page's canonical path (`src/data/og.ts`). */
+  ogSlug?: string;
   /** The home page passes its own complete title. */
   fullTitle?: boolean;
 }
 
 import { person } from '../data/person';
+import { OG_HEIGHT, OG_WIDTH, cardForPath, ogImagePath } from '../data/og';
 
 const {
   title,
   description,
   canonical,
   ogType = 'website',
-  image = '/og.png',
+  ogSlug = cardForPath(canonical).slug,
   fullTitle = false,
 } = Astro.props;
 
 const pageTitle = fullTitle ? title : `${title} · ${person.name}`;
 const canonicalUrl = new URL(canonical, Astro.site).href;
-const imageUrl = new URL(image, Astro.site).href;
+/** Absolute, because Facebook, LinkedIn and X all refuse a relative one. */
+const imageUrl = new URL(ogImagePath(ogSlug), Astro.site).href;
 ---
 
 <meta charset="utf-8" />
@@ -43,9 +46,13 @@ const imageUrl = new URL(image, Astro.site).href;
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonicalUrl} />
 <meta property="og:image" content={imageUrl} />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content={String(OG_WIDTH)} />
+<meta property="og:image:height" content={String(OG_HEIGHT)} />
 <meta property="og:locale" content="en_US" />
 <meta property="og:site_name" content={person.name} />
 
 <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content={imageUrl} />
 
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />

@@ -4,10 +4,12 @@
   "version": "0.0.1",
   "private": true,
   "engines": {
-    "node": ">=22"
+    "node": ">=22.18"
   },
   "scripts": {
     "dev": "astro dev",
+    "og": "node scripts/og.mjs",
+    "prebuild": "npm run og",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -20,6 +22,8 @@
     "astro-robots-txt": "^1.0.0"
   },
   "devDependencies": {
+    "satori": "^0.33.4",
+    "sharp": "^0.35.4",
     "wrangler": "^4.129.1"
   }
 }

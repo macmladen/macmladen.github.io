@@ -4,6 +4,8 @@ node_modules
 # Build output
 dist
 .astro
+# Sharing cards, drawn by scripts/og.mjs on every build (npm run og)
+/public/og/
 
 # Cloudflare / wrangler
 .wrangler
