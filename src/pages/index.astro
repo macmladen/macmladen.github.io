@@ -3,7 +3,7 @@ import { Image, getImage } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import StructuredData from '../components/StructuredData.astro';
 import headshot from '../assets/mladen-head-2020.jpg';
-import roomPhoto from '../assets/workshop-room.jpg';
+import roomPhoto from '../assets/workshop.png';
 import { person } from '../data/person';
 import { workshop } from '../data/workshop';
 import { dayAndMonth, timeOfDay } from '../lib/dates';
@@ -69,23 +69,15 @@ const description =
           </a>
         </div>
       </div>
-      <figure class="credit-frame">
-        <Image
-          src={roomPhoto}
-          width={800}
-          height={534}
-          format="webp"
-          alt="Empty training room with a smart screen and wooden floor"
-          loading="lazy"
-          class="media"
-        />
-        <figcaption class="credit">
-          Photo: <a
-            href="https://www.pexels.com/photo/empty-conference-room-7648467/"
-            >RDNE Stock project / Pexels</a
-          >
-        </figcaption>
-      </figure>
+      <Image
+        src={roomPhoto}
+        width={800}
+        height={533}
+        format="webp"
+        alt="Training classroom with laptops and code on the projector screen"
+        loading="lazy"
+        class="media"
+      />
     </div>
   </section>
 </BaseLayout>
