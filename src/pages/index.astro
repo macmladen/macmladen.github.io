@@ -35,6 +35,8 @@ const description =
     <div class="container container--narrow split split--media-right split--media-quarter">
       <div class="flow">
         <h1 id="intro-title">{person.name}</h1>
+        <!-- draft: Mladen to approve -->
+        <p class="subtitle">{person.tagline}</p>
         {person.intro.map((paragraph) => <p>{paragraph}</p>)}
       </div>
       <Image

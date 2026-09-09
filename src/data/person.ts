@@ -21,6 +21,13 @@ export const brands: Link[] = [
   { name: 'Razgovori', url: 'https://razgovori.rs/' },
 ];
 
+/** draft: Mladen to approve — the standfirst line under the name on the home
+ *  page. It sits beside `jobTitle` rather than replacing it: `jobTitle` is the
+ *  formal string the JSON-LD Person carries, this is the spoken one the page
+ *  shows, and the two are allowed to differ. Rendered by `src/pages/index.astro`
+ *  only; nothing in the structured data reads it. */
+export const tagline = 'Senior developer, architect, IA and AI guy.';
+
 /** EN bio, verbatim from section 6 of the WordCamp Belgrade 2026 handover. */
 export const bio =
   'Mladen Đurić (MacMladen) is a senior developer and architect with two decades of ' +
@@ -89,6 +96,7 @@ export const person = {
   name: 'Mladen Đurić',
   alternateName: 'MacMladen',
   jobTitle: 'Senior web developer and architect',
+  tagline,
   url: 'https://macmladen.com/',
   email: 'mladen@macmladen.com',
   locality: 'Novi Sad',
