@@ -18,10 +18,14 @@ const check = (name, condition, detail = '') => {
   }
 };
 
-/** The shape the endpoint hands to readForm: a real FormData. */
+/** The shape the endpoint hands to readForm: a real FormData. An array value is
+ *  appended once per entry, which is how the AI tool checkboxes arrive: several
+ *  values under the one name `tool`. */
 const form = (fields) => {
   const data = new FormData();
-  for (const [key, value] of Object.entries(fields)) data.append(key, value);
+  for (const [key, value] of Object.entries(fields)) {
+    for (const one of Array.isArray(value) ? value : [value]) data.append(key, one);
+  }
   return data;
 };
 
@@ -30,7 +34,8 @@ const complete = {
   email: 'Ana@Example.COM',
   github: 'ana-anic',
   os: 'linux',
-  tool: 'claude-code',
+  tool: ['claude-code', 'cursor'],
+  terminal: 'comfortable',
   ssh_key: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI ana@example.com',
   own_hosting: 'yes',
   newsletter: 'yes',
@@ -45,12 +50,20 @@ console.log('readForm');
   check('absent checkbox becomes false', values.watch_only === false);
   check('newsletter is carried through', values.newsletter === true);
 
+  check('several ticked tools join with a comma', values.tool === 'claude-code,cursor', values.tool);
+  check('the terminal answer comes through', values.terminal === 'comfortable', values.terminal);
+
+  const oneTool = readForm(form({ ...complete, tool: 'codex' }));
+  check('one ticked tool is that value alone', oneTool.tool === 'codex', oneTool.tool);
+
   const trimmed = readForm(form({ ...complete, name: '  Ana  ', github: ' ana ' }));
   check('trims name and github', trimmed.name === 'Ana' && trimmed.github === 'ana');
 
   const empty = readForm(form({}));
   check('missing fields become empty strings', empty.name === '' && empty.ssh_key === '');
   check('missing checkboxes become false', empty.own_hosting === false);
+  check('no tool ticked is an empty string', empty.tool === '', empty.tool);
+  check('no terminal answer is an empty string', empty.terminal === '', empty.terminal);
 }
 
 console.log('validate — accepts');
@@ -58,9 +71,25 @@ console.log('validate — accepts');
   check('a complete registration', !hasErrors(validate(readForm(form(complete)))));
 
   const minimal = readForm(
-    form({ name: 'Bo', email: 'bo@example.com', github: 'bo', os: 'macos', tool: 'other' }),
+    form({
+      name: 'Bo',
+      email: 'bo@example.com',
+      github: 'bo',
+      os: 'macos',
+      tool: 'other',
+      terminal: 'beginner',
+    }),
   );
-  check('the minimum: no SSH key, no checkboxes', !hasErrors(validate(minimal)));
+  check('the minimum: one tool, no SSH key, no checkboxes', !hasErrors(validate(minimal)));
+
+  const everyTool = readForm(
+    form({ ...complete, tool: ['claude-code', 'codex', 'cursor', 'other'] }),
+  );
+  check('all four tools ticked', !hasErrors(validate(everyTool)));
+
+  for (const level of ['beginner', 'comfortable', 'fluent']) {
+    check(`terminal ${level}`, validate(readForm(form({ ...complete, terminal: level }))).terminal === undefined);
+  }
 
   const rsa = readForm(form({ ...complete, ssh_key: 'ssh-rsa AAAAB3NzaC1yc2E bo@example.com' }));
   check('an ssh-rsa key', !hasErrors(validate(rsa)));
@@ -92,6 +121,21 @@ console.log('validate — rejects');
   check('no operating system', errorsFor({ os: '' }).os === messages.os);
   check('a tool that is not offered', errorsFor({ tool: 'notepad' }).tool === messages.tool);
   check('no tool', errorsFor({ tool: '' }).tool === messages.tool);
+  check('no tool field at all', errorsFor({ tool: [] }).tool === messages.tool);
+  check(
+    'one made-up tool among two real ones',
+    errorsFor({ tool: ['claude-code', 'notepad', 'cursor'] }).tool === messages.tool,
+  );
+  check(
+    'a comma-separated string in one field is not a way in',
+    errorsFor({ tool: 'claude-code,notepad' }).tool === messages.tool,
+  );
+
+  check(
+    'a terminal level that is not offered',
+    errorsFor({ terminal: 'wizard' }).terminal === messages.terminal,
+  );
+  check('no terminal level', errorsFor({ terminal: '' }).terminal === messages.terminal);
 
   check(
     'an SSH key with the wrong prefix',

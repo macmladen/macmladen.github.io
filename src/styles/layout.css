@@ -42,6 +42,26 @@
   grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-min, 16rem), 100%), 1fr));
 }
 
+/* A group of radios or checkboxes on the registration form: the operating
+   system, the AI tools, the terminal question. One option per line at 360px,
+   two side by side from 480px, which is where two option labels stop fighting
+   each other for the width. The column gap is wider than the row gap so the
+   two columns read as columns rather than as one wrapped line.
+
+   480px is the third literal breakpoint on the site, and the only one below
+   768px: it is the width at which these particular labels fit two-up, not a
+   device. */
+.choices {
+  display: grid;
+  gap: var(--space-2) var(--space-6);
+}
+
+@media (min-width: 480px) {
+  .choices {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 /* Contact list: the label beside the address. Three rows and two short
    labels, so it holds at 360px and needs no breakpoint. */
 .contact {

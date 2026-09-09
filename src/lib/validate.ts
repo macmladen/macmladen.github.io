@@ -9,15 +9,22 @@ import { person } from '../data/person.ts';
 import {
   emptyValues,
   osOptions,
+  splitTools,
   sshKeyPrefixes,
+  terminalOptions,
   toolOptions,
+  toolSeparator,
   type RegistrationErrors,
   type RegistrationValues,
 } from '../data/registration.ts';
 
-/** Anything with a FormData-shaped get(). Keeps this file free of DOM types. */
+/** Anything FormData-shaped. getAll() is here for the AI tool checkboxes: they
+ *  share one name, so a submission carries as many `tool` entries as boxes were
+ *  ticked and get() would see only the first. Keeps this file free of DOM
+ *  types. */
 export interface FormLike {
   get(name: string): unknown;
+  getAll(name: string): unknown[];
 }
 
 export const limits = {
@@ -33,7 +40,8 @@ export const messages = {
   email: 'That does not look like an email address.',
   github: 'A GitHub username is letters, numbers and hyphens, up to 39 characters.',
   os: 'Please pick the operating system you will bring.',
-  tool: 'Please pick the AI tool you will use.',
+  tool: 'Please tick at least one AI tool you will use.',
+  terminal: 'Please pick how much time you have spent in a terminal.',
   sshKey:
     'An SSH public key starts with "ssh-ed25519 " or "ssh-rsa ". Leave the field empty ' +
     'if you would rather not paste one.',
@@ -56,6 +64,14 @@ const text = (form: FormLike, field: string): string => {
 
 const checked = (form: FormLike, field: string): boolean => form.get(field) !== null && form.get(field) !== undefined;
 
+/** Every value submitted under one name, trimmed, empties dropped. The checkbox
+ *  group's counterpart to text(). */
+const texts = (form: FormLike, field: string): string[] =>
+  form
+    .getAll(field)
+    .map((raw) => (typeof raw === 'string' ? raw.trim() : ''))
+    .filter((value) => value !== '');
+
 /** Submitted form to values. Never throws, never validates: whatever came in is
  *  what the form is re-rendered with when validation then fails. */
 export function readForm(form: FormLike): RegistrationValues {
@@ -65,7 +81,8 @@ export function readForm(form: FormLike): RegistrationValues {
     email: text(form, 'email').toLowerCase(),
     github: text(form, 'github'),
     os: text(form, 'os'),
-    tool: text(form, 'tool'),
+    tool: texts(form, 'tool').join(toolSeparator),
+    terminal: text(form, 'terminal'),
     ssh_key: text(form, 'ssh_key'),
     own_hosting: checked(form, 'own_hosting'),
     watch_only: checked(form, 'watch_only'),
@@ -88,7 +105,20 @@ export function validate(values: RegistrationValues): RegistrationErrors {
 
   if (!osOptions.some((option) => option.value === values.os)) errors.os = messages.os;
 
-  if (!toolOptions.some((option) => option.value === values.tool)) errors.tool = messages.tool;
+  // At least one tool, and nothing that was not on offer: a submission carrying
+  // a value the form never rendered is not a mistake to explain, it is a made-up
+  // one to refuse.
+  const tools = splitTools(values.tool);
+  if (
+    tools.length === 0 ||
+    !tools.every((tool) => toolOptions.some((option) => option.value === tool))
+  ) {
+    errors.tool = messages.tool;
+  }
+
+  if (!terminalOptions.some((option) => option.value === values.terminal)) {
+    errors.terminal = messages.terminal;
+  }
 
   if (values.ssh_key !== '') {
     if (values.ssh_key.length > limits.ssh_key) errors.ssh_key = messages.sshKeyLong;

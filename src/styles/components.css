@@ -284,6 +284,9 @@
   background-color: var(--color-error-bg);
 }
 
+/* One box and its label. Radios use it too — the box is a different shape but
+   the row is the same object, and accent-color paints both — so the class name
+   is the older of the two rather than a description of the control. */
 .checkbox {
   display: flex;
   align-items: flex-start;
