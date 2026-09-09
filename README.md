@@ -12,7 +12,9 @@ Tasks: `backlog/`, managed with the `backlog` CLI.
 
 ## Local development
 
-Node version is pinned in `.nvmrc` (Node 26; `package.json` requires >= 22).
+Node version is pinned in `.nvmrc` (Node 26; `package.json` requires >= 22.18, the
+first release that strips TypeScript types without a flag — the sharing-card
+script imports the site's own `.ts` data modules).
 
 ```sh
 npm install
@@ -26,7 +28,15 @@ The dev server runs at <http://localhost:4321/> with hot module reloading.
 ```sh
 npm run build     # writes dist/client (static site) and dist/server (worker)
 npm run preview   # serves the production build locally
+npm run og        # redraws public/og/*.png on its own
+npm run check:csp # rehashes the built inline scripts against public/_headers
 ```
+
+`npm run build` runs `npm run og` first, through npm's `prebuild` hook, which
+draws the five sharing cards into `public/og/` so Astro copies them into
+`dist/client/`. The directory is generated and git-ignored, so the deploy build
+command has to be `npm run build` — `astro build` on its own would ship no
+cards.
 
 The Cloudflare adapter splits the output: `dist/client/` is the static site that
 gets served, `dist/server/` holds the worker for the two server endpoints. Astro is
