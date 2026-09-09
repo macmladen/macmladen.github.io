@@ -67,7 +67,7 @@
   .split {
     grid-template-columns: var(--split-media) 1fr;
     align-items: center;
-    gap: var(--space-12);
+    gap: var(--space-8);
   }
 
   .split--media-right {
