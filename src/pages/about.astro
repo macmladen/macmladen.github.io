@@ -4,7 +4,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import StructuredData from '../components/StructuredData.astro';
 import headshot from '../assets/mladen-head-2020.jpg';
 import { person } from '../data/person';
-import { appearances, summaryLine } from '../data/speaking';
 import { graph, personNode, profilePageNode } from '../lib/schema';
 
 /** The Person node points at the same 560px headshot the home page renders,
@@ -18,12 +17,11 @@ const headshotFile = await getImage({
 
 const schema = graph(profilePageNode(Astro.site, personNode(Astro.site, headshotFile.src)));
 
-const speakerDeck = person.profiles.find((profile) => profile.name === 'Speaker Deck')!;
-
-// draft: Mladen to approve — meta description for /about/.
+// draft: Mladen to approve — meta description for /about/. Rewritten in MM-30:
+// the speaking list moved to /speaking/, so the description no longer promises it.
 const description =
-  'Senior developer and architect in Novi Sad: the longer story, what he speaks ' +
-  'about, and where he is active in the WordPress and Drupal communities.';
+  'Senior developer and architect in Novi Sad: the longer story, from assembly on ' +
+  '8-bit machines and fifteen years of typography to WordPress, Drupal and the web.';
 ---
 
 <BaseLayout title="About" description={description} canonical="/about/" ogType="profile">
@@ -53,33 +51,6 @@ const description =
           </p>
         ))
       }
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="speaking-title">
-    <div class="container container--narrow flow">
-      <h2 id="speaking-title">Speaking</h2>
-      <ul class="appearances">
-        {
-          appearances.map((appearance) => (
-            <li>
-              <span class="appearances__event">
-                {appearance.year ? `${appearance.event} ${appearance.year}` : appearance.event}
-              </span>
-              {appearance.title && (
-                <span class="appearances__title">
-                  {appearance.url ? (
-                    <a href={appearance.url}>{appearance.title}</a>
-                  ) : (
-                    appearance.title
-                  )}
-                </span>
-              )}
-            </li>
-          ))
-        }
-      </ul>
-      <p>{summaryLine}. Slides on <a href={speakerDeck.url}>{speakerDeck.name}</a>.</p>
     </div>
   </section>
 </BaseLayout>

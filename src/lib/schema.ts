@@ -3,6 +3,7 @@
  *  drift apart. Pages pass their own `Astro.site` in, so nothing hard-codes
  *  the origin. */
 import { person } from '../data/person';
+import { appearancesNewestFirst, type Appearance } from '../data/speaking';
 import { workshop } from '../data/workshop';
 
 type Node = Record<string, unknown>;
@@ -70,6 +71,46 @@ export function profilePageNode(site: URL | string | undefined, mainEntity: Node
   };
 }
 
+/** One appearance as an Event. The event itself — the conference or meetup —
+ *  is the superEvent; the talk or workshop given there is the Event. A year on
+ *  its own is a valid ISO 8601 date, which is all the source material records. */
+function appearanceNode(appearance: Appearance, site: URL | string | undefined): Node {
+  return {
+    '@type': 'Event',
+    ...(appearance.kind === 'workshop' ? { additionalType: 'EducationEvent' } : {}),
+    name: appearance.title ?? appearance.event,
+    ...(appearance.year ? { startDate: String(appearance.year) } : {}),
+    ...(appearance.url ? { url: absolute(appearance.url, site) } : {}),
+    ...(appearance.title ? { superEvent: { '@type': 'Event', name: appearance.event } } : {}),
+    performer: personRef(site),
+  };
+}
+
+/** The /speaking/ index: a CollectionPage whose mainEntity is an ItemList of
+ *  the appearances, in the order the page itself renders them. Every value is
+ *  read from src/data/speaking.ts; nothing here is typed out a second time. */
+export function speakingPageNode(site: URL | string | undefined): Node {
+  return {
+    '@type': 'CollectionPage',
+    '@id': absolute('/speaking/#speaking', site),
+    url: absolute('/speaking/', site),
+    name: 'Speaking',
+    inLanguage: 'en',
+    isPartOf: { '@id': absolute('/#website', site) },
+    about: personRef(site),
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: appearancesNewestFirst.length,
+      itemListOrder: 'https://schema.org/ItemListOrderDescending',
+      itemListElement: appearancesNewestFirst.map((appearance, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: appearanceNode(appearance, site),
+      })),
+    },
+  };
+}
+
 export function eventNode(site: URL | string | undefined): Node {
   return {
     '@type': 'Event',
@@ -113,8 +154,9 @@ export function eventNode(site: URL | string | undefined): Node {
   };
 }
 
-/** Breadcrumb trail. The /speaking/ and /speaking/<year>/ URLs are reserved in
- *  the spec precisely so these links keep pointing somewhere real. */
+/** Breadcrumb trail. /speaking/ is a real page (MM-30) and /speaking/<year>/
+ *  stays reserved in the spec, so every step of the trail points somewhere
+ *  real or somewhere nothing else may take. */
 export function breadcrumbNode(
   site: URL | string | undefined,
   trail: { name: string; path: string }[],

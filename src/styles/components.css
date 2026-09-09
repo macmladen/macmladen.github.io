@@ -18,7 +18,7 @@
   border-radius: var(--radius-sm);
 }
 
-/* Speaking history: the event line, then the title under it. */
+/* Speaking history: the event line, the title under it, then the kind. */
 .appearances {
   padding-inline-start: 0;
   list-style: none;
@@ -36,6 +36,19 @@
 .appearances__title {
   display: block;
   color: var(--color-ink-soft);
+}
+
+/* Talk or workshop, the quietest line of the three. */
+.appearances__kind {
+  display: block;
+  color: var(--color-ink-soft);
+  font-size: var(--text-sm);
+}
+
+/* The call to action inside the highlighted entry. The entry is a .notice, so
+   the button needs a gap of its own; the spans above it stack tight. */
+.appearances__cta {
+  margin-block-start: var(--space-4);
 }
 
 /* The facts under an event title: date, venue, language, link. */

@@ -49,6 +49,14 @@ export const appearances: Appearance[] = [
   },
 ];
 
+/** The appearances in the order /speaking/ renders them: newest first, with
+ *  the entries whose year the source material does not record last. The page
+ *  and the ItemList in its JSON-LD both read this one array, so the visible
+ *  order and the structured order can never disagree. */
+export const appearancesNewestFirst: Appearance[] = [...appearances].sort(
+  (a, b) => (b.year ?? 0) - (a.year ?? 0),
+);
+
 /** The line that stands for everything not listed above. */
 export const summaryLine =
   '40+ events in Novi Sad, Subotica, Zagreb, Amsterdam, Prague, Varna, Utrecht, Burgas';

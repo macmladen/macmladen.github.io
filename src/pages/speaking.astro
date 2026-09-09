@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import StructuredData from '../components/StructuredData.astro';
+import { person } from '../data/person';
+import { appearancesNewestFirst, summaryLine } from '../data/speaking';
+import { isRegistrationOpen, workshop } from '../data/workshop';
+import { graph, speakingPageNode } from '../lib/schema';
+
+/** Asked at render time, not at module scope: see isRegistrationOpen. */
+const registrationOpen = isRegistrationOpen();
+
+const schema = graph(speakingPageNode(Astro.site));
+
+const speakerDeck = person.profiles.find((profile) => profile.name === 'Speaker Deck')!;
+
+/** Visible labels for Appearance['kind']. Presentation, so they live here and
+ *  not in the data file. */
+const kindLabel = { talk: 'Talk', workshop: 'Workshop' } as const;
+
+// draft: Mladen to approve — meta description for /speaking/.
+const description =
+  'Talks and workshops at WordPress and Drupal events across Europe, and the ' +
+  'hands-on WordCamp Belgrade 2026 workshop on Docker and AI agents.';
+
+// draft: Mladen to approve — replaces the register button once registration closes.
+const closedLinkText = 'The workshop page';
+---
+
+<BaseLayout title="Speaking" description={description} canonical="/speaking/">
+  <StructuredData slot="head" data={schema} />
+
+  <section class="section" aria-labelledby="speaking-title">
+    <div class="container container--narrow flow">
+      <h1 id="speaking-title">Speaking</h1>
+      <p>{summaryLine}. Slides on <a href={speakerDeck.url}>{speakerDeck.name}</a>.</p>
+      <ul class="appearances">
+        {
+          appearancesNewestFirst.map((appearance) => {
+            /* The one appearance that has a page of its own on this site. */
+            const current = appearance.url === workshop.path;
+            return (
+              <li class={current ? 'notice' : undefined}>
+                <span class="appearances__event">
+                  {appearance.year ? `${appearance.event} ${appearance.year}` : appearance.event}
+                </span>
+                {appearance.title && (
+                  <span class="appearances__title">
+                    {appearance.url ? (
+                      <a href={appearance.url}>{appearance.title}</a>
+                    ) : (
+                      appearance.title
+                    )}
+                  </span>
+                )}
+                <span class="appearances__kind">{kindLabel[appearance.kind]}</span>
+                {current && (
+                  <p class="appearances__cta">
+                    {registrationOpen ? (
+                      <a class="button" href={workshop.path}>
+                        Register for the workshop
+                      </a>
+                    ) : (
+                      <a href={workshop.path}>{closedLinkText}</a>
+                    )}
+                  </p>
+                )}
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
