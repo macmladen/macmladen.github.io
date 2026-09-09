@@ -12,11 +12,18 @@ compatibility_date = "2026-09-08"
 
 # D1 holds the workshop registrations. The binding name DB is what
 # src/pages/api/register.astro reads off Astro.locals.runtime.env.
-# database_id is a placeholder: M5 runs `wrangler d1 create macmladen-registrations`
-# on Mladen's account and pastes the real id here. Local development does not use
+# database_id is the production database, created 2026-09-09 with `wrangler d1 create macmladen-registrations`
+# (Fable, 2026-09-09). Local development does not use
 # the id at all — `wrangler d1 ... --local` keys off database_name.
 [[d1_databases]]
 binding = "DB"
 database_name = "macmladen-registrations"
-database_id = "00000000-0000-0000-0000-000000000000" # replaced in M5
+database_id = "b79139e4-c2de-401d-9d2f-ab79773c968c"
 migrations_dir = "migrations"
+
+# The Astro Cloudflare adapter injects a SESSION binding into the generated worker
+# config; nothing here uses sessions, but wrangler refuses a KV binding without an
+# id, so the namespace exists (created 2026-09-09) and is bound here.
+[[kv_namespaces]]
+binding = "SESSION"
+id = "aa96701073304957be05068faa6f1b6b"
