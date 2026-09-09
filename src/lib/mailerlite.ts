@@ -16,7 +16,10 @@ export interface MailerliteEnv {
   MAILERLITE_GROUP_ID?: string;
 }
 
-/** MailerLite custom fields are text fields; booleans go in as yes/no. */
+/** MailerLite custom fields are text fields; booleans go in as yes/no. A field
+ *  that does not exist on the account is dropped silently by the API — the call
+ *  still answers 2xx — so every key below has to be created in the dashboard
+ *  first (README, "MailerLite fields"). */
 const flag = (value: boolean): string => (value ? 'yes' : 'no');
 
 export async function upsertSubscriber(
@@ -32,7 +35,11 @@ export async function upsertSubscriber(
       name: values.name,
       github: values.github,
       os: values.os,
+      // The joined string, exactly as it goes into the D1 column: MailerLite
+      // custom fields are single text values, so several tools travel as
+      // "claude-code,cursor".
       tool: values.tool,
+      terminal: values.terminal,
       own_hosting: flag(values.own_hosting),
       watch_only: flag(values.watch_only),
     },

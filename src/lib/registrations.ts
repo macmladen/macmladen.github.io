@@ -43,8 +43,8 @@ export async function insertRegistration(
   const row = await db
     .prepare(
       `INSERT INTO registrations
-         (name, email, github, os, tool, ssh_key, own_hosting, watch_only, newsletter, ip_hash, mailerlite_status)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+         (name, email, github, os, tool, terminal, ssh_key, own_hosting, watch_only, newsletter, ip_hash, mailerlite_status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
        RETURNING id`,
     )
     .bind(
@@ -52,7 +52,9 @@ export async function insertRegistration(
       values.email,
       values.github,
       values.os,
+      // Every ticked AI tool in one string, comma-joined by the validator.
       values.tool,
+      values.terminal,
       values.ssh_key === '' ? null : values.ssh_key,
       values.own_hosting ? 1 : 0,
       values.watch_only ? 1 : 0,
