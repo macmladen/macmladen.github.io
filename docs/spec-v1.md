@@ -112,7 +112,7 @@ Trailing-slash form is canonical for pages (`trailingSlash: 'always'`); Workers 
 - Footer (shared component, revised 2026-09-08): two centred icon links only — LinkedIn `rs.linkedin.com/in/macmladen` and GitHub `github.com/macmladen` — as inline SVG brand marks on a 24 px viewBox, `fill="currentColor"`, `aria-hidden`, each with a visually hidden text label and `rel="me"`; the copyright line centred under them. Speaker Deck, the brand links (Blue Fish, Koder, Razgovori) and the email are no longer in the footer; they stay in `src/data/person.ts` for the JSON-LD (`sameAs`, `email`). Reaching Mladen is a Contact page's job, not the footer's.
 
 **2. `/about/`.** Narrow container for the reading text.
-- Headshot and the full EN bio verbatim from section 6 of `wordcamp-belgrade-2026-workshop-handover.md` in the workshop project folder (`~/Documents/JOBS/0905 DDEV and AI Radionica WordCamp BG 2026/`).
+- Headshot, then the body text of the 2014 site's about page verbatim (MM-20, decided 2026-09-09): thirteen paragraphs recovered with `git show jekyll:about.html`, front matter and `<p>` wrappers stripped and nothing else changed, including the original's `<em>`, `<strong>` and the Ruby `gem` as `<code>`. They live in `src/data/person.ts` as `about: string[]` and render with `set:html`. It is Mladen's own copy, so it carries no draft marker and its typos stand. This replaces the EN bio from section 6 of `wordcamp-belgrade-2026-workshop-handover.md` on the page; that bio stays in `person.ts` as `bio`.
 - "Speaking": WordCamp Apatin 2023 "WordPress with Cloudflare CDN" (link `https://apatin.wordcamp.org/2023/session/wordpress-with-cloudflare-cdn/`), DrupalJam Utrecht 2024, Drupal Dev Days Burgas, WordPress Meetup Vršac 2025 "Decoupled WordPress — architecture and challenges", plus the line "40+ events in Novi Sad, Subotica, Zagreb, Amsterdam, Prague, Varna, Utrecht, Burgas", and the Speaker Deck link. The list is a data array in one file so `/speaking/` can be generated from it later.
 - "Community": DaFED founder, Drupal Camp Novi Sad organiser, Drupal meetup, WordPress and Drupal communities. One short paragraph.
 - Footer as above.
@@ -178,7 +178,7 @@ D1 table `registrations` additionally has `id`, `created_at`, `ip_hash`, `mailer
 ## Acceptance criteria
 - [ ] `npm run dev` serves `/`, `/about/`, `/speaking/2026/wordcamp-belgrade-ddev-ai/` locally; `ddev start` does the same under DDEV.
 - [ ] `/` shows intro, workshop announcement and footer in order; the announcement carries the classroom image with no credit overlay, eyebrow, title, intro and CTA to the workshop page; every footer link resolves to the stated URL.
-- [ ] `/about/` shows headshot, full EN bio, the speaking list with the Apatin and Speaker Deck links, and the community paragraph.
+- [ ] `/about/` shows headshot, the thirteen paragraphs of the 2014 about text verbatim and in order, the speaking list with the Apatin and Speaker Deck links, and the community paragraph.
 - [ ] The workshop page shows the corrected EN abstract, the mandatory checklist, the GitHub placeholder line, the close date, and the form with all nine fields; the JSON-LD validates as an `Event`.
 - [ ] Submitting valid data locally inserts one row into local D1 (query documented in README) and renders the inline success state.
 - [ ] Missing required field, bad GitHub username, malformed SSH key, or duplicate email re-renders the form with field-level errors and preserves entered values.

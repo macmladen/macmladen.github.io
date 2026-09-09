@@ -42,7 +42,16 @@ const description =
         loading="lazy"
         class="portrait"
       />
-      <p>{person.bio}</p>
+      {
+        /* The 2014 about text, verbatim. set:html because the paragraphs carry
+           the original's own <em>, <strong> and one <code>; the strings are
+           fixed content in src/data/person.ts, not input. */
+        person.about.map((paragraph) => (
+          <p>
+            <Fragment set:html={paragraph} />
+          </p>
+        ))
+      }
     </div>
   </section>
 
