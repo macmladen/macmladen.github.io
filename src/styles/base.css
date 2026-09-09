@@ -51,9 +51,11 @@ a {
   text-underline-offset: var(--underline-offset);
 }
 
+/* Hover thickens the underline and keeps the colour: the link colour and the
+   accent are the same #F40, so the state has to be carried by the rule. */
 a:hover,
 a:active {
-  color: var(--color-accent);
+  text-decoration-thickness: var(--underline-thickness-strong);
 }
 
 :focus-visible {

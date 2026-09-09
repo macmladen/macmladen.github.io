@@ -13,23 +13,24 @@
   --color-ink: #111;
   --color-ink-soft: #444;
   --color-accent: #F40;
-  --color-accent-ink: #111;
-  --color-link: #A30;
+  --color-accent-ink: #FFF;
+  --color-accent-hover: #A30;
+  --color-link: #F40;
   --color-ok-bg: #DED;
   --color-ok-ink: #151;
   --color-error-bg: #FDD;
   --color-error-ink: #900;
   --color-field-bg: #FFF;
 
-  /* Two roles, not one ramp. --color-accent #F40 is a surface and an edge —
-     button fill, focus outline, bar outline — where 3:1 is the bar; it is
-     3.05:1 on the page and 2.61:1 on the alternate band, so it is never text
-     on a light surface. --color-link #A30 is the text role: 5.82:1 on the
-     page, 4.98:1 on the band, 6.60:1 in a field, and it doubles as the
-     primary button's hover fill. It is the lightest step of the #F40 hue
-     ramp that clears 4.5:1 on both light surfaces — #B30 is 5.17/4.42 and
-     misses the band. Links hover to --color-accent and keep the underline;
-     the colour alone never carries the state. */
+  /* One accent, carrying both roles. --color-accent #F40 is the surface and
+     the edge — button fill, focus outline, bar outline — and --color-link
+     holds the same #F40 for body links and for the secondary button's label
+     and border. The ratios are known and accepted: #F40 is 3.05:1 on the
+     page, 2.61:1 on the alternate band and 3.45:1 under the white of
+     --color-accent-ink. Mladen's decision of 2026-09-09. Nothing rests on
+     colour alone: links carry an underline that thickens on hover, and both
+     buttons deepen on hover to --color-accent-hover #A30, where white is
+     6.60:1 and the page colour 5.82:1. */
 
   /* The credit strip's dark scrim over a photograph, and the ink on it. Both
      are the same in every scheme: the scrim is dark whatever the page does. */
@@ -64,6 +65,7 @@
   --weight-bold: 700;
 
   --underline-thickness: 1px;
+  --underline-thickness-strong: 2px;
   --underline-offset: 0.15em;
 
   /* Space — 4px base */

@@ -67,30 +67,31 @@
   cursor: pointer;
 }
 
-/* Hover deepens the fill to the link colour and takes the page colour for
-   text, because #111 falls to 2.9:1 on #A30. --color-bg on --color-link is
-   5.8:1, and the same pair holds in the dormant dark block. */
+/* Hover deepens the fill to --color-accent-hover #A30 and keeps the white
+   label, which reaches 6.60:1 there against 3.45:1 at rest. */
 .button:hover,
 .button:active {
-  border-color: var(--color-link);
-  background-color: var(--color-link);
-  color: var(--color-bg);
+  border-color: var(--color-accent-hover);
+  background-color: var(--color-accent-hover);
+  color: var(--color-accent-ink);
 }
 
-/* The secondary button carries the accent as text nowhere: its label is the
-   link colour on both surfaces (5.8:1 and 5.0:1), and hover moves the border
-   to match the label rather than to #F40, which is only 2.6:1 on the band. */
+/* The secondary button is the accent as an outline and as a label: border
+   --color-accent and label --color-link, both #F40 by Mladen's decision of
+   2026-09-09. Hover fills the band colour and darkens border and label to
+   #A30 together, because at rest the border already carries the accent and a
+   fill alone is invisible on .section--alt. */
 .button--secondary {
-  border-color: var(--color-border);
+  border-color: var(--color-accent);
   background-color: transparent;
   color: var(--color-link);
 }
 
 .button--secondary:hover,
 .button--secondary:active {
-  border-color: var(--color-link);
+  border-color: var(--color-accent-hover);
   background-color: var(--color-bg-alt);
-  color: var(--color-link);
+  color: var(--color-accent-hover);
 }
 
 /* Eyebrow — the small line above a heading. Sentence case, never uppercased. */
