@@ -85,16 +85,29 @@ export function contactPageNode(site: URL | string | undefined, mainEntity: Node
   };
 }
 
-/** One appearance as an Event. The event itself — the conference or meetup —
- *  is the superEvent; the talk or workshop given there is the Event. A year on
- *  its own is a valid ISO 8601 date, which is all the source material records. */
+/** One appearance as an Event. The event itself — the conference, camp or
+ *  meetup — is the superEvent; the talk, workshop or lecture given there is the
+ *  Event. The day where src/data/speaking.ts records one, otherwise the year on
+ *  its own, which is a valid ISO 8601 date too. `location` is the city, where
+ *  one is recorded; the two podcast slots have none. `sameAs` is where the same
+ *  appearance can be seen elsewhere: the deck on Speaker Deck, the recording on
+ *  YouTube, or both. */
 function appearanceNode(appearance: Appearance, site: URL | string | undefined): Node {
+  const elsewhere = [appearance.deck, appearance.video].filter(
+    (url): url is string => url !== null,
+  );
   return {
     '@type': 'Event',
-    ...(appearance.kind === 'workshop' ? { additionalType: 'EducationEvent' } : {}),
+    ...(appearance.kind === 'workshop' || appearance.kind === 'lecture'
+      ? { additionalType: 'EducationEvent' }
+      : {}),
     name: appearance.title ?? appearance.event,
-    ...(appearance.year ? { startDate: String(appearance.year) } : {}),
+    startDate: appearance.date ?? String(appearance.year),
+    ...(appearance.city
+      ? { location: { '@type': 'Place', name: appearance.city } }
+      : {}),
     ...(appearance.url ? { url: absolute(appearance.url, site) } : {}),
+    ...(elsewhere.length > 0 ? { sameAs: elsewhere } : {}),
     ...(appearance.title ? { superEvent: { '@type': 'Event', name: appearance.event } } : {}),
     performer: personRef(site),
   };
