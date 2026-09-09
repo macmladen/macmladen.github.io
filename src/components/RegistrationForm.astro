@@ -180,7 +180,15 @@ const hasErrors = Object.keys(errors).length > 0;
               required
               checked={value.terminal === option.value}
             />
-            <label for={`terminal-${option.value}`}>{option.label}</label>
+            <label for={`terminal-${option.value}`}>
+              {option.label.includes(': ') ? (
+                <>
+                  <strong>{option.label.split(': ')[0]}</strong>: {option.label.split(': ').slice(1).join(': ')}
+                </>
+              ) : (
+                option.label
+              )}
+            </label>
           </div>
         ))
       }
