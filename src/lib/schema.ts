@@ -138,6 +138,9 @@ export function eventNode(site: URL | string | undefined): Node {
     eventStatus: 'https://schema.org/EventScheduled',
     inLanguage: workshop.language,
     url: absolute(workshop.path, site),
+    /** The same session described elsewhere: its page on the WordCamp site.
+     *  `url` stays this site's own page, which is the canonical one. */
+    sameAs: workshop.sessionUrl,
     location: {
       '@type': 'Place',
       name: workshop.venue,

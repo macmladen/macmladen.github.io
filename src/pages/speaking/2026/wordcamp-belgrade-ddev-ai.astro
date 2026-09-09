@@ -54,7 +54,7 @@ const schema = graph(
           </li>
           <li>{workshop.venue}, {workshop.address}</li>
           <li>Held in Serbian</li>
-          <li><a href={workshop.wordcampUrl}>{workshop.wordcampName}</a></li>
+          <li><a href={workshop.sessionUrl}>Session at {workshop.wordcampName}</a></li>
         </ul>
         {workshop.abstract.map((paragraph) => <p>{paragraph}</p>)}
       </div>

@@ -79,7 +79,14 @@ export const workshop = {
   country: 'RS',
   language: 'sr',
   path: '/speaking/2026/wordcamp-belgrade-ddev-ai/',
+  /** The conference itself. Kept for the Event's superEvent, which describes
+   *  WordCamp Belgrade 2026 rather than this session. */
   wordcampUrl: 'https://belgrade.wordcamp.org/2026/',
+  /** This session's own page on the WordCamp site. Every visible "WordCamp"
+   *  link points here: a visitor following it wants the session, not the
+   *  conference front page. It is also the Event's sameAs. */
+  sessionUrl:
+    'https://belgrade.wordcamp.org/2026/session/wordpress-docker-i-ai-agenti-prakticno-sr/',
   wordcampName: 'WordCamp Belgrade 2026',
   wordcampStart: '2026-09-18',
   wordcampEnd: '2026-09-19',
