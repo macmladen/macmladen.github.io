@@ -12,14 +12,24 @@
   --color-border: #CBA;
   --color-ink: #111;
   --color-ink-soft: #444;
-  --color-accent: #909;
-  --color-accent-strong: #606;
-  --color-accent-ink: #FFF;
+  --color-accent: #F40;
+  --color-accent-ink: #111;
+  --color-link: #A30;
   --color-ok-bg: #DED;
   --color-ok-ink: #151;
   --color-error-bg: #FDD;
   --color-error-ink: #900;
   --color-field-bg: #FFF;
+
+  /* Two roles, not one ramp. --color-accent #F40 is a surface and an edge —
+     button fill, focus outline, bar outline — where 3:1 is the bar; it is
+     3.05:1 on the page and 2.61:1 on the alternate band, so it is never text
+     on a light surface. --color-link #A30 is the text role: 5.82:1 on the
+     page, 4.98:1 on the band, 6.60:1 in a field, and it doubles as the
+     primary button's hover fill. It is the lightest step of the #F40 hue
+     ramp that clears 4.5:1 on both light surfaces — #B30 is 5.17/4.42 and
+     misses the band. Links hover to --color-accent and keep the underline;
+     the colour alone never carries the state. */
 
   /* The credit strip's dark scrim over a photograph, and the ink on it. Both
      are the same in every scheme: the scrim is dark whatever the page does. */
@@ -28,12 +38,11 @@
 
   /* The header and footer bars. Ink with white links, checked against
      --color-bar-bg rather than the page background:
-     --color-bar-ink 18.9:1, --color-bar-hover 4.0:1 (and 4.7:1 against the
-     white it outlines). --color-bar-hover is the deepest web-safe fuchsia
-     that clears 3:1 on #111; #909 reaches only 2.5:1. */
+     --color-bar-ink 18.9:1, --color-bar-hover 5.5:1 (and 3.5:1 against the
+     white it outlines). The bar outline is the accent itself. */
   --color-bar-bg: #111;
   --color-bar-ink: #FFF;
-  --color-bar-hover: #C0C;
+  --color-bar-hover: #F40;
 
   /* Type — system fonts only, nothing loaded over the network */
   --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -94,9 +103,9 @@
   --color-border: #555;
   --color-ink: #FED;
   --color-ink-soft: #CBA;
-  --color-accent: #FAF;
-  --color-accent-strong: #FCF;
+  --color-accent: #F40;
   --color-accent-ink: #111;
+  --color-link: #F74;
   --color-ok-bg: #131;
   --color-ok-ink: #CFC;
   --color-error-bg: #311;

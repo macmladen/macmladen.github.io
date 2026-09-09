@@ -45,7 +45,7 @@ h6 {
 }
 
 a {
-  color: var(--color-accent);
+  color: var(--color-link);
   text-decoration: underline;
   text-decoration-thickness: var(--underline-thickness);
   text-underline-offset: var(--underline-offset);
@@ -53,11 +53,11 @@ a {
 
 a:hover,
 a:active {
-  color: var(--color-accent-strong);
+  color: var(--color-accent);
 }
 
 :focus-visible {
-  outline: var(--focus-width) solid var(--color-accent-strong);
+  outline: var(--focus-width) solid var(--color-accent);
   outline-offset: var(--focus-offset);
 }
 

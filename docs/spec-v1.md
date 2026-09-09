@@ -38,12 +38,16 @@ Light scheme, on `:root`. Pairs checked against `--color-bg` unless stated:
 | `--color-border` | `#CBA` | rules, input borders | 1.7 : 1, non-text separation |
 | `--color-ink` | `#111` | text | 16.7 : 1 |
 | `--color-ink-soft` | `#444` | secondary text, dates, captions | 8.6 : 1 |
-| `--color-accent` | `#909` | links, primary button background | 6.6 : 1 (AA; links are underlined) |
-| `--color-accent-strong` | `#606` | link hover and active, focus ring | 10.6 : 1 |
-| `--color-accent-ink` | `#FFF` | text on the accent | 7.5 : 1 on `#909` |
+| `--color-accent` | `#F40` | primary button fill, focus outline, bar outline, link hover | 3.05 : 1 on `#FED`, 2.61 : 1 on `#EDC` |
+| `--color-accent-ink` | `#111` | text on the accent | 5.47 : 1 on `#F40` |
+| `--color-link` | `#A30` | body link text, secondary button label, primary button hover fill | 5.82 : 1 on `#FED`, 4.98 : 1 on `#EDC`, 6.60 : 1 on `#FFF` |
 | `--color-ok-bg` / `--color-ok-ink` | `#DED` / `#151` | success state | 7.4 : 1 |
 | `--color-error-bg` / `--color-error-ink` | `#FDD` / `#900` | field errors | 7.1 : 1 |
 | `--color-field-bg` | `#FFF` | input, select and textarea fill | |
+
+The accent is `#F40` (chosen 2026-09-09, replacing `#909`), and it carries two roles rather than one ramp. **`--color-accent` is a surface and an edge** — button fill, focus outline, bar outline, link hover — where 3 : 1 is the bar it has to clear; at 3.05 : 1 on the page and 2.61 : 1 on the alternate band it is never body text on a light surface. **`--color-link` is the text role**, and it is the lightest step of the same hue ramp that clears 4.5 : 1 on *both* light surfaces: `#B30` is 5.17 / 4.42 and misses the band, `#A30` is 5.82 / 4.98 and passes. `#B20` is fractionally lighter and also passes (5.54 / 4.74), but its hue is 11° against `#F40`'s 16°, where `#A30` sits at 18° — `#A30` stays in the accent's family, which is why it wins.
+
+`--color-accent-strong` is retired: two accent steps become one accent plus one link colour. Everything that used it now reads `--color-accent` (link hover, focus outlines) or `--color-link` (the primary button's hover fill, the secondary button's label and hover border). The primary button's hover flips its text to `--color-bg`, because `#111` falls to 2.86 : 1 on `#A30` while `#FED` reaches 5.82 : 1.
 
 Scheme-independent tokens, declared once and never redefined:
 
@@ -51,11 +55,11 @@ Scheme-independent tokens, declared once and never redefined:
 |---|---|---|---|
 | `--color-bar-bg` | `#111` | header and footer bars, in every scheme | |
 | `--color-bar-ink` | `#FFF` | text and links on a bar | 18.9 : 1 |
-| `--color-bar-hover` | `#C0C` | the outline a bar link shows on hover and focus | 4.0 : 1 on the bar, 4.7 : 1 on the white it surrounds |
+| `--color-bar-hover` | `#F40` | the outline a bar link shows on hover and focus; the accent value | 5.47 : 1 on the bar, 3.45 : 1 on the white it surrounds |
 | `--color-overlay` | `rgb(0 0 0 / 0.7)` | the credit strip's scrim over a photograph | |
 | `--color-overlay-ink` | `#FFF` | text on that scrim | |
 
-Links are underlined in body text (`text-decoration-thickness` from a token, `text-underline-offset` set), never colour alone. Focus: a 2 px outline in `--color-accent-strong` with a 2 px offset, on every interactive element; inside the two bars the outline is `--color-bar-hover`, because `--color-accent-strong` is invisible on ink.
+Links are underlined in body text (`text-decoration-thickness` from a token, `text-underline-offset` set), never colour alone; hover moves the colour to `--color-accent` and keeps the underline. Focus: a 2 px outline in `--color-accent` with a 2 px offset, on every interactive element. Inside the two bars the outline is `--color-bar-hover`, which now holds the same `#F40`; the token stays separate because the bars are declared against `--color-bar-bg`, not against the page.
 
 Bar links are the one exception to the underline rule: they are white, underline on hover, and both hover and focus draw the outline. The header wordmark never underlines; the current nav item is marked with weight and a permanent underline rather than a colour.
 

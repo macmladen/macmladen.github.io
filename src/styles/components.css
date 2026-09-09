@@ -67,24 +67,30 @@
   cursor: pointer;
 }
 
+/* Hover deepens the fill to the link colour and takes the page colour for
+   text, because #111 falls to 2.9:1 on #A30. --color-bg on --color-link is
+   5.8:1, and the same pair holds in the dormant dark block. */
 .button:hover,
 .button:active {
-  border-color: var(--color-accent-strong);
-  background-color: var(--color-accent-strong);
-  color: var(--color-accent-ink);
+  border-color: var(--color-link);
+  background-color: var(--color-link);
+  color: var(--color-bg);
 }
 
+/* The secondary button carries the accent as text nowhere: its label is the
+   link colour on both surfaces (5.8:1 and 5.0:1), and hover moves the border
+   to match the label rather than to #F40, which is only 2.6:1 on the band. */
 .button--secondary {
   border-color: var(--color-border);
   background-color: transparent;
-  color: var(--color-accent);
+  color: var(--color-link);
 }
 
 .button--secondary:hover,
 .button--secondary:active {
-  border-color: var(--color-accent-strong);
+  border-color: var(--color-link);
   background-color: var(--color-bg-alt);
-  color: var(--color-accent-strong);
+  color: var(--color-link);
 }
 
 /* Eyebrow — the small line above a heading. Sentence case, never uppercased. */
@@ -170,7 +176,7 @@
 .field input:focus-visible,
 .field select:focus-visible,
 .field textarea:focus-visible {
-  outline: var(--focus-width) solid var(--color-accent-strong);
+  outline: var(--focus-width) solid var(--color-accent);
   outline-offset: var(--focus-offset);
 }
 
