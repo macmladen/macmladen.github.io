@@ -56,10 +56,21 @@
   font-weight: var(--weight-semibold);
 }
 
-/* The facts under an event title: when, where, in what language. The label is
-   the eyebrow's voice — --color-accent-muted at --text-sm — so the three of
-   them read as one quiet column beside values that stay in full body ink.
-   Placement is in the layout layer, next to .contact. */
+/* The facts under an event title: which session, when, where, in what
+   language. The label is the eyebrow's voice — --color-accent-muted at
+   --text-sm — so the four of them read as one quiet column beside values that
+   stay in full body ink. Placement is in the layout layer, next to .contact.
+
+   The rule below the block is the h1's underline repeated: same thickness, same
+   accent, same space above it. It closes the facts off as a header for the page
+   rather than as the first of the paragraphs that follow. The padding travels
+   with the border because it exists only to keep the last row off it — the same
+   pair, for the same reason, as on h1 in the base layer. */
+.facts {
+  padding-block-end: var(--space-2);
+  border-block-end: var(--underline-thickness) solid var(--color-accent);
+}
+
 .facts dt {
   color: var(--color-accent-muted);
   font-size: var(--text-sm);

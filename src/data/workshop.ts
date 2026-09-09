@@ -102,9 +102,9 @@ export const workshop = {
   summary:
     'A hands-on workshop at WordCamp Belgrade 2026: set WordPress up in DDEV, put it ' +
     'under git, and run one full loop with an AI agent that plans, checks and deploys.',
-  /** placeholder: the scaffolding repository is not public yet, so the link points
-   *  at the GitHub profile until Mladen publishes it (due Friday 11 September). */
-  prepRepoUrl: 'https://github.com/macmladen',
+  /** The scaffolding repository: the preparation guide, the demo project and the
+   *  materials. Linked from the workshop page and named in the confirmation email. */
+  repoUrl: 'https://github.com/macmladen/workshop-wp-ddev-ai',
   prepDeadline: 'Friday 11 September',
 } as const;
 

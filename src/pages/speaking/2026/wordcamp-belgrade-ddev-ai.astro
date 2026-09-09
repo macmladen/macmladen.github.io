@@ -48,7 +48,6 @@ const schema = graph(
         <p class="eyebrow">{workshop.subtitle}</p>
         <h1 id="workshop-title">{workshop.title}</h1>
         <Facts />
-        <p><a href={workshop.sessionUrl}>Session at {workshop.wordcampName}</a></p>
         {workshop.abstract.map((paragraph) => <p>{paragraph}</p>)}
       </div>
     </section>
@@ -71,11 +70,10 @@ const schema = graph(
           {workshop.prerequisites.map((item) => <li>{item}</li>)}
         </ul>
         <p>{workshop.optionalPrerequisite}</p>
-        <!-- placeholder: prepRepoUrl points at the GitHub profile until the
-             scaffolding repository is public -->
         <p>
-          Preparation guide and materials will be
-          <a href={workshop.prepRepoUrl}>on GitHub</a> by {workshop.prepDeadline}.
+          Preparation guide and materials will be{' '}<a href={workshop.repoUrl}
+            >on GitHub</a
+          >{' '}by {workshop.prepDeadline}.
         </p>
       </div>
     </section>

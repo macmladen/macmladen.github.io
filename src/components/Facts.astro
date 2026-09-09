@@ -1,5 +1,8 @@
 ---
-/** The event facts under the workshop title: when, where, in what language.
+/** The event facts under the workshop title: which session, when, where, in
+ *  what language. The Session row carries the link to the session's own page on
+ *  the WordCamp site, so the fact and its source sit on one line instead of a
+ *  loose paragraph under the block.
  *  Every value is read from src/data/workshop.ts — the same object the page's
  *  Event JSON-LD reads — so the visible block and the structured data cannot
  *  disagree. A definition list rather than a bare list: each line is a labelled
@@ -25,6 +28,9 @@ const pin =
 ---
 
 <dl class="facts">
+  <dt>Session</dt>
+  <dd><a href={workshop.sessionUrl}>{workshop.title}</a></dd>
+
   <dt>When</dt>
   <dd>
     <time datetime={workshop.start}
