@@ -68,16 +68,16 @@ Links are underlined in body text (`text-decoration-thickness` from a token, `te
 
 Bar links are the one exception to the underline rule: they are white, underline on hover, and both hover and focus draw the outline. The header wordmark never underlines; the current nav item is marked with weight and a permanent underline rather than a colour.
 
-**Type.** System fonts, nothing loaded over the network: `--font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`; `--font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace`. Headings use the body family at heavier weight (600 to 700), no display face. Fluid scale with a 1.2 ratio, so steps are noticeable but not dramatic:
+**Type.** System fonts, nothing loaded over the network: `--font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`; `--font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace`. Headings use the body family at heavier weight (600 to 700), no display face. Every step is a `clamp()` interpolating between the same two viewport anchors, 320 px and 1120 px. The body steps keep a 1.2 ratio at both ends. The heading steps keep their 320 px values and reach further at 1120 px (MM-38), so the ratio between them opens to roughly 1.29 and 1.33 on a desktop screen while the phone is untouched:
 
 | Token | Mobile → desktop | Use |
 |---|---|---|
 | `--text-base` | 1rem → 1.125rem (`clamp(1rem, 0.95rem + 0.25vw, 1.125rem)`) | body |
 | `--text-sm` | 0.875rem → 0.9375rem | meta, captions, footer |
 | `--text-lg` | 1.125rem → 1.25rem | lead paragraph, h4 |
-| `--text-xl` | 1.25rem → 1.5rem | h3 |
-| `--text-2xl` | 1.5rem → 1.875rem | h2 |
-| `--text-3xl` | 1.875rem → 2.5rem | h1 |
+| `--text-xl` | 1.25rem → 1.75rem (`clamp(1.25rem, 1.05rem + 1vw, 1.75rem)`) | h3 |
+| `--text-2xl` | 1.5rem → 2.25rem (`clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem)`) | h2 |
+| `--text-3xl` | 1.875rem → 3rem (`clamp(1.875rem, 1.425rem + 2.25vw, 3rem)`) | h1 |
 
 Line height 1.55 for body, 1.2 for headings. Reading measure is a layout concern: prose sits in `.container--narrow` (720 px), never a `max-width` on paragraphs. Vertical rhythm from the existing space scale (4 px base). Radius 4 px on inputs and buttons, nothing rounder.
 
