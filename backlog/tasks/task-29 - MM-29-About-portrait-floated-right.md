@@ -15,7 +15,7 @@ ordinal: 29000
 ## Description
 
 <!-- SECTION:DESCRIPTION:BEGIN -->
-Effort: XS. Actual: . Billable: no. AI cost: pending script. AI time: . On /about/ the portrait floats right of the text at 768 px and up so paragraphs wrap around it; on phones it stays above the text, centred or full width. Tokens for the float margin and width.
+Effort: XS. Actual: . Billable: no. AI cost: pending script. AI time: 4 min. On /about/ the portrait floats right of the text at 768 px and up so paragraphs wrap around it; on phones it stays above the text, centred or full width. Tokens for the float margin and width.
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
@@ -41,7 +41,7 @@ Three judgement calls:
 
 Verification, no server started: `npm run build` clean, no warnings. In the inlined CSS of `dist/client/about/index.html` the base rule is `.portrait--float{margin-inline:auto;display:block}` and the floated rule sits inside `@media (width>=768px)`. The built page was then copied with the portrait inlined as a data URI and opened as a local file in the browser pane (a static file, no server): at 1440px the portrait sits at the right edge of the 720px reading column with the first two paragraphs wrapping around it and the third clearing underneath; at 360px it is a centred block above the text, 240px wide with a 60px inset either side of the 312px content box. Screenshots were taken at both widths; the scratch copy has been deleted.
 
-Effort: 9 tool calls including the two browser checks, about 9 minutes of agent activity, one Opus session, no subagents.
+Effort: 12 tool calls including the two browser checks, 4 minutes wall clock between the MM-31 commit and this one, one Opus session, no subagents.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary

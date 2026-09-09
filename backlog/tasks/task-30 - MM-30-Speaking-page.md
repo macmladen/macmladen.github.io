@@ -15,7 +15,7 @@ ordinal: 30000
 ## Description
 
 <!-- SECTION:DESCRIPTION:BEGIN -->
-Effort: S. Actual: . Billable: no. AI cost: pending script. AI time: . The speaking list moves from /about/ to its own page /speaking/ (the reserved index path): h1 Speaking, the appearances from src/data/speaking.ts newest first with links, the 40+ events line and Speaker Deck link, the current workshop highlighted with its CTA. Nav gains Speaking. Breadcrumbs on the workshop page already point at /speaking/. Sitemap includes it.
+Effort: S. Actual: . Billable: no. AI cost: pending script. AI time: 5 min. The speaking list moves from /about/ to its own page /speaking/ (the reserved index path): h1 Speaking, the appearances from src/data/speaking.ts newest first with links, the 40+ events line and Speaker Deck link, the current workshop highlighted with its CTA. Nav gains Speaking. Breadcrumbs on the workshop page already point at /speaking/. Sitemap includes it.
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
@@ -55,7 +55,7 @@ The closed state was exercised rather than assumed: with `closesAt` temporarily 
 
 The built page was also opened as a local file in the browser pane at 1024px (a static file, no server): the highlighted card, the button and the three-line entries all read as intended. The scratch copy has been deleted.
 
-Effort: 17 tool calls including the closed-state rebuild and the browser check, about 22 minutes of agent activity, one Opus session, no subagents.
+Effort: 18 tool calls including the closed-state rebuild and the browser check, 5 minutes wall clock between the MM-29 commit and this one, one Opus session, no subagents.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary

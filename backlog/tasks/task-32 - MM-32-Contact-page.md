@@ -15,7 +15,7 @@ ordinal: 32000
 ## Description
 
 <!-- SECTION:DESCRIPTION:BEGIN -->
-Effort: S. Actual: . Billable: no. AI cost: pending script. AI time: . /contact/ (reserved path, from ROADMAP): h1 Contact, one short line in Mladen's voice (draft, marked), email mladen@macmladen.com as a mailto link, LinkedIn and GitHub links, a note that a form comes later. Nav gains Contact after Speaking. ContactPage JSON-LD with the Person. Sitemap includes it. ROADMAP.md: the Contact line gets MM-32 noted and its form part stays as future work.
+Effort: S. Actual: . Billable: no. AI cost: pending script. AI time: 3 min. /contact/ (reserved path, from ROADMAP): h1 Contact, one short line in Mladen's voice (draft, marked), email mladen@macmladen.com as a mailto link, LinkedIn and GitHub links, a note that a form comes later. Nav gains Contact after Speaking. ContactPage JSON-LD with the Person. Sitemap includes it. ROADMAP.md: the Contact line gets MM-32 noted and its form part stays as future work.
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
@@ -51,7 +51,7 @@ The built page was opened as a local file in the browser pane (a static file, no
 
 Flagged, not changed: `docs/spec-v1.md` section "2. `/about/`" still lists a "Speaking" bullet and a "Community" bullet, and the acceptance criteria still ask for "the speaking list with the Apatin and Speaker Deck links, and the community paragraph" on `/about/`. MM-30 and MM-31 removed both. Rewriting that prose is a content decision for Mladen rather than a mechanical edit, so it was left for him.
 
-Effort: 12 tool calls including the two browser checks, about 16 minutes of agent activity, one Opus session, no subagents.
+Effort: 14 tool calls including the two browser checks, 3 minutes wall clock between the MM-30 commit and this one, one Opus session, no subagents.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary

@@ -15,7 +15,7 @@ ordinal: 31000
 ## Description
 
 <!-- SECTION:DESCRIPTION:BEGIN -->
-Effort: XS. Actual: . Billable: no. AI cost: pending script. AI time: . The Community paragraph goes; /about/ is the h1, subtitle, portrait and the thirteen paragraphs.
+Effort: XS. Actual: . Billable: no. AI cost: pending script. AI time: 7 min. The Community paragraph goes; /about/ is the h1, subtitle, portrait and the thirteen paragraphs.
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
@@ -34,7 +34,7 @@ Verification, no server started: `npm run build` clean, no warnings. In `dist/cl
 
 Flagged, not changed here: `docs/spec-v1.md` still describes a "Community" bullet under section 2 `/about/` and still lists "and the community paragraph" in its acceptance criteria. That prose belongs to the spec pass and was left for Mladen to decide on.
 
-Effort: 3 tool calls for the change and its verification, about 4 minutes of agent activity, one Opus session, no subagents.
+Effort: 6 tool calls, and about 7 minutes wall clock between setting the task In Progress and its commit — 5 of those were the shared first read of all four task briefs, the spec, the pages, the data files and the stylesheets, which served MM-29, MM-30 and MM-32 as well and is charged here because this task ran first. One Opus session, no subagents.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
