@@ -50,12 +50,13 @@ const hasErrors = Object.keys(errors).length > 0;
   }
 
   <div class="field">
-    <label for="name">Name</label>
+    <label for="name">Name <span class="field__required">required</span></label>
     <input
       id="name"
       name="name"
       type="text"
       required
+      placeholder="Your name"
       autocomplete="name"
       maxlength={limits.name}
       value={value.name === '' ? undefined : value.name}
@@ -66,12 +67,13 @@ const hasErrors = Object.keys(errors).length > 0;
   </div>
 
   <div class="field">
-    <label for="email">Email</label>
+    <label for="email">Email <span class="field__required">required</span></label>
     <input
       id="email"
       name="email"
       type="email"
       required
+      placeholder="you@example.com"
       autocomplete="email"
       maxlength={limits.email}
       value={value.email === '' ? undefined : value.email}
@@ -104,12 +106,13 @@ const hasErrors = Object.keys(errors).length > 0;
   </div>
 
   <div class="field field--prose">
-    <label for="message">Message</label>
+    <label for="message">Message <span class="field__required">required</span></label>
     <textarea
       id="message"
       name="message"
       rows="8"
       required
+      placeholder="What is on your mind?"
       minlength={limits.messageMin}
       maxlength={limits.messageMax}
       aria-describedby={describedBy('message', true)}
