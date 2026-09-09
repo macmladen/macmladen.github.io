@@ -356,12 +356,12 @@
   padding: 0;
   border: 0;
   background: none;
-  color: var(--color-ink-soft);
+  color: var(--color-accent);
   cursor: pointer;
   line-height: 0;
 }
 
 .copy__button:hover,
 .copy__button--done {
-  color: var(--color-accent);
+  color: var(--color-accent-hover);
 }
