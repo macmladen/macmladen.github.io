@@ -322,3 +322,29 @@
 .cta {
   --flow-space: var(--space-12);
 }
+
+
+/* A command with a copy button next to it. The button is revealed by the
+   page's inline script only when the clipboard API exists; the code stays
+   plain selectable text otherwise. "Done" state paints the icon in the accent. */
+.copy {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  white-space: nowrap;
+}
+
+.copy__button {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-ink-soft);
+  cursor: pointer;
+  line-height: 0;
+}
+
+.copy__button:hover,
+.copy__button--done {
+  color: var(--color-accent);
+}

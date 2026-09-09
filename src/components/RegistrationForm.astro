@@ -13,6 +13,7 @@ import {
   type RegistrationValues,
 } from '../data/registration';
 import { person } from '../data/person';
+import CopyCommand from './CopyCommand.astro';
 
 interface Props {
   values?: Partial<RegistrationValues>;
@@ -210,9 +211,10 @@ const hasErrors = Object.keys(errors).length > 0;
       aria-invalid={invalid('ssh_key')}>{value.ssh_key}</textarea
     >
     <p class="field__hint" id="ssh_key-hint">
-      Optional, for the deploy part. Print yours with <code
-        >cat ~/.ssh/id_ed25519.pub</code
-      >; it starts with <code>ssh-ed25519</code> or <code>ssh-rsa</code>.
+      Optional, for the deploy part. Print yours with{' '}
+      <CopyCommand command="cat ~/.ssh/id_rsa.pub" /> or{' '}
+      <CopyCommand command="cat ~/.ssh/id_ed25519.pub" />; it starts with{' '}
+      <code>ssh-ed25519</code> or <code>ssh-rsa</code>.
     </p>
     {errors.ssh_key && <p class="field__error" id="ssh_key-error">{errors.ssh_key}</p>}
   </div>

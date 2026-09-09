@@ -12,8 +12,9 @@
 #   style-src 'unsafe-inline' the build inlines every stylesheet into the page
 #                             (build.inlineStylesheets: 'always'), and Astro
 #                             component styles are inline by nature
-#   script-src                Turnstile's api.js, plus the one inline script on
-#                             /contact/ by hash — see below
+#   script-src                Turnstile's api.js, plus two inline scripts by hash:
+#                             the topic preselect on /contact/ and the copy
+#                             buttons on the workshop page (npm run check:csp)
 #   frame-src, connect-src    the Turnstile widget's iframe and its callbacks;
 #                             connect-src also takes Cloudflare Web Analytics,
 #                             whose beacon the zone injects into every page
@@ -32,4 +33,4 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' https://challenges.cloudflare.com https://static.cloudflareinsights.com 'sha256-fRHl85QdtBhJRtJKFXcWtpmWojToC3hZzoFuIEBMyBM='; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com https://cloudflareinsights.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' https://challenges.cloudflare.com https://static.cloudflareinsights.com 'sha256-fRHl85QdtBhJRtJKFXcWtpmWojToC3hZzoFuIEBMyBM=' 'sha256-VKvesXTz2L3SmL4WuHcalLmIKnW3uka/BViPv+eetdc='; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com https://cloudflareinsights.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'

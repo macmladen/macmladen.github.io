@@ -97,4 +97,20 @@ const schema = graph(
       </div>
     </section>
   </article>
+  <script is:inline>
+    (() => {
+      const buttons = document.querySelectorAll('button[data-copy]');
+      if (!buttons.length || !navigator.clipboard) return;
+      for (const button of buttons) {
+        button.hidden = false;
+        button.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(button.dataset.copy);
+            button.classList.add('copy__button--done');
+            setTimeout(() => button.classList.remove('copy__button--done'), 1200);
+          } catch {}
+        });
+      }
+    })();
+  </script>
 </BaseLayout>
