@@ -21,6 +21,18 @@ h6 {
 h1 {
   font-size: var(--text-3xl);
   font-weight: var(--weight-bold);
+  padding-block-end: var(--space-2);
+  border-block-end: var(--underline-thickness) solid var(--color-accent);
+}
+
+/* More air under a page title. The flow layer reads --flow-space from the
+   element that follows, so the rule sits on the sibling. A subtitle that
+   follows the h1 overrides this on itself (components layer) to hug the line,
+   and then re-opens the space below itself. */
+h1 + *,
+.subtitle + *,
+.subtitle + .portrait--float + * {
+  --flow-space: var(--space-8);
 }
 
 h2 {
