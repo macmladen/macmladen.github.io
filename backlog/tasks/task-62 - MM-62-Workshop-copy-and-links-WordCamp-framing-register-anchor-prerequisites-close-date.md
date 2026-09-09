@@ -6,7 +6,7 @@ title: >-
 status: Done
 assignee: []
 created_date: '2026-09-09 20:02'
-updated_date: '2026-09-09 20:11'
+updated_date: '2026-09-09 20:19'
 labels:
   - feature
 milestone: m-5
@@ -39,10 +39,14 @@ Six of Mladen's eight items were in scope here; the list in the description numb
 Verification, no server started: `npm run build` clean, five prerendered routes; `npm run check:csp` — 5 pages, 2 inline scripts, all covered. In the built HTML: the home eyebrow is `<strong>WordCamp Belgrade 2026</strong> · workshop<br><time…>`, both register links are `/speaking/2026/wordcamp-belgrade-ddev-ai/#register`, the secondary button reads "WordCamp Belgrade 2026", the workshop page has `<section id="register" …>`, the copy reads "Registration closes Thursday, 17 September 2026" and the Event offer carries `"validThrough":"2026-09-17T23:59:59+02:00"`. The built home page opened as a file in the browser pane renders the eyebrow as two lines (44 px tall at --text-sm), the conference name bold, the date line under it.
 
 Flagged, not changed: the Prerequisites section now links `workshop.repoUrl` twice — once as "preparation guide on GitHub" in the new sentence and again in the older "Preparation guide and materials will be on GitHub by Friday 11 September." line. Mladen may want the second line folded into the first. `RegistrationSuccess.astro` still says "there is no time to install them in the room", the phrasing item (7) replaced on the page; item (7) named only the prerequisites sentence, so it was left alone.
+
+Follow-up, same task: `npm test` was not run until after the closing commit, and it failed — `scripts/test-validate.mjs` typed the close date out a second time ("open on the close date itself" at 2026-09-15, "closed the moment after" at 2026-09-16). Both instants are now read from `workshop.closeDate` and `workshop.closesAt`, so the window test follows the data object the way every rendering does. `node scripts/test-validate.mjs` — 51 passed, 0 failed; `npm test` — 38 passed, 0 failed on the contact validator.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
 
 <!-- SECTION:FINAL_SUMMARY:BEGIN -->
 Done 2026-09-09 by coder (Opus 5, xhigh): the WordCamp framing, the register anchor, the prerequisites copy and the close date. The home eyebrow is two lines — "WordCamp Belgrade 2026 · workshop" with the conference name bold, then the date line; the workshop page eyebrow is "WordCamp Belgrade 2026 · Workshop"; the secondary button on home is labelled "WordCamp Belgrade 2026". Both "Register for the workshop" links point at `/speaking/2026/wordcamp-belgrade-ddev-ai/#register` and the registration band carries `id="register"`. Prerequisites opens with Mladen's "It is perfectly fine if you wish to watch and participate by following and asking." and sends people to the preparation guide on GitHub instead of the old "costs everybody their workshop" line. `closesAt` is 2026-09-17T23:59:59+02:00, written once and derived by the copy, `isRegistrationOpen`, `validThrough` and the closed notice; the formatted weekday is Thursday. Spec updated in Pages 1 and Pages 3. Build clean, check:csp clean, built HTML verified. AI time 9 min, ~30 tool calls, one Opus 5 session.
+
+Follow-up commit: scripts/test-validate.mjs had the close date typed out a second time and failed after the change; the window test now derives both instants from workshop.closeDate/closesAt. All 51 checks pass.
 <!-- SECTION:FINAL_SUMMARY:END -->

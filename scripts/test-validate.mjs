@@ -164,10 +164,12 @@ console.log('validate — rejects');
 
 console.log('registration window');
 {
-  const dayBefore = Date.parse('2026-09-15T09:00:00+02:00');
-  const dayAfter = Date.parse('2026-09-16T00:00:01+02:00');
-  check('open on the close date itself', isRegistrationOpen(dayBefore) === true);
-  check('closed the moment after', isRegistrationOpen(dayAfter) === false);
+  // Both instants are read from the data object rather than typed out again:
+  // the close date moved once already (MM-62) and left this file behind.
+  const onCloseDate = Date.parse(workshop.closeDate);
+  const justAfterClose = Date.parse(workshop.closesAt) + 1000;
+  check('open on the close date itself', isRegistrationOpen(onCloseDate) === true);
+  check('closed the moment after', isRegistrationOpen(justAfterClose) === false);
   check('closed well after the workshop', isRegistrationOpen(Date.parse('2026-10-01')) === false);
   check('closeDate matches closesAt', workshop.closeDate === workshop.closesAt.slice(0, 10));
 }
