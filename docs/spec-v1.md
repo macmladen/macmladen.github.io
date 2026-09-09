@@ -77,7 +77,7 @@ Bar links are the one exception to the underline rule: they are white, underline
 
 Line height 1.55 for body, 1.2 for headings. Reading measure is a layout concern: prose sits in `.container--narrow` (720 px), never a `max-width` on paragraphs. Vertical rhythm from the existing space scale (4 px base). Radius 4 px on inputs and buttons, nothing rounder.
 
-**Layout.** One column on mobile. Header: name as the home link on the left, one nav item on the right ("About"), no hamburger and no colour-scheme control. The workshop is reached from the home block's CTA, not from the menu. Sections are full-width bands, content in `.container` (1200 px) or `.container--narrow`. Footer: link list plus `<address>` with the email.
+**Layout.** One column on mobile. Header: name as the home link on the left, three nav items on the right ("About", "Speaking", "Contact"), no hamburger and no colour-scheme control. The workshop is reached from the home block's CTA and from the `/speaking/` index, not from the menu. Sections are full-width bands, content in `.container` (1200 px) or `.container--narrow`. Footer: link list plus `<address>` with the email.
 
 **Prototyping.** Straight in Astro components, no separate static HTML pass. The charter's "ship CSS first" rule still applies: components carry final CSS from the first commit, and no CSS is written for content that does not exist yet.
 
@@ -88,14 +88,16 @@ Built now:
 | URL | What |
 |---|---|
 | `/` | home |
-| `/about/` | story, bio, speaking history, links |
+| `/about/` | the long-form story |
+| `/speaking/` | the appearances index, generated from `src/data/speaking.ts` |
 | `/speaking/2026/wordcamp-belgrade-ddev-ai/` | the workshop page with the registration form |
+| `/contact/` | email and the profile links; the form is future work |
 | `/api/register` | form endpoint (POST only, server-rendered) |
 | `/radionica`, `/workshop` | 302 → `/speaking/2026/wordcamp-belgrade-ddev-ai/` |
 | `/about`, `/about.html` | 301 → `/about/` |
 | `/sitemap-index.xml`, `/robots.txt` | generated |
 
-Reserved, not built, must not be taken by anything else: `/speaking/` and `/speaking/<year>/` indexes, `/work/`, `/writing/` and `/rss.xml`, `/now/`, `/cv/`, `/contact/`, `/colophon/`, `/sr/` (Serbian prefix if ever bilingual). Participant deploy boxes live on a subdomain (`*.ws.macmladen.com` or similar), outside the site's path space.
+Reserved, not built, must not be taken by anything else: `/speaking/<year>/` indexes, `/work/`, `/writing/` and `/rss.xml`, `/now/`, `/cv/`, `/colophon/`, `/sr/` (Serbian prefix if ever bilingual). Participant deploy boxes live on a subdomain (`*.ws.macmladen.com` or similar), outside the site's path space.
 
 Trailing-slash form is canonical for pages (`trailingSlash: 'always'`); Workers static assets normalise the other form.
 

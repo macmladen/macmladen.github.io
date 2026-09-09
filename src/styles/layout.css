@@ -42,6 +42,14 @@
   grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-min, 16rem), 100%), 1fr));
 }
 
+/* Contact list: the label beside the address. Three rows and two short
+   labels, so it holds at 360px and needs no breakpoint. */
+.contact {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-2) var(--space-6);
+}
+
 /* Two halves: stacked on mobile, side by side from 768px.
    --split-media is the width of the media column; the text column takes
    whatever is left. It defaults to 1fr, which makes the two halves equal.

@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import StructuredData from '../components/StructuredData.astro';
+import { person } from '../data/person';
+import { contactPageNode, graph, personNode } from '../lib/schema';
+
+const schema = graph(contactPageNode(Astro.site, personNode(Astro.site)));
+
+/** The two profiles that are places to reach him. Speaker Deck is a slide
+ *  archive, not an inbox, and is linked from /speaking/ instead. */
+const reachableAt = ['LinkedIn', 'GitHub'];
+const contactProfiles = person.profiles.filter((profile) => reachableAt.includes(profile.name));
+
+/** Link text is the address itself, without the scheme, so the visible line
+ *  and the href can never say different things. */
+const readable = (url: string) => url.replace(/^https?:\/\//, '').replace(/\/+$/, '');
+
+// draft: Mladen to approve — meta description for /contact/.
+const description =
+  'How to reach Mladen Đurić: email, LinkedIn and GitHub. A contact form follows ' +
+  'once the workshop registration is behind us.';
+---
+
+<BaseLayout title="Contact" description={description} canonical="/contact/">
+  <StructuredData slot="head" data={schema} />
+
+  <section class="section" aria-labelledby="contact-title">
+    <div class="container container--narrow flow">
+      <h1 id="contact-title">Contact</h1>
+      <!-- draft: Mladen to approve -->
+      <p>
+        Email is the surest way to reach me: work, a workshop, a talk, or the meaning
+        of life. Even better, meet me in person. Somewhere.
+      </p>
+      <dl class="contact">
+        <dt>Email</dt>
+        <dd><a href={`mailto:${person.email}`}>{person.email}</a></dd>
+        {
+          contactProfiles.map((profile) => (
+            <Fragment>
+              <dt>{profile.name}</dt>
+              <dd>
+                <a href={profile.url} rel="me">
+                  {readable(profile.url)}
+                </a>
+              </dd>
+            </Fragment>
+          ))
+        }
+      </dl>
+      <p>A contact form is coming.</p>
+    </div>
+  </section>
+</BaseLayout>

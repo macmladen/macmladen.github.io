@@ -51,6 +51,11 @@
   margin-block-start: var(--space-4);
 }
 
+/* Contact list: the label carries the weight, the address is a plain link. */
+.contact dt {
+  font-weight: var(--weight-semibold);
+}
+
 /* The facts under an event title: date, venue, language, link. */
 .facts {
   padding-inline-start: 0;

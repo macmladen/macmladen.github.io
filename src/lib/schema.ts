@@ -71,6 +71,20 @@ export function profilePageNode(site: URL | string | undefined, mainEntity: Node
   };
 }
 
+/** The /contact/ page. Its mainEntity is the Person, the same node the home
+ *  and about pages describe, so the three agree on who is being contacted. */
+export function contactPageNode(site: URL | string | undefined, mainEntity: Node): Node {
+  return {
+    '@type': 'ContactPage',
+    '@id': absolute('/contact/#contact', site),
+    url: absolute('/contact/', site),
+    name: 'Contact',
+    inLanguage: 'en',
+    isPartOf: { '@id': absolute('/#website', site) },
+    mainEntity,
+  };
+}
+
 /** One appearance as an Event. The event itself — the conference or meetup —
  *  is the superEvent; the talk or workshop given there is the Event. A year on
  *  its own is a valid ISO 8601 date, which is all the source material records. */
