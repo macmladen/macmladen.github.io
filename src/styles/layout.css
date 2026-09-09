@@ -120,8 +120,19 @@
   }
 }
 
+/* Both variants sit after the 768px step on purpose: same specificity as
+   .section, so the later rule is the one that wins and the value holds at
+   every width instead of being reopened on desktop. */
+
 /* Tight variant: a section that should not breathe as much as the rest,
    e.g. the home workshop announcement. Same value at every width. */
 .section--tight {
   padding-block: var(--space-8);
+}
+
+/* Compact variant: one step wider than tight. The workshop page is a single
+   article split into four bands, so the full --space-18/--space-24 rhythm
+   pulls it apart; 3rem keeps the bands reading as one page. */
+.section--compact {
+  padding-block: var(--space-12);
 }

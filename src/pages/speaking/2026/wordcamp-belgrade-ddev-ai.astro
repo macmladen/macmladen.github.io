@@ -42,7 +42,7 @@ const schema = graph(
   <StructuredData slot="head" data={schema} />
 
   <article>
-    <section class="section" aria-labelledby="workshop-title">
+    <section class="section section--compact" aria-labelledby="workshop-title">
       <div class="container container--narrow flow">
         <p class="eyebrow">{workshop.subtitle}</p>
         <h1 id="workshop-title">{workshop.title}</h1>
@@ -60,14 +60,14 @@ const schema = graph(
       </div>
     </section>
 
-    <section class="section" aria-labelledby="audience-title">
+    <section class="section section--compact" aria-labelledby="audience-title">
       <div class="container container--narrow flow">
         <h2 id="audience-title">Who it is for</h2>
         <p>{workshop.audience}</p>
       </div>
     </section>
 
-    <section class="section" aria-labelledby="prerequisites-title">
+    <section class="section section--compact" aria-labelledby="prerequisites-title">
       <div class="container container--narrow flow">
         <h2 id="prerequisites-title">Prerequisites</h2>
         <p>
@@ -87,7 +87,7 @@ const schema = graph(
       </div>
     </section>
 
-    <section class="section section--alt" aria-labelledby="register-title">
+    <section class="section section--alt section--compact" aria-labelledby="register-title">
       <div class="container container--narrow flow">
         <h2 id="register-title">Registration</h2>
         {
