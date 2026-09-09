@@ -93,7 +93,7 @@ export const about: string[] = [
 ];
 
 export const person = {
-  name: 'Mladen Đurić',
+  name: 'Mladen Djuric',
   alternateName: 'MacMladen',
   jobTitle: 'Senior web developer and architect',
   tagline,

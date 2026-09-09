@@ -2,7 +2,7 @@
 
 ## What this is
 
-The personal site of Mladen Đurić (MacMladen): a small English-only Astro 7 site,
+The personal site of Mladen Djuric (MacMladen): a small English-only Astro 7 site,
 static output on Cloudflare, with two server endpoints (the workshop registration
 form and the contact form). Plain CSS with tokens and cascade layers — no CSS
 framework, no client-side framework.
