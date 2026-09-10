@@ -110,10 +110,12 @@ const schema = graph(
   </article>
   {
     /* The page's one inline script, hashed in the CSP (npm run check:csp). It
-       does two things: it reveals the copy buttons on the SSH-key hint, and it
-       submits the registration form without leaving the page. Everything below
-       is enhancement — with JavaScript off the copy buttons stay hidden and the
-       form posts to /api/register/ as a form always has.
+       does three things: it reveals the copy buttons on the SSH-key hint, it
+       hides the laptop-only part of the registration form while the watch-only
+       box is ticked, and it submits the form without leaving the page.
+       Everything below is enhancement — with JavaScript off the copy buttons
+       stay hidden, every field is visible, and the form posts to /api/register/
+       as a form always has.
 
        The second half is the same block as on /contact/, on purpose: one script
        per page keeps the CSP to one hash per page, and the endpoints answer
@@ -138,7 +140,31 @@ const schema = graph(
         }
       };
 
-      enhance();
+      /* The watch-only switch. Someone who is not bringing a laptop is not
+         asked about one: the blocks marked data-laptop-only are hidden while
+         the box is ticked. Hidden, not emptied — whatever was typed comes back
+         the moment the box is unticked, and the endpoint is the one that
+         decides a watch-only registration carries no laptop answers. */
+      const laptopFields = () => {
+        const box = document.querySelector('#watch_only');
+        if (!box) return;
+        const apply = () => {
+          for (const part of document.querySelectorAll('[data-laptop-only]')) {
+            part.hidden = box.checked;
+          }
+        };
+        box.addEventListener('change', apply);
+        apply();
+      };
+
+      /* Everything that has to be done again after the form is re-rendered: a
+         swap brings new markup with no listeners on it. */
+      const wire = () => {
+        enhance();
+        laptopFields();
+      };
+
+      wire();
 
       /* Submitting without leaving the page. The endpoint keeps answering with
          a whole rendered page — the very one a submission without JavaScript
@@ -205,7 +231,7 @@ const schema = graph(
 
           if (response.ok && success) {
             form.innerHTML = pristine;
-            enhance();
+            wire();
             answer(document.importNode(success, true), 'status');
           } else if (again) {
             /* The general message moves above the form; the fields keep the
@@ -214,7 +240,7 @@ const schema = graph(
             const text = (general ?? again.querySelector('.field__error'))?.textContent.trim();
             if (general) general.remove();
             form.innerHTML = again.innerHTML;
-            enhance();
+            wire();
             answer(failed(text), 'alert');
           } else {
             answer(failed(), 'alert');

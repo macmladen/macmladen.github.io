@@ -14,7 +14,7 @@ import RegistrationSuccess from '../../components/RegistrationSuccess.astro';
 import RegistrationClosed from '../../components/RegistrationClosed.astro';
 import { emptyValues, type RegistrationErrors, type RegistrationValues } from '../../data/registration';
 import { workshop, isRegistrationOpen } from '../../data/workshop';
-import { hasErrors, messages, readForm, validate } from '../../lib/validate';
+import { dropLaptopAnswers, hasErrors, messages, readForm, validate } from '../../lib/validate';
 import { verifyTurnstile } from '../../lib/turnstile';
 import { upsertSubscriber } from '../../lib/mailerlite';
 import { findByEmail, hashIp, insertRegistration, setMailerliteStatus } from '../../lib/registrations';
@@ -38,7 +38,10 @@ const open = isRegistrationOpen();
 
 if (open) {
   const form = await Astro.request.formData();
-  values = readForm(form);
+  // dropLaptopAnswers before validate: a watch-only registration is not asked
+  // about a laptop, so nothing it left behind in a hidden field is stored, sent
+  // on, or able to fail the submission (MM-72).
+  values = dropLaptopAnswers(readForm(form));
   errors = validate(values);
 
   if (!hasErrors(errors)) {

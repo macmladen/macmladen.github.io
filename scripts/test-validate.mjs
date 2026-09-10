@@ -2,7 +2,14 @@
  *  Run with `node scripts/test-validate.mjs` (node strips the TypeScript types
  *  on import; node 22.6+ needs --experimental-strip-types, node 23+ does not).
  *  Exits non-zero on the first failure so it can gate a build later. */
-import { readForm, validate, hasErrors, messages, limits } from '../src/lib/validate.ts';
+import {
+  dropLaptopAnswers,
+  readForm,
+  validate,
+  hasErrors,
+  messages,
+  limits,
+} from '../src/lib/validate.ts';
 import { isRegistrationOpen, workshop } from '../src/data/workshop.ts';
 
 let passed = 0;
@@ -154,6 +161,33 @@ console.log('validate — rejects');
     Object.keys(several).length === 3 && several.email && several.github && several.os,
     Object.keys(several).join(', '),
   );
+}
+
+console.log('watch-only registrations');
+{
+  const watching = dropLaptopAnswers(readForm(form({ ...complete, watch_only: 'yes' })));
+  check('github is dropped', watching.github === '', watching.github);
+  check('the operating system is dropped', watching.os === '', watching.os);
+  check('the AI tools are dropped', watching.tool === '', watching.tool);
+  check('the terminal answer is dropped', watching.terminal === '', watching.terminal);
+  check('the SSH key is dropped', watching.ssh_key === '', watching.ssh_key);
+  check('own hosting is dropped', watching.own_hosting === false);
+  check('the name is kept', watching.name === 'Ana Anić', watching.name);
+  check('the email is kept', watching.email === 'ana@example.com', watching.email);
+  check('the newsletter answer is kept', watching.newsletter === true);
+  check('watch_only stays ticked', watching.watch_only === true);
+  check('a watch-only registration validates', !hasErrors(validate(watching)));
+
+  const laptop = readForm(form(complete));
+  check('a laptop registration is handed back untouched', dropLaptopAnswers(laptop) === laptop);
+
+  // The form hides the laptop fields rather than emptying them, so a submission
+  // can carry whatever was typed before the box was ticked. None of it may fail
+  // the registration.
+  const stale = dropLaptopAnswers(
+    readForm(form({ ...complete, watch_only: 'yes', github: 'no_pe', ssh_key: 'not a key' })),
+  );
+  check('a stale value in a hidden field cannot fail it', !hasErrors(validate(stale)));
 }
 
 console.log('registration window');

@@ -108,7 +108,29 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
     {errors.email && <p class="field__error" id="email-error">{errors.email}</p>}
   </div>
 
+  {
+    /* The watch-only switch sits directly under the address, because it decides
+       whether the rest of the form is asked at all (MM-72). Every block below
+       that only matters to someone bringing a laptop carries
+       `data-laptop-only`; the page's script hides those blocks while this box
+       is ticked, and the endpoint ignores their values for a watch-only
+       registration. With JavaScript off nothing is hidden and the endpoint's
+       rule is what still holds. */
+  }
   <div class="field">
+    <div class="checkbox">
+      <input
+        id="watch_only"
+        name="watch_only"
+        type="checkbox"
+        value="yes"
+        checked={value.watch_only}
+      />
+      <label for="watch_only">I will watch, not work on my own laptop</label>
+    </div>
+  </div>
+
+  <div class="field" data-laptop-only>
     <label for="github">GitHub username</label>
     <input
       id="github"
@@ -129,7 +151,7 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
     {errors.github && <p class="field__error" id="github-error">{errors.github}</p>}
   </div>
 
-  <div class="fieldset-row flow">
+  <div class="fieldset-row flow" data-laptop-only>
     <fieldset class="flow" aria-describedby={describedBy('os')}>
       <legend>Operating system</legend>
       <div class="choices">
@@ -179,7 +201,7 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
     </fieldset>
   </div>
 
-  <fieldset class="flow" aria-describedby={describedBy('terminal')}>
+  <fieldset class="flow" aria-describedby={describedBy('terminal')} data-laptop-only>
     <legend>Terminal experience</legend>
     <div class="choices">
       {
@@ -210,7 +232,7 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
     )}
   </fieldset>
 
-  <div class="field">
+  <div class="field" data-laptop-only>
     <label for="ssh_key">SSH public key</label>
     <textarea
       id="ssh_key"
@@ -232,7 +254,7 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
 
   <fieldset class="flow">
     <legend>Anything else</legend>
-    <div class="checkbox">
+    <div class="checkbox" data-laptop-only>
       <input
         id="own_hosting"
         name="own_hosting"
@@ -241,16 +263,6 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
         checked={value.own_hosting}
       />
       <label for="own_hosting">I have my own hosting with SSH access</label>
-    </div>
-    <div class="checkbox">
-      <input
-        id="watch_only"
-        name="watch_only"
-        type="checkbox"
-        value="yes"
-        checked={value.watch_only}
-      />
-      <label for="watch_only">I will watch, not work on my own laptop</label>
     </div>
     <div class="checkbox">
       <input

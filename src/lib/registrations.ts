@@ -33,6 +33,12 @@ export async function findByEmail(db: D1Like, email: string): Promise<{ id: numb
   }>();
 }
 
+/** An unanswered question in a nullable column is stored as NULL rather than an
+ *  empty string, so it reads the same way as the rows written before that column
+ *  existed. `github`, `os` and `tool` are NOT NULL since 0001 and keep the empty
+ *  string; since MM-73 an empty one of those means "not answered" too. */
+const orNull = (value: string): string | null => (value === '' ? null : value);
+
 /** Inserts the registration and returns its id. mailerlite_status starts as
  *  'pending' and is overwritten once the MailerLite call has answered. */
 export async function insertRegistration(
@@ -54,8 +60,8 @@ export async function insertRegistration(
       values.os,
       // Every ticked AI tool in one string, comma-joined by the validator.
       values.tool,
-      values.terminal,
-      values.ssh_key === '' ? null : values.ssh_key,
+      orNull(values.terminal),
+      orNull(values.ssh_key),
       values.own_hosting ? 1 : 0,
       values.watch_only ? 1 : 0,
       values.newsletter ? 1 : 0,

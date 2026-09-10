@@ -15,7 +15,8 @@
 #   script-src                Turnstile's api.js, plus two inline scripts by hash:
 #                             the one on /contact/ (topic preselect, and the
 #                             contact form submitted with fetch) and the one on
-#                             the workshop page (copy buttons, and the
+#                             the workshop page (copy buttons, the laptop fields
+#                             hidden while the watch-only box is ticked, and the
 #                             registration form submitted with fetch)
 #                             (npm run check:csp)
 #   frame-src, connect-src    the Turnstile widget's iframe and its callbacks;
@@ -36,4 +37,4 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' https://challenges.cloudflare.com https://static.cloudflareinsights.com 'sha256-/C/7qyOpMgiGka/X5t8A0RErUfPCdk5lgkcD1Rv8XME=' 'sha256-vTtDa9goiZwRfrp+zsyjlFuUEXoWxtVhNOIp+WfvK0o='; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com https://cloudflareinsights.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' https://challenges.cloudflare.com https://static.cloudflareinsights.com 'sha256-/C/7qyOpMgiGka/X5t8A0RErUfPCdk5lgkcD1Rv8XME=' 'sha256-s5dAHCSS26pdF6tw0a/Aois7E3+TfmaWNUxo+ESx2oU='; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com https://cloudflareinsights.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'

@@ -92,6 +92,29 @@ export function readForm(form: FormLike): RegistrationValues {
   };
 }
 
+/** A watch-only registration carries no answers about a laptop. The form hides
+ *  those fields rather than emptying them, so whatever was typed before the box
+ *  was ticked is still in the submission — and a value the visitor can no longer
+ *  see must not be stored or sent on (MM-72). Applied between readForm() and
+ *  validate(), which also means a half-typed GitHub username left behind in a
+ *  hidden field can never fail a submission.
+ *
+ *  Only what the visitor ticked themselves clears the fields. A registration
+ *  turned into a watching one by the endpoint because the seats ran out keeps
+ *  the answers it was given. */
+export function dropLaptopAnswers(values: RegistrationValues): RegistrationValues {
+  if (!values.watch_only) return values;
+  return {
+    ...values,
+    github: '',
+    os: '',
+    tool: '',
+    terminal: '',
+    ssh_key: '',
+    own_hosting: false,
+  };
+}
+
 /** Field-level errors, empty when everything passes.
  *
  *  Email is the only answer a registration cannot do without: it is where the
