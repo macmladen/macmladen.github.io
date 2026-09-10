@@ -5,6 +5,13 @@
 /** End of the day registration closes, in Europe/Belgrade. */
 const closesAt = '2026-09-17T23:59:59+02:00';
 
+/** The moment the workshop counts as under way: ten minutes past the scheduled
+ *  start, Mladen's cut-off, so a slot that begins a few minutes late does not
+ *  take the page down while people are still walking in. Everything the site
+ *  offers before the event — the form, the Register buttons, the seats lines —
+ *  is gone from the build after this instant. */
+const startsAt = '2026-09-18T12:30:00+02:00';
+
 /** Street and city are kept apart so the PostalAddress in the JSON-LD and the
  *  visible venue line come from the same two values. */
 const street = 'Makedonska 22';
@@ -96,6 +103,7 @@ export const workshop = {
   /** Date part of closesAt, so the two can never drift apart. */
   closeDate: closesAt.slice(0, 10),
   closesAt,
+  startsAt,
   abstract,
   audience,
   prerequisites,
@@ -111,15 +119,24 @@ export const workshop = {
   prepDeadline: 'Friday 11 September',
 } as const;
 
-/** True until the end of the close date. `now` is injectable so the closed state
- *  can be exercised without touching the clock.
+/** True until the workshop is under way — see `startsAt`. `now` is injectable
+ *  so the after state can be exercised without touching the clock.
  *
  *  Call this from a page or from the endpoint, never at module scope: workerd —
  *  which runs both the prerender and the deployed worker — reports Date.now() as
  *  0 while modules are being evaluated, so a constant computed up here would say
- *  "open" for ever. Verified in a build on 2026-09-08 (MM-08).
+ *  "before" for ever. Verified in a build on 2026-09-08 (MM-08).
+ */
+export const isBeforeStart = (now: number = Date.now()): boolean =>
+  now < Date.parse(startsAt);
+
+/** True until the end of the close date, and never once the workshop has begun.
+ *  The close date sits a day before the start, so the second clause is only ever
+ *  load-bearing if the close date is moved again — it has moved once already
+ *  (MM-62) — but it is what makes "registration is open" impossible to read as
+ *  true during or after the session. Same module-scope caveat as isBeforeStart.
  */
 export const isRegistrationOpen = (now: number = Date.now()): boolean =>
-  now <= Date.parse(closesAt);
+  now <= Date.parse(closesAt) && isBeforeStart(now);
 
 export default workshop;

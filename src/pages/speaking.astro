@@ -80,7 +80,10 @@ const description =
   'Talks and workshops at WordPress and Drupal events across Europe, and the ' +
   'hands-on WordCamp Belgrade 2026 workshop on Docker and AI agents.';
 
-// draft: Mladen to approve — replaces the register button once registration closes.
+// draft: Mladen to approve — replaces the register button once registration
+// closes, and stays in its place once the workshop itself has been given
+// (MM-74): the page is then the archive, and "the workshop page" is still what
+// the link leads to.
 const closedLinkText = 'The workshop page';
 ---
 
@@ -102,6 +105,9 @@ const closedLinkText = 'The workshop page';
             </span>
             <span class="appearances__event">{placeLine(current, current.year)}</span>
             <span class="appearances__kind">{kindLabel[current.kind]}</span>
+            {/* isRegistrationOpen is false both after the close date and once
+                the session has begun (MM-74), so one branch covers the button
+                disappearing in either case. */}
             <p class="appearances__cta">
               {registrationOpen ? (
                 <a class="button" href={`${workshop.path}#register`}>

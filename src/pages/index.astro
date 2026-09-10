@@ -5,9 +5,12 @@ import StructuredData from '../components/StructuredData.astro';
 import headshot from '../assets/mladen-head-2020.jpg';
 import roomPhoto from '../assets/workshop.png';
 import { person } from '../data/person';
-import { workshop } from '../data/workshop';
+import { isRegistrationOpen, workshop } from '../data/workshop';
 import { dayAndMonth, timeOfDay } from '../lib/dates';
 import { graph, personNode, webSiteNode } from '../lib/schema';
+
+/** Asked at render time, not at module scope: see isRegistrationOpen. */
+const registrationOpen = isRegistrationOpen();
 
 /** One set of options for the headshot, used both by <Image> and by the
  *  Person node, so the JSON-LD points at the file the page actually renders.
@@ -79,8 +82,20 @@ const description =
           version control, and an AI agent set up to work on your own code. One full
           loop, live: plan the task, let the agent build and check it, review, deploy.
         </p>
+        {
+          /* The Register button lasts as long as registration does (MM-74).
+             Once it is gone the block still says what the session is and still
+             links to it on the WordCamp site; only the invitation to sign up
+             here disappears. */
+        }
         <div class="row">
-          <a class="button" href={`${workshop.path}#register`}>Register for the workshop</a>
+          {
+            registrationOpen && (
+              <a class="button" href={`${workshop.path}#register`}>
+                Register for the workshop
+              </a>
+            )
+          }
           <a class="button button--secondary" href={workshop.sessionUrl}>
             {workshop.wordcampName}
           </a>

@@ -46,6 +46,9 @@ let registered = false;
 let watching = false;
 let status = 422;
 
+/** False after the close date and false again once the workshop is under way
+ *  (MM-74), so the one 403 branch below covers both: a form posted from a page
+ *  cached before either cut-off is refused rather than written to D1. */
 const open = isRegistrationOpen();
 
 if (open) {
@@ -108,6 +111,7 @@ if (open) {
     }
   }
 } else {
+  // Closed, or the workshop has begun. The form data is not even read.
   status = 403;
 }
 

@@ -23,7 +23,7 @@ Future work by name. An item becomes a backlog task when it is needed and gets t
 
 - One live test registration and one contact message; Turnstile siteverify confirmed in the Cloudflare dashboard; MM-48 closed.
 - MailerLite: `terminal` custom field; confirmation automation on the workshop group (MM-49).
-- Rebuild and deploy on 18 September so the built page shows the closed notice (the endpoint already refuses and the page script swaps the notice in).
+- Rebuild and deploy on 18 September after 12:30 so the built pages catch up with the day: the closed notice on the 18th before that, and from 12:30 the workshop page with no form and no seats lines, the "workshop has taken place" notice in their place, and no Register button on the home block or the `/speaking/` highlight (MM-74 put the cut-off at 12:30, ten minutes past the scheduled start; the endpoint already refuses from that moment and the page script swaps the notice in).
 - Workshop OG card and the `/speaking/` highlight carry no date or venue; add them.
 - HSTS is not set on the zone (Cloudflare SSL/TLS → Edge Certificates, Mladen's hand); `www.macmladen.com` serves the site rather than redirecting to the apex.
 - Draft copy approvals still marked in source: tagline, workshop teaser, meta descriptions, CTA labels, contact line, success texts.

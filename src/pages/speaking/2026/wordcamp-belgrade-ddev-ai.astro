@@ -6,12 +6,19 @@ import Facts from '../../../components/Facts.astro';
 import RegistrationForm from '../../../components/RegistrationForm.astro';
 import RegistrationClosed from '../../../components/RegistrationClosed.astro';
 import headshot from '../../../assets/mladen-head-2020.jpg';
-import { workshop, isRegistrationOpen } from '../../../data/workshop';
+import { workshop, isBeforeStart, isRegistrationOpen } from '../../../data/workshop';
 import { fullDate } from '../../../lib/dates';
 import { breadcrumbNode, eventNode, graph, personNode } from '../../../lib/schema';
 
 /** Asked at render time, not at module scope: see isRegistrationOpen. */
 const registrationOpen = isRegistrationOpen();
+
+/** Three states, not two (MM-74): registration open, registration closed but
+ *  the workshop still ahead, and the workshop given. In the third the page
+ *  stops asking anything of the reader — no form, no seats count — and becomes
+ *  the archive it will stay. The page is prerendered, so the switch happens on
+ *  the first build after the cut-off; the roadmap carries that rebuild. */
+const beforeStart = isBeforeStart();
 
 const headshotFile = await getImage({
   src: headshot,
@@ -58,9 +65,11 @@ const schema = graph(
              read on, and above the form, where they decide whether to fill it
              in. The page is static, so what is built into the line is the plain
              fact of how big the room is; the script replaces it with the count
-             from /api/seats/ once the page has loaded (MM-71). */
+             from /api/seats/ once the page has loaded (MM-71). Both lines go
+             once the workshop has been given: there is nothing left to take a
+             seat for (MM-74). */
         }
-        <p class="seats" data-seats>{workshop.capacity} seats</p>
+        {beforeStart && <p class="seats" data-seats>{workshop.capacity} seats</p>}
         {workshop.abstract.map((paragraph) => <p>{paragraph}</p>)}
       </div>
     </section>
@@ -99,19 +108,31 @@ const schema = graph(
       aria-labelledby="register-title"
     >
       <div class="container container--narrow flow">
-        <h2 id="register-title">Registration</h2>
         {
-          registrationOpen ? (
-            <Fragment>
-              <p>
-                Registration closes{' '}
-                <time datetime={workshop.closeDate}>{fullDate(workshop.closesAt)}</time>.
-              </p>
-              <p class="seats" data-seats>{workshop.capacity} seats</p>
-              <RegistrationForm />
-            </Fragment>
+          /* The heading follows the state: while the session is ahead this band
+             is about registering, and afterwards it is the note about what the
+             page will carry next.
+             draft: Mladen to approve — the heading and the notice below. */
+        }
+        <h2 id="register-title">{beforeStart ? 'Registration' : 'After the workshop'}</h2>
+        {
+          beforeStart ? (
+            registrationOpen ? (
+              <Fragment>
+                <p>
+                  Registration closes{' '}
+                  <time datetime={workshop.closeDate}>{fullDate(workshop.closesAt)}</time>.
+                </p>
+                <p class="seats" data-seats>{workshop.capacity} seats</p>
+                <RegistrationForm />
+              </Fragment>
+            ) : (
+              <RegistrationClosed />
+            )
           ) : (
-            <RegistrationClosed />
+            <p class="notice">
+              The workshop has taken place. Slides and the recording will appear here.
+            </p>
           )
         }
       </div>
