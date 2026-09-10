@@ -37,3 +37,10 @@ button {
   background: none;
   border: 0;
 }
+
+/* The hidden attribute must win over any display a component sets
+   (.field is a grid, .checkbox a flex row); this is the one sanctioned
+   !important in the stylesheets. */
+[hidden] {
+  display: none !important;
+}
