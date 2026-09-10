@@ -1,9 +1,10 @@
 ---
 id: TASK-49
 title: 'MM-49: MailerLite confirmation automation'
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-09-09 12:52'
+updated_date: '2026-09-10 06:57'
 labels:
   - chore
 milestone: m-4
@@ -21,3 +22,9 @@ Effort: S. Actual: . Billable: no. AI cost: pending script. AI time: . Automatio
 <!-- AC:BEGIN -->
 - [ ] #1 A test subscriber receives the confirmation within a minute
 <!-- AC:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+Superseded 2026-09-10: the confirmation is sent by the Worker through MailerSend (MM-70); no MailerLite automation needed.
+<!-- SECTION:FINAL_SUMMARY:END -->
