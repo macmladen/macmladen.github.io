@@ -1,10 +1,10 @@
 ---
 id: TASK-67
 title: 'MM-67: Contact mail recipient within the MailerSend sandbox limit'
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-09-10 05:26'
-updated_date: '2026-09-10 05:27'
+updated_date: '2026-09-10 05:53'
 labels:
   - bug
 milestone: m-5
@@ -20,7 +20,7 @@ Effort: XS. Actual: . Billable: no. AI cost: pending script. AI time: . Live con
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 A live contact message reaches the inbox; mail_status sent
+- [x] #1 A live contact message reaches the inbox; mail_status sent
 <!-- AC:END -->
 
 ## Final Summary
