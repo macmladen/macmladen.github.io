@@ -2,11 +2,11 @@
 /** Checks that `public/_headers` still describes what the build actually
  *  emits. Run after `npm run build`, as `npm run check:csp`.
  *
- *  The CSP allows the one inline script on /contact/ by sha256 of its exact
- *  body, whitespace included, so reindenting that block in the source silently
- *  breaks the topic preselect in production. This walks every built page,
- *  hashes every inline script it finds, and fails if the policy does not carry
- *  that hash — and equally if a page has grown a new inline script nobody
+ *  The CSP allows each page's inline script by sha256 of its exact body,
+ *  whitespace included, so reindenting one of those blocks in the source
+ *  silently breaks that page's scripts in production. This walks every built
+ *  page, hashes every inline script it finds, and fails if the policy does not
+ *  carry that hash — and equally if a page has grown a new inline script nobody
  *  hashed. JSON-LD blocks are skipped: `type="application/ld+json"` is data,
  *  not script, and CSP does not apply to it. */
 

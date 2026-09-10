@@ -2,7 +2,9 @@
 /** Shown in place of the form once a message is in the database. It says the
  *  message was received, not that the email arrived: delivery is a separate
  *  step whose outcome lands in messages.mail_status, and the visitor's business
- *  is finished either way. */
+ *  is finished either way. The `data-form-success` attribute is the contact
+ *  page's handle on it: when the form is submitted with fetch, the script lifts
+ *  this very block out of the rendered answer and puts it above the form. */
 import { topicLabel } from '../data/contact';
 
 interface Props {
@@ -14,7 +16,7 @@ const { email, topic } = Astro.props;
 ---
 
 <!-- draft: Mladen to approve -->
-<div class="notice notice--ok flow">
+<div class="notice notice--ok flow" data-form-success>
   <p><strong>Your message is here.</strong></p>
   <p>
     It is filed under "{topicLabel(topic)}" and the reply goes to {email}. Expect an

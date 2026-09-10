@@ -45,9 +45,22 @@ const turnstileSiteKey =
   import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '1x00000000000000000000AA';
 
 const hasErrors = Object.keys(errors).length > 0;
+
+/** `data-form-root` is the handle the page's script uses: it submits this form
+ *  with fetch and lifts the answer out of the endpoint's rendered response. The
+ *  line below is the only message that does not come from the server, because
+ *  when the request fails to arrive there is no answer to quote.
+ *  draft: Mladen to approve. */
+const failure = `Sending failed. Please try again or write to ${person.email}.`;
 ---
 
-<form class="flow" method="post" action="/api/register/">
+<form
+  class="flow"
+  method="post"
+  action="/api/register/"
+  data-form-root="register"
+  data-fail={failure}
+>
   {
     hasErrors && (
       <p class="notice notice--error" role="alert">

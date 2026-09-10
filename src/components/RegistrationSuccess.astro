@@ -1,5 +1,8 @@
 ---
-/** Shown in place of the form once a registration is in the database. */
+/** Shown in place of the form once a registration is in the database. The
+ *  `data-form-success` attribute is the workshop page's handle on it: when the
+ *  form is submitted with fetch, the script lifts this very block out of the
+ *  rendered answer and puts it above the form. */
 import { workshop } from '../data/workshop';
 
 interface Props {
@@ -9,7 +12,7 @@ interface Props {
 const { email } = Astro.props;
 ---
 
-<div class="notice notice--ok flow">
+<div class="notice notice--ok flow" data-form-success>
   <p><strong>You are on the list.</strong></p>
   <p>
     A confirmation email is on its way to {email}. The preparation guide and the demo

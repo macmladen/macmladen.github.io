@@ -69,28 +69,125 @@ const description =
   </section>
 
   {
-    /* The site's only script, and only on this page. /about/ and /speaking/ link
-       here with ?topic=…; this reads that key and preselects the matching
-       option, so the visitor lands on the form already pointed the right way.
-       Pure enhancement: without JavaScript the select simply opens on "Choose
-       one", as it does for anyone arriving without the parameter.
+    /* The page's one inline script, hashed in the CSP (npm run check:csp). It
+       does two things: it preselects the topic from a ?topic= query key, and it
+       submits the contact form without leaving the page. Both are enhancement —
+       with JavaScript off the select opens on "Choose one" and the form posts to
+       /api/contact/ as a form always has.
 
-       The guard is the select's own value. The placeholder option carries
-       value="", so an untouched form reads as empty; anything else means a topic
-       is already chosen — which is what /api/contact/ renders after a failed
-       submission — and the query string must not overwrite the visitor's pick.
-       That page renders its own copy of the form and does not include this
-       script, so the guard is belt as well as braces, and stays correct if the
-       script ever moves into the component. */
+       Preselect: /about/ and /speaking/ link here with ?topic=…, and the visitor
+       should land on the form already pointed the right way. The guard is the
+       select's own value. The placeholder option carries value="", so an
+       untouched form reads as empty; anything else means a topic is already
+       chosen — which is what the endpoint renders after a failed submission, and
+       what the form below carries after a failed submission made with fetch —
+       and the query string must not overwrite the visitor's pick.
+
+       The second half is the same block as on the workshop page, on purpose: one
+       script per page keeps the CSP to one hash per page, and the endpoints
+       answer both forms the same way. */
   }
   <script is:inline>
     (() => {
-      const select = document.getElementById('topic');
-      if (!select || select.value !== '') return;
-      const wanted = new URLSearchParams(location.search).get('topic');
-      if (wanted && [...select.options].some((option) => option.value === wanted)) {
-        select.value = wanted;
-      }
+      /* Topic from the query string, unless a topic is already chosen. Run again
+         after the form is re-rendered, when the select comes back untouched. */
+      const enhance = () => {
+        const select = document.getElementById('topic');
+        if (!select || select.value !== '') return;
+        const wanted = new URLSearchParams(location.search).get('topic');
+        if (wanted && [...select.options].some((option) => option.value === wanted)) {
+          select.value = wanted;
+        }
+      };
+
+      enhance();
+
+      /* Submitting without leaving the page. The endpoint keeps answering with
+         a whole rendered page — the very one a submission without JavaScript
+         lands on — and this lifts out of it the part that changed: the success
+         block, or the form carrying its errors and the values that were typed.
+         The rendering path stays on the server either way. */
+      const form = document.querySelector('[data-form-root]');
+      if (!form) return;
+
+      const pristine = form.innerHTML;
+      let notice = null;
+
+      /* The one block above the form: replaced on every attempt and focused, so
+         the answer is both read out and scrolled to. */
+      const answer = (block, role) => {
+        if (notice) notice.remove();
+        notice = block;
+        block.classList.add('notice--live');
+        block.setAttribute('role', role);
+        block.tabIndex = -1;
+        form.before(block);
+        block.focus();
+      };
+
+      const failed = (text) => {
+        const block = document.createElement('p');
+        block.className = 'notice notice--error';
+        block.textContent = text || form.dataset.fail;
+        return block;
+      };
+
+      /* Turnstile keeps one widget per container. A container it has already
+         filled — Turnstile renders the widget into a child of its own — is
+         reset; an empty one, which is what new markup brings, has to be
+         rendered into. */
+      const challenge = () => {
+        const box = form.querySelector('.cf-turnstile');
+        if (!box || !window.turnstile) return;
+        if (box.firstElementChild) window.turnstile.reset(box);
+        else {
+          window.turnstile.render(box, { sitekey: box.dataset.sitekey, theme: box.dataset.theme });
+        }
+      };
+
+      const submitting = (state) => {
+        const button = form.querySelector('[type="submit"]');
+        if (button) button.disabled = state;
+      };
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        submitting(true);
+
+        try {
+          const response = await fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'X-Requested-With': 'fetch' },
+            credentials: 'same-origin',
+          });
+          const page = new DOMParser().parseFromString(await response.text(), 'text/html');
+          const success = page.querySelector('[data-form-success]');
+          const again = page.querySelector('[data-form-root]');
+
+          if (response.ok && success) {
+            form.innerHTML = pristine;
+            enhance();
+            answer(document.importNode(success, true), 'status');
+          } else if (again) {
+            /* The general message moves above the form; the fields keep the
+               errors beside them and the values that were typed. */
+            const general = again.querySelector('.notice--error');
+            const text = (general ?? again.querySelector('.field__error'))?.textContent.trim();
+            if (general) general.remove();
+            form.innerHTML = again.innerHTML;
+            enhance();
+            answer(failed(text), 'alert');
+          } else {
+            answer(failed(), 'alert');
+          }
+        } catch {
+          answer(failed(), 'alert');
+        }
+
+        challenge();
+        submitting(false);
+      });
     })();
   </script>
 </BaseLayout>

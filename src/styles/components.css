@@ -240,6 +240,18 @@
   color: var(--color-error-ink);
 }
 
+/* The block a page's script puts above a form after a submission — the success
+   state lifted out of the answer, or the reason it failed. It stands between
+   the paragraph that introduces the form and the form itself, so it takes more
+   air above than the flow layer's default gives.
+
+   A margin rather than --flow-space: the success block is a .flow container of
+   its own, and --flow-space inherits, so setting it here would push that
+   block's own paragraphs apart too. */
+.notice--live {
+  margin-block-start: var(--space-8);
+}
+
 /* Form controls */
 .field {
   display: grid;
