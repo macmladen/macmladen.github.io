@@ -91,7 +91,7 @@ export const emptyValues: RegistrationValues = {
 
 /** The pattern the GitHub username field advertises to the browser and the
  *  validator applies on the server. */
-export const githubPattern = '[A-Za-z0-9-]{1,39}';
+export const githubPattern = '[A-Za-z0-9\\-]{1,39}';
 
 /** An SSH public key, when given, has to start with one of these. */
 export const sshKeyPrefixes = ['ssh-ed25519 ', 'ssh-rsa '];
