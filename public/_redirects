@@ -2,6 +2,18 @@
 # Copied verbatim into dist/client/ by the build; the Cloudflare adapter
 # appends any Astro-declared redirects underneath.
 
+# No www rule here, and none is possible (checked against
+# https://developers.cloudflare.com/workers/static-assets/redirects/,
+# last updated 2026-08-25, read 2026-09-10). A rule's source must be
+# "A file path" — only the destination may be "A file path or external link" —
+# and the Advanced redirects table lists "Domain-level redirects" as ❌, with
+# `workers.example.com/* workers.example.com/blog/:splat 301` as the example
+# that does not work. wrangler.toml attaches both macmladen.com and
+# www.macmladen.com to this Worker as custom domains, so www serves the site
+# rather than redirecting to the apex. Sending it to the apex is a zone-level
+# Redirect Rule (or a Bulk Redirect) in the Cloudflare dashboard — Mladen's
+# hand, like HSTS; see ROADMAP.md.
+
 # Short, sayable aliases for the workshop, for a slide or a spoken URL.
 # Temporary on purpose: /speaking/<year>/<event-slug>/ is the canonical home
 # of every appearance, so next year these two point somewhere else.

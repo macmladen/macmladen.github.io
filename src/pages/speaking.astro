@@ -4,6 +4,7 @@ import StructuredData from '../components/StructuredData.astro';
 import { person } from '../data/person';
 import { appearancesByYear, summaryLine, type Appearance } from '../data/speaking';
 import { isRegistrationOpen, workshop } from '../data/workshop';
+import { dateAndTime } from '../lib/dates';
 import { graph, speakingPageNode } from '../lib/schema';
 
 /** Asked at render time, not at module scope: see isRegistrationOpen. */
@@ -104,6 +105,14 @@ const closedLinkText = 'The workshop page';
               {current.url ? <a href={current.url}>{current.title}</a> : current.title}
             </span>
             <span class="appearances__event">{placeLine(current, current.year)}</span>
+            {/* When and where — the same line the sharing card carries (MM-75).
+                The card takes it as one string from lib/dates; here the date and
+                the time sit inside a <time> and the venue follows it, because
+                only the first half has a machine-readable form. */}
+            <span class="appearances__when">
+              <time datetime={workshop.start}>{dateAndTime(workshop.start)}</time>
+              {` · ${workshop.venue}`}
+            </span>
             <span class="appearances__kind">{kindLabel[current.kind]}</span>
             {/* isRegistrationOpen is false both after the close date and once
                 the session has begun (MM-74), so one branch covers the button

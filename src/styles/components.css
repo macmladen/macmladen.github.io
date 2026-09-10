@@ -43,8 +43,11 @@
   font-weight: var(--weight-semibold);
 }
 
-/* Where it was given. */
-.appearances__event {
+/* Where it was given, and — on the highlighted entry alone — when and where it
+   will be. Two names for one treatment: both are secondary lines under the
+   title, and they read as a pair when they sit together. */
+.appearances__event,
+.appearances__when {
   display: block;
   color: var(--color-ink-soft);
 }

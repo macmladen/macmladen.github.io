@@ -16,6 +16,7 @@
 
 import { person } from './person.ts';
 import { workshop } from './workshop.ts';
+import { whenAndWhere } from '../lib/dates.ts';
 
 /** Facebook's and LinkedIn's preferred sharing size, and what `og:image:width`
  *  and `og:image:height` promise. Exported so the generator and the markup
@@ -30,6 +31,10 @@ export interface OgCard {
   path: string;
   /** The line set large on the card. */
   title: string;
+  /** An optional smaller line under the title. Only the workshop card has one:
+   *  a card for a dated event has a job the others do not, which is to answer
+   *  "when and where" in the preview itself, before anyone opens the link. */
+  subtitle?: string;
 }
 
 /** Titles are the page's own words, taken from the data files rather than
@@ -43,7 +48,12 @@ export const ogCards: OgCard[] = [
   { slug: 'about', path: '/about/', title: 'About' },
   { slug: 'speaking', path: '/speaking/', title: 'Speaking' },
   { slug: 'contact', path: '/contact/', title: 'Contact' },
-  { slug: 'workshop', path: workshop.path, title: workshop.title },
+  {
+    slug: 'workshop',
+    path: workshop.path,
+    title: workshop.title,
+    subtitle: whenAndWhere(workshop.start, workshop.venue),
+  },
 ];
 
 /** The card for a canonical path, or the home card for anything unlisted. */

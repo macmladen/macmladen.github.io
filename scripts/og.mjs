@@ -61,7 +61,7 @@ const box = (style, children) => ({ type: 'div', props: { style, children } });
 /** The site URL as it is spoken, without the scheme or the trailing slash. */
 const readableUrl = person.url.replace(/^https?:\/\//, '').replace(/\/+$/, '');
 
-const card = (title) =>
+const card = ({ title, subtitle }) =>
   box(
     {
       width: OG_WIDTH,
@@ -88,6 +88,13 @@ const card = (title) =>
         },
         title,
       ),
+      /* When and where, for the one card that describes a dated event. Set at
+         the footer's size and in the softer ink, so it reads as a caption to
+         the title rather than as a second title. Cards without a subtitle
+         leave the row out entirely rather than drawing an empty one. */
+      ...(subtitle
+        ? [box({ display: 'flex', marginTop: 28, fontSize: 30, color: INK_SOFT }, subtitle)]
+        : []),
       /* Every h1 on the site carries a thin accent rule under it. Here it is
          six pixels: the same gesture, at a size that survives a thumbnail. */
       box({ height: 6, marginTop: 40, marginBottom: 24, backgroundColor: ACCENT }, ''),
@@ -98,16 +105,17 @@ const card = (title) =>
     ],
   );
 
-const png = async (title) => {
-  const svg = await satori(card(title), { width: OG_WIDTH, height: OG_HEIGHT, fonts });
+const png = async (entry) => {
+  const svg = await satori(card(entry), { width: OG_WIDTH, height: OG_HEIGHT, fonts });
   return sharp(Buffer.from(svg)).png().toBuffer();
 };
 
 await rm(outDir, { recursive: true, force: true });
 await mkdir(outDir, { recursive: true });
 
-for (const { slug, title } of ogCards) {
-  const bytes = await png(title);
+for (const entry of ogCards) {
+  const { slug } = entry;
+  const bytes = await png(entry);
   await writeFile(new URL(`${slug}.png`, outDir), bytes);
   console.log(`og: ${fileURLToPath(new URL(`${slug}.png`, outDir))} (${bytes.length} bytes)`);
 }
