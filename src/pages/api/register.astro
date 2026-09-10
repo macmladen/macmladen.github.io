@@ -7,6 +7,7 @@
  *  /api/register/ and that is what the form's action says. */
 export const prerender = false;
 
+import { env as workerEnv } from 'cloudflare:workers';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import RegistrationForm from '../../components/RegistrationForm.astro';
 import RegistrationSuccess from '../../components/RegistrationSuccess.astro';
@@ -25,7 +26,7 @@ if (Astro.request.method !== 'POST') {
   });
 }
 
-const env = Astro.locals.runtime?.env ?? {};
+const env = workerEnv as WorkerEnv;
 const ip = Astro.request.headers.get('CF-Connecting-IP');
 
 let values: RegistrationValues = emptyValues;

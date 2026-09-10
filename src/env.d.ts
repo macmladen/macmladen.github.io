@@ -12,12 +12,10 @@ interface WorkerEnv {
   IP_HASH_SALT?: string;
 }
 
-declare namespace App {
-  interface Locals {
-    runtime?: {
-      env: WorkerEnv;
-    };
-  }
+/** Astro 6 removed Astro.locals.runtime.env; bindings and secrets come from
+ *  the cloudflare:workers module, which workerd provides at runtime. */
+declare module 'cloudflare:workers' {
+  export const env: WorkerEnv;
 }
 
 interface ImportMetaEnv {

@@ -7,6 +7,7 @@
  *  'always', the route is /api/contact/ and that is what the form's action says. */
 export const prerender = false;
 
+import { env as workerEnv } from 'cloudflare:workers';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ContactForm from '../../components/ContactForm.astro';
 import ContactSuccess from '../../components/ContactSuccess.astro';
@@ -23,7 +24,7 @@ if (Astro.request.method !== 'POST') {
   });
 }
 
-const env = Astro.locals.runtime?.env ?? {};
+const env = workerEnv as WorkerEnv;
 const ip = Astro.request.headers.get('CF-Connecting-IP');
 
 let values: ContactValues = emptyValues;
