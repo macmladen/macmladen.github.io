@@ -44,11 +44,7 @@ export async function sendMessage(
 
   const payload = {
     from: FROM,
-    // info@ rather than person.email: the MailerSend account is still a
-    // sandbox with a unique-recipient cap, and info@macmladen.com is one of
-    // the addresses it already accepted; the Cloudflare catch-all forwards
-    // both to the same inbox. Back to person.email once the account is approved.
-    to: [{ email: 'info@macmladen.com', name: person.name }],
+    to: [{ email: person.email, name: person.name }],
     reply_to: { email: values.email, name: values.name },
     subject: `[macmladen.com] ${topicLabel(values.topic)} from ${values.name}`,
     text: body(values),
