@@ -1,5 +1,11 @@
 # Roadmap
 
+## Status: on hold from 2026-09-10
+
+v2.1 is live and serves through WordCamp Belgrade (18 September 2026). Work on the site pauses so Mladen can focus on the workshop itself; the IA and design overhaul (v2 below) starts after the camp. Open on the board while on hold: MM-48 (one live test registration and contact message, then close), MM-49 (MailerLite `terminal` field and the confirmation automation), MM-11 (verification pass). Deploys are tagged; `git tag -l 'v*'` is the deploy log (v1.0 first Jekyll deploy 2014, v1.1 last Jekyll build 2022, v2.0 first Cloudflare deploy 2026-09-09, v2.1 refinements 2026-09-09).
+
+To resume: read this file, `docs/notes-v1-build.md`, `AGENTS.md`, then `backlog board`.
+
 Future work by name. An item becomes a backlog task when it is needed and gets the next MM number then; the number is written here at that moment. Nothing in the open sections has a number until that happens. Done items keep their numbers as the record.
 
 ## Done
@@ -11,11 +17,10 @@ Future work by name. An item becomes a backlog task when it is needed and gets t
 - M3 Pages (MM-06–44): the five pages and two endpoints; sand and Koder orange (#F40) palette by decision with the ratios known; ink bars; system fonts; About text from the 2014 site with source links; contact form with topic; light only, dark palette parked.
 - M4 Quality (MM-10, MM-12): generated OG images, headers with hashed inline scripts, README deploy section. MM-11 verification deferred (below).
 - M5 Live (MM-45–50): Cloudflare resources, secrets, preview, custom domains, keys.
-- M6 Refinements so far (MM-51–64): link previews, session link, facts block with map pin, section spacing, form rework (radios, checkboxes, terminal experience, copy buttons), footer nav and Speaker Deck, close date 17 September, speaking history researched from Speaker Deck, YouTube and LinkedIn (`docs/speaking-research.md`).
+- M6 Refinements (MM-51–65): link previews, session link, facts block with map pin, section spacing, form rework (radios, checkboxes, terminal experience, copy buttons), footer nav and Speaker Deck, close date 17 September, speaking history researched from Speaker Deck, YouTube and LinkedIn (`docs/speaking-research.md`) and the Speaking page rebuilt from it, 31 appearances 2011–2026. Shipped as v2.1.
 
 ## Next, before the camp (18 September 2026)
 
-- Speaking page from the researched history, grouped by year with deck and video icons (MM-65).
 - One live test registration and one contact message; Turnstile siteverify confirmed in the Cloudflare dashboard; MM-48 closed.
 - MailerLite: `terminal` custom field; confirmation automation on the workshop group (MM-49).
 - Verification pass on the live site: Lighthouse mobile on every page, forms with JavaScript off, 422 round trips (MM-11, deferred from M4).

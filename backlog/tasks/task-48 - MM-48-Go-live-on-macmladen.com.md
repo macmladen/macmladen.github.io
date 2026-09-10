@@ -4,7 +4,7 @@ title: 'MM-48: Go live on macmladen.com'
 status: In Progress
 assignee: []
 created_date: '2026-09-09 12:52'
-updated_date: '2026-09-09 13:33'
+updated_date: '2026-09-10 05:10'
 labels:
   - feature
 milestone: m-4
@@ -23,5 +23,5 @@ Effort: S. Actual: . Billable: no. AI cost: pending script. AI time: . MailerLit
 - [x] #1 wrangler.toml carries vars and routes; dry run clean
 - [x] #2 https://macmladen.com and www serve the Worker; Turnstile renders on both forms
 - [ ] #3 One test registration and one contact message arrive (D1 rows, MailerLite subscriber, MailerSend mail)
-- [ ] #4 GitHub Pages disabled; main pushed
+- [x] #4 GitHub Pages disabled; main pushed
 <!-- AC:END -->
