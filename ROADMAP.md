@@ -35,6 +35,7 @@ The feedback on v1 is "okayish"; v2 has to be considerably better. Two reference
 - **Posts in Markdown** at `/writing/` with `/rss.xml`, dated, tags, reading time; first post is the rebuild story. One post a month keeps the site alive.
 - **CV** at `/cv/` with a print stylesheet and a PDF export; the timeline on the home page derives from it.
 - **Work** at `/work/`: three short write-ups (role, problem, decisions, outcome); community organising counts as delivery.
+- **Success pages** for registration and contact (`/speaking/…/thanks/`, `/contact/thanks/`): the in-page green block (MM-68) confirms; a page is the place to steer, with the prep guide, the follow-ups, the newsletter. Failure stays in the page.
 - **Now** page, **colophon** (how this is built and why), `/speaking/<year>/` indexes.
 - **Colour-scheme switcher** (Auto, Light, Dark): built in MM-17, removed in MM-21; the measured dark palette is parked in `docs/decisions/M3-DARK-SCHEME-PARKED.md` and dormant in `src/styles/tokens.css`. Write it with `light-dark()`. Turnstile then follows the scheme.
 - **Border contrast decision**: `#CBA` on sand is below 3:1 for non-text boundaries; keep as deliberate softness or raise.
