@@ -11,8 +11,7 @@
 # that does not work. wrangler.toml attaches both macmladen.com and
 # www.macmladen.com to this Worker as custom domains, so www serves the site
 # and a zone-level Redirect Rule (created via the API, 2026-09-10) sends it to
-# the apex with a 301. Not the dashboard's business any more — Mladen's
-# hand, like HSTS; see ROADMAP.md.
+# the apex with a 301; see ROADMAP.md.
 
 # Short, sayable aliases for the workshop, for a slide or a spoken URL.
 # Temporary on purpose: /speaking/<year>/<event-slug>/ is the canonical home
