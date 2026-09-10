@@ -29,14 +29,19 @@ The dev server runs at <http://localhost:4321/> with hot module reloading.
 npm run build     # writes dist/client (static site) and dist/server (worker)
 npm run preview   # serves the production build locally
 npm run og        # redraws public/og/*.png on its own
+npm run links     # re-marks the external links in dist/client on its own
 npm run check:csp # rehashes the built inline scripts against public/_headers
 ```
 
 `npm run build` runs `npm run og` first, through npm's `prebuild` hook, which
 draws the five sharing cards into `public/og/` so Astro copies them into
-`dist/client/`. The directory is generated and git-ignored, so the deploy build
-command has to be `npm run build` — `astro build` on its own would ship no
-cards.
+`dist/client/`. It runs `npm run links` afterwards, through the `postbuild`
+hook: `scripts/external-links.mjs` walks every page in `dist/client` and gives
+each link that leaves the site `target="_blank"` and `rel="noopener"`, which is
+what the stylesheet's arrow marker keys off. It prints what it changed and which
+hosts it found, and running it twice changes nothing the second time. Both hooks
+are why the deploy build command has to be `npm run build` — `astro build` on its
+own would ship no cards and no marked links.
 
 The Cloudflare adapter splits the output: `dist/client/` is the static site that
 gets served, `dist/server/` holds the worker for the two server endpoints. Astro is

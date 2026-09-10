@@ -9,8 +9,10 @@
   "scripts": {
     "dev": "astro dev",
     "og": "node scripts/og.mjs",
+    "links": "node scripts/external-links.mjs",
     "prebuild": "npm run og",
     "build": "astro build",
+    "postbuild": "npm run links",
     "preview": "astro preview",
     "astro": "astro",
     "check:csp": "node scripts/check-csp.mjs",

@@ -5,7 +5,12 @@
  *  rendered answer and puts it above the form.
  *
  *  Short on purpose since MM-70: everything else a registrant needs is in the
- *  confirmation email that is on its way to them. */
+ *  confirmation email that is on its way to them.
+ *
+ *  The GitHub link carries `target` and `rel` in the source rather than getting
+ *  them from `scripts/external-links.mjs`: /api/register/ renders this block at
+ *  runtime, and a runtime response is never a file the postbuild step can
+ *  rewrite (MM-76). */
 import { workshop } from '../data/workshop';
 
 interface Props {
@@ -32,6 +37,6 @@ const { email, watching = false } = Astro.props;
   }
   <p>
     A confirmation is on its way to {email}. The preparation guide and the demo project
-    are <a href={workshop.repoUrl}>on GitHub</a>.
+    are <a href={workshop.repoUrl} target="_blank" rel="noopener">on GitHub</a>.
   </p>
 </div>

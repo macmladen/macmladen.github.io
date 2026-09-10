@@ -424,3 +424,41 @@
 .copy__button--done {
   color: var(--color-accent-hover);
 }
+
+/* The mark on a link that leaves the site. `target="_blank"` is put on every
+   outward anchor by scripts/external-links.mjs after the build (and by hand in
+   the few components the endpoints render at runtime), so the attribute is the
+   one honest signal of where a link goes and the selector reads off it rather
+   than off a class an author has to remember.
+
+   The glyph is Material Design's "open_in_new" on a 24px grid, inlined as a
+   mask so it takes currentColor and follows the link colour in either scheme
+   — no second colour to keep in step, and no request. Sized in em so it grows
+   with the text it follows.
+
+   Two exclusions. A .button is already a destination in its own right and the
+   arrow would sit inside the fill; the footer's profile links are marks with
+   no visible text for an arrow to follow. Everything else gets it, .credit
+   included. A link that should not carry the arrow can opt out of the whole
+   treatment with data-no-external, which keeps target off it as well.
+
+   Both mask properties are written out: Safari only dropped the -webkit-
+   prefix recently, and this build runs no autoprefixer. */
+a[target='_blank']:not(.button):not(.site-footer a)::after {
+  --icon-external: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z'/%3E%3C/svg%3E");
+
+  content: '';
+  display: inline-block;
+  inline-size: 0.8em;
+  block-size: 0.8em;
+  margin-inline-start: 0.2em;
+  background-color: currentColor;
+  -webkit-mask-image: var(--icon-external);
+  mask-image: var(--icon-external);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+}

@@ -1,6 +1,11 @@
 ---
 /** Replaces the form after the close date. The page itself stays: it is the
- *  workshop's archive page for the slides and the recording. */
+ *  workshop's archive page for the slides and the recording.
+ *
+ *  The WordCamp link carries `target` and `rel` in the source rather than
+ *  getting them from `scripts/external-links.mjs`: /api/register/ renders this
+ *  block at runtime, and a runtime response is never a file the postbuild step
+ *  can rewrite (MM-76). */
 import { workshop } from '../data/workshop';
 import { fullDate } from '../lib/dates';
 ---
@@ -8,6 +13,8 @@ import { fullDate } from '../lib/dates';
 <p class="notice" data-form-closed>
   Registration is closed — it ran until <time datetime={workshop.closeDate}
     >{fullDate(workshop.closesAt)}</time
-  >. Ask at the <a href={workshop.wordcampUrl}>{workshop.wordcampName}</a> desk whether
+  >. Ask at the <a href={workshop.wordcampUrl} target="_blank" rel="noopener"
+    >{workshop.wordcampName}</a
+  > desk whether
   there is a free seat left.
 </p>

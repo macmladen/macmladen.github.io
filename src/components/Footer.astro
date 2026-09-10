@@ -18,7 +18,15 @@ import { person } from '../data/person';
  *  diagonal band through it — so nothing has to be lifted from their site. It
  *  needs `fill-rule="evenodd"` because the frame's hole is a second subpath
  *  wound the same way as the first, which is also what lets the band inside the
- *  hole paint again. */
+ *  hole paint again.
+ *
+ *  The profile links carry `target` and `rel` in the source rather than getting
+ *  them from `scripts/external-links.mjs`: this footer is on the two endpoints'
+ *  runtime responses too, and those are never files the postbuild step can
+ *  rewrite. `rel` keeps `me` — the profiles verify back to the site — and adds
+ *  `noopener` beside it. The arrow that marks an outward link is suppressed
+ *  inside the footer: these are marks with no text for it to sit after
+ *  (MM-76). */
 interface Mark {
   d: string;
   fillRule?: 'evenodd';
@@ -75,7 +83,12 @@ const year = new Date().getFullYear();
         {
           social.map((profile) => (
             <li>
-              <a class="site-footer__icon" href={profile.url} rel="me">
+              <a
+                class="site-footer__icon"
+                href={profile.url}
+                rel="me noopener"
+                target="_blank"
+              >
                 <svg
                   viewBox="0 0 24 24"
                   width="24"
