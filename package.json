@@ -14,7 +14,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "check:csp": "node scripts/check-csp.mjs",
-    "test": "node scripts/test-validate.mjs && node scripts/test-validate-contact.mjs && node scripts/test-confirmation.mjs"
+    "test": "node scripts/test-validate.mjs && node scripts/test-validate-contact.mjs && node scripts/test-confirmation.mjs && node scripts/test-seats.mjs"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.3.0",

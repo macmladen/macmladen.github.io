@@ -86,6 +86,10 @@ export const workshop = {
    *  conference front page. It is also the Event's sameAs. */
   sessionUrl:
     'https://belgrade.wordcamp.org/2026/session/wordpress-docker-i-ai-agenti-prakticno-sr/',
+  /** Working seats in the room: laptops Mladen can look after in eighty
+   *  minutes. Watching does not take one, which is why /api/seats/ counts only
+   *  the registrations that are not watch-only (MM-71). */
+  capacity: 30,
   wordcampName: 'WordCamp Belgrade 2026',
   wordcampStart: '2026-09-18',
   wordcampEnd: '2026-09-19',

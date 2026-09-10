@@ -10,13 +10,26 @@ import { workshop } from '../data/workshop';
 
 interface Props {
   email: string;
+  /** True when the last working seat had gone and the endpoint placed this
+   *  registration as a watching one (MM-71). */
+  watching?: boolean;
 }
 
-const { email } = Astro.props;
+const { email, watching = false } = Astro.props;
 ---
 
 <div class="notice notice--ok flow" data-form-success>
   <p><strong>You are on the list.</strong></p>
+  {
+    /* draft: Mladen to approve — the line someone sees when the room filled up
+       between loading the page and sending the form. */
+    watching && (
+      <p>
+        The {workshop.capacity} working seats are taken, so you are registered to watch.
+        Come along, follow the workshop and ask.
+      </p>
+    )
+  }
   <p>
     A confirmation is on its way to {email}. The preparation guide and the demo project
     are <a href={workshop.repoUrl}>on GitHub</a>.

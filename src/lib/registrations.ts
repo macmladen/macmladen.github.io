@@ -26,6 +26,44 @@ export async function hashIp(
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
+export interface Seats {
+  capacity: number;
+  /** Registrations that take a working seat: everything but the watchers. */
+  taken: number;
+  left: number;
+}
+
+/** How many working seats are gone. Watchers are not counted — they take a
+ *  chair, not a seat at the exercise (MM-71). */
+export async function countSeatsTaken(db: D1Like): Promise<number> {
+  const row = await db
+    .prepare('SELECT COUNT(*) AS taken FROM registrations WHERE watch_only = 0')
+    .first<{ taken: number }>();
+  return row?.taken ?? 0;
+}
+
+/** The three numbers /api/seats/ answers with. `left` never goes below zero:
+ *  an over-full room is still a full one, and a negative number on the page
+ *  would be a puzzle rather than an answer. */
+export async function readSeats(db: D1Like, capacity: number): Promise<Seats> {
+  const taken = await countSeatsTaken(db);
+  return { capacity, taken, left: Math.max(0, capacity - taken) };
+}
+
+/** At capacity a registration that wanted a working seat becomes a watching
+ *  one. The rule is here rather than only in the page's script because the
+ *  script is an enhancement and the room is not: a submission that arrives
+ *  after the last seat went — with JavaScript off, or from a page that was
+ *  loaded while a seat was still free — must be placed the same way.
+ *
+ *  It only ever adds watch_only; what the registrant answered about their
+ *  laptop is kept, because they gave those answers meaning to use them. */
+export const placeAtCapacity = (
+  values: RegistrationValues,
+  seats: Seats,
+): RegistrationValues =>
+  seats.left === 0 && !values.watch_only ? { ...values, watch_only: true } : values;
+
 /** The email column is unique; this is the friendly check that runs first. */
 export async function findByEmail(db: D1Like, email: string): Promise<{ id: number } | null> {
   return db.prepare('SELECT id FROM registrations WHERE email = ?').bind(email).first<{

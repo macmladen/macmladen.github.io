@@ -130,6 +130,17 @@ npx wrangler d1 execute macmladen-registrations --local \
   --command "SELECT id, created_at, name, email, github, os, tool, terminal, own_hosting, watch_only, newsletter, mailerlite_status, confirmation_status FROM registrations ORDER BY id"
 ```
 
+How many working seats are gone — the same count `/api/seats/` answers with,
+watchers left out:
+
+```sh
+npx wrangler d1 execute macmladen-registrations --local \
+  --command "SELECT COUNT(*) AS taken FROM registrations WHERE watch_only = 0"
+```
+
+The room holds `workshop.capacity` (30, in `src/data/workshop.ts`). At capacity
+the endpoint stores a registration as `watch_only = 1` rather than refusing it.
+
 Read the contact messages, newest first:
 
 ```sh

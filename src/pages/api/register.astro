@@ -22,6 +22,8 @@ import {
   findByEmail,
   hashIp,
   insertRegistration,
+  placeAtCapacity,
+  readSeats,
   setConfirmationStatus,
   setMailerliteStatus,
 } from '../../lib/registrations';
@@ -39,6 +41,9 @@ const ip = Astro.request.headers.get('CF-Connecting-IP');
 let values: RegistrationValues = emptyValues;
 let errors: RegistrationErrors = {};
 let registered = false;
+/** Set when the seats had gone and this registration was placed as a watching
+ *  one rather than refused (MM-71). */
+let watching = false;
 let status = 422;
 
 const open = isRegistrationOpen();
@@ -73,6 +78,16 @@ if (open) {
         if (existing) {
           errors.email = messages.duplicate;
         } else {
+          // The seats are counted here rather than trusted from the form: the
+          // page may have been loaded while the room still had room in it, and
+          // the script that ticks the watch-only box is an enhancement. At
+          // capacity the registration is placed as a watching one and said so
+          // on the page, never refused (MM-71).
+          const seats = await readSeats(db, workshop.capacity);
+          const placed = placeAtCapacity(values, seats);
+          watching = placed.watch_only && !values.watch_only;
+          values = placed;
+
           // D1 first: the registration is what matters. MailerLite and the
           // confirmation email come after and only decide what goes in
           // mailerlite_status and confirmation_status; neither can fail a
@@ -119,7 +134,7 @@ const title = registered ? 'You are registered' : 'Registration';
 
       {!open && <RegistrationClosed />}
 
-      {open && registered && <RegistrationSuccess email={values.email} />}
+      {open && registered && <RegistrationSuccess email={values.email} watching={watching} />}
 
       {
         open && !registered && (

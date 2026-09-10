@@ -53,6 +53,14 @@ const schema = graph(
         <p class="eyebrow"><strong>{workshop.wordcampName}</strong> · Workshop</p>
         <h1 id="workshop-title">{workshop.title}</h1>
         <Facts />
+        {
+          /* Seats left, in two places: here, where someone decides whether to
+             read on, and above the form, where they decide whether to fill it
+             in. The page is static, so what is built into the line is the plain
+             fact of how big the room is; the script replaces it with the count
+             from /api/seats/ once the page has loaded (MM-71). */
+        }
+        <p class="seats" data-seats>{workshop.capacity} seats</p>
         {workshop.abstract.map((paragraph) => <p>{paragraph}</p>)}
       </div>
     </section>
@@ -99,6 +107,7 @@ const schema = graph(
                 Registration closes{' '}
                 <time datetime={workshop.closeDate}>{fullDate(workshop.closesAt)}</time>.
               </p>
+              <p class="seats" data-seats>{workshop.capacity} seats</p>
               <RegistrationForm />
             </Fragment>
           ) : (
@@ -110,12 +119,13 @@ const schema = graph(
   </article>
   {
     /* The page's one inline script, hashed in the CSP (npm run check:csp). It
-       does three things: it reveals the copy buttons on the SSH-key hint, it
-       hides the laptop-only part of the registration form while the watch-only
-       box is ticked, and it submits the form without leaving the page.
-       Everything below is enhancement — with JavaScript off the copy buttons
-       stay hidden, every field is visible, and the form posts to /api/register/
-       as a form always has.
+       does four things: it reveals the copy buttons on the SSH-key hint, it
+       fills in how many seats are left from /api/seats/, it hides the
+       laptop-only part of the registration form while the watch-only box is
+       ticked, and it submits the form without leaving the page. Everything
+       below is enhancement — with JavaScript off the copy buttons stay hidden,
+       the seats line says how big the room is, every field is visible, and the
+       form posts to /api/register/ as a form always has.
 
        The second half is the same block as on /contact/, on purpose: one script
        per page keeps the CSP to one hash per page, and the endpoints answer
@@ -165,6 +175,44 @@ const schema = graph(
       };
 
       wire();
+
+      /* Seats left. The page is static and cached, so the only current number
+         on it comes from /api/seats/ after the page has loaded. Anything less
+         than a clean answer leaves the built-in line alone: "30 seats" is true
+         whatever the endpoint says. When the last seat has gone the watch-only
+         box is ticked for the visitor — the server would place them as a
+         watcher anyway, and the form should say so before they fill it in. */
+      const seats = async () => {
+        const lines = document.querySelectorAll('[data-seats]');
+        if (lines.length === 0) return;
+
+        let answer;
+        try {
+          const response = await fetch('/api/seats/', {
+            headers: { Accept: 'application/json' },
+          });
+          if (!response.ok) return;
+          answer = await response.json();
+        } catch {
+          return;
+        }
+        if (typeof answer.left !== 'number' || typeof answer.capacity !== 'number') return;
+
+        const text =
+          answer.left === 0
+            ? `All ${answer.capacity} seats are taken; you can still register to watch`
+            : `${answer.left} of ${answer.capacity} seats left`;
+        for (const line of lines) line.textContent = text;
+
+        if (answer.left > 0) return;
+        const box = document.querySelector('#watch_only');
+        if (box && !box.checked) {
+          box.checked = true;
+          box.dispatchEvent(new Event('change'));
+        }
+      };
+
+      seats();
 
       /* Submitting without leaving the page. The endpoint keeps answering with
          a whole rendered page — the very one a submission without JavaScript

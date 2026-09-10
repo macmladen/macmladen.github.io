@@ -181,6 +181,16 @@
   text-transform: none;
 }
 
+/* Seats left, on the workshop page. A fact line rather than a warning: the
+   accent's quiet step, as the eyebrow takes, and semibold so it holds its own
+   between two paragraphs. The page's script rewrites the text and never the
+   class, so a full room and a half-empty one are set the same way. */
+.seats {
+  color: var(--color-accent-muted);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+
 /* Subtitle — the standfirst line under a page h1. Soft ink at the lead size,
    pulled close to the heading with the flow layer's own --flow-space so the
    two read as one block. */
