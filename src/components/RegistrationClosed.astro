@@ -5,7 +5,7 @@ import { workshop } from '../data/workshop';
 import { fullDate } from '../lib/dates';
 ---
 
-<p class="notice">
+<p class="notice" data-form-closed>
   Registration is closed — it ran until <time datetime={workshop.closeDate}
     >{fullDate(workshop.closesAt)}</time
   >. Ask at the <a href={workshop.wordcampUrl}>{workshop.wordcampName}</a> desk whether

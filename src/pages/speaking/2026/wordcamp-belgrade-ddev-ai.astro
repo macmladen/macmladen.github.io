@@ -276,6 +276,18 @@ const schema = graph(
           const page = new DOMParser().parseFromString(await response.text(), 'text/html');
           const success = page.querySelector('[data-form-success]');
           const again = page.querySelector('[data-form-root]');
+          const closed = page.querySelector('[data-form-closed]');
+
+          if (closed) {
+            /* Registration closed since this page was built: the notice
+               takes the form's place, as a rebuild would have done. */
+            const notice = document.importNode(closed, true);
+            notice.setAttribute('role', 'status');
+            notice.setAttribute('tabindex', '-1');
+            form.replaceWith(notice);
+            notice.focus();
+            return;
+          }
 
           if (response.ok && success) {
             form.innerHTML = pristine;

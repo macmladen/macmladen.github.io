@@ -1,6 +1,6 @@
-/** MailerLite upsert. The confirmation email is an automation configured in the
- *  MailerLite dashboard, triggered by the subscriber landing in the group — no
- *  email is sent from this code.
+/** MailerLite upsert: the registrant joins the workshop group with the custom
+ *  fields, for later list mail. The confirmation email itself is sent by
+ *  src/lib/confirmation.ts through MailerSend (MM-70); no email is sent here.
  *
  *  This call must never fail a registration: the row is already in D1 by the time
  *  it runs, so every failure is caught and reported as a status string that goes

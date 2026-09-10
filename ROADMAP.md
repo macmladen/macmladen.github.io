@@ -23,7 +23,9 @@ Future work by name. An item becomes a backlog task when it is needed and gets t
 
 - One live test registration and one contact message; Turnstile siteverify confirmed in the Cloudflare dashboard; MM-48 closed.
 - MailerLite: `terminal` custom field; confirmation automation on the workshop group (MM-49).
-- Verification pass on the live site: Lighthouse mobile on every page, forms with JavaScript off, 422 round trips (MM-11, deferred from M4).
+- Rebuild and deploy on 18 September so the built page shows the closed notice (the endpoint already refuses and the page script swaps the notice in).
+- Workshop OG card and the `/speaking/` highlight carry no date or venue; add them.
+- HSTS is not set on the zone (Cloudflare SSL/TLS → Edge Certificates, Mladen's hand); `www.macmladen.com` serves the site rather than redirecting to the apex.
 - Draft copy approvals still marked in source: tagline, workshop teaser, meta descriptions, CTA labels, contact line, success texts.
 
 ## After the camp: v2
