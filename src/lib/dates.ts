@@ -26,8 +26,20 @@ const clock = new Intl.DateTimeFormat('en-GB', {
   timeZone: TIME_ZONE,
 });
 
+const weekdayDayMonth = new Intl.DateTimeFormat('en-GB', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  timeZone: TIME_ZONE,
+});
+
 /** "18 September" */
 export const dayAndMonth = (iso: string): string => dayMonth.format(new Date(iso));
+
+/** "Friday 18 September" — the workshop is this year, so the confirmation email
+ *  says the day and leaves the year to the calendar. */
+export const weekdayAndDate = (iso: string): string =>
+  weekdayDayMonth.format(new Date(iso));
 
 /** "Friday 18 September 2026" */
 export const fullDate = (iso: string): string => weekdayDayMonthYear.format(new Date(iso));

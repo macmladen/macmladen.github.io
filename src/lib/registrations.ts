@@ -80,3 +80,16 @@ export async function setMailerliteStatus(
 ): Promise<void> {
   await db.prepare('UPDATE registrations SET mailerlite_status = ? WHERE id = ?').bind(status, id).run();
 }
+
+/** The confirmation email's outcome, written after the send has answered
+ *  (migration 0004). Null until then, and on every row written before MM-70. */
+export async function setConfirmationStatus(
+  db: D1Like,
+  id: number,
+  status: string,
+): Promise<void> {
+  await db
+    .prepare('UPDATE registrations SET confirmation_status = ? WHERE id = ?')
+    .bind(status, id)
+    .run();
+}

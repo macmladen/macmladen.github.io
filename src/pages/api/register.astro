@@ -17,7 +17,14 @@ import { workshop, isRegistrationOpen } from '../../data/workshop';
 import { dropLaptopAnswers, hasErrors, messages, readForm, validate } from '../../lib/validate';
 import { verifyTurnstile } from '../../lib/turnstile';
 import { upsertSubscriber } from '../../lib/mailerlite';
-import { findByEmail, hashIp, insertRegistration, setMailerliteStatus } from '../../lib/registrations';
+import { sendConfirmation } from '../../lib/confirmation';
+import {
+  findByEmail,
+  hashIp,
+  insertRegistration,
+  setConfirmationStatus,
+  setMailerliteStatus,
+} from '../../lib/registrations';
 
 if (Astro.request.method !== 'POST') {
   return new Response('This address only accepts the registration form (POST).', {
@@ -66,11 +73,15 @@ if (open) {
         if (existing) {
           errors.email = messages.duplicate;
         } else {
-          // D1 first: the registration is what matters. MailerLite comes after
-          // and only decides what goes in mailerlite_status.
+          // D1 first: the registration is what matters. MailerLite and the
+          // confirmation email come after and only decide what goes in
+          // mailerlite_status and confirmation_status; neither can fail a
+          // registration that is already written down.
           const id = await insertRegistration(db, values, await hashIp(ip, env.IP_HASH_SALT));
           const mailerlite = await upsertSubscriber(values, env);
           await setMailerliteStatus(db, id, mailerlite);
+          const confirmation = await sendConfirmation(values, env);
+          await setConfirmationStatus(db, id, confirmation);
           registered = true;
           status = 200;
         }

@@ -100,15 +100,17 @@ npx wrangler d1 migrations apply macmladen-registrations --local
 ```
 
 That runs `migrations/0001_registrations.sql` (table `registrations`),
-`migrations/0002_messages.sql` (table `messages`) and
-`migrations/0003_registrations_terminal.sql` (adds `registrations.terminal`).
-Every file's column names are its form's field names, so the form, the validator
-and the table cannot drift.
+`migrations/0002_messages.sql` (table `messages`),
+`migrations/0003_registrations_terminal.sql` (adds `registrations.terminal`) and
+`migrations/0004_registrations_confirmation.sql` (adds
+`registrations.confirmation_status`). Every file's column names are its form's
+field names, so the form, the validator and the table cannot drift.
 
-**Before the next deploy**, `0003` has to be applied to the production database
-as well — `npx wrangler d1 migrations apply macmladen-registrations --remote`,
-Mladen's hand, not an agent's. Until it is, every registration on the live site
-fails on the missing column and answers 503.
+**Before the next deploy**, `0003` and `0004` have to be applied to the
+production database as well — `npx wrangler d1 migrations apply
+macmladen-registrations --remote`, Mladen's hand, not an agent's. Until they
+are, every registration on the live site fails on the missing column and answers
+503.
 
 Run the production build with that database bound:
 
@@ -125,7 +127,7 @@ Read the registrations:
 
 ```sh
 npx wrangler d1 execute macmladen-registrations --local \
-  --command "SELECT id, created_at, name, email, github, os, tool, terminal, own_hosting, watch_only, newsletter, mailerlite_status FROM registrations ORDER BY id"
+  --command "SELECT id, created_at, name, email, github, os, tool, terminal, own_hosting, watch_only, newsletter, mailerlite_status, confirmation_status FROM registrations ORDER BY id"
 ```
 
 Read the contact messages, newest first:
@@ -150,6 +152,13 @@ The same commands work against the deployed database with `--remote` instead of
 `ok`, `skipped` (no API key configured) or `failed:<reason>`. A MailerLite failure
 never fails a registration.
 
+`registrations.confirmation_status` is the same record for the confirmation email
+(MM-70): `null` until the send has answered, then `sent`, `skipped` (no
+`MAILERSEND_API_KEY`) or `failed:<reason>`. The registration is written before the
+send is attempted, so a delivery failure never loses one — a row sitting at
+`failed:` is a person to write to by hand. Rows written before migration `0004`
+carry `null` for ever.
+
 ### MailerLite fields
 
 `src/lib/mailerlite.ts` sends these custom fields with every upsert: `name`,
@@ -160,7 +169,13 @@ field MailerLite does not know is dropped silently and the call still answers
 the new one (MM-57) and has to be created before the next registration; `tool`
 now arrives as a comma-joined list (`claude-code,cursor`) because the form takes
 several answers, so it stays a text field and must not be turned into a
-single-choice one.
+single-choice one. Since MM-73 any of them may arrive empty, because email is the
+only field the form requires.
+
+The confirmation email is **not** a MailerLite automation any more (MM-70, which
+superseded MM-49): it is sent from code through MailerSend, so nothing has to be
+configured in the MailerLite dashboard for a registrant to hear back. MailerLite
+holds the mailing list and nothing else.
 
 `messages.mail_status` works the same way for the MailerSend delivery: `pending`,
 then `sent`, `skipped` (no `MAILERSEND_API_KEY`) or `failed:<reason>`. The message
@@ -175,8 +190,8 @@ copy it to `.dev.vars` (gitignored) for local work.
 | Name | Where it is read | What it is for |
 |---|---|---|
 | `MAILERLITE_API_KEY` | worker (`.dev.vars` locally, Worker secret in production) | Upserting the subscriber. Empty means the call is skipped and the row records `skipped`. |
-| `MAILERLITE_GROUP_ID` | worker | The group the subscriber joins; the confirmation email is a MailerLite automation on that group. |
-| `MAILERSEND_API_KEY` | worker (`.dev.vars` locally, Worker secret in production) | Sending a contact message to `mladen@macmladen.com` from `no-reply@macmladen.com`, `Reply-To` the sender. Empty means the message is stored and the row records `skipped`. The token to use is the scoped site token described in `docs/mail-setup.md`, `email_full` on `macmladen.com` only. |
+| `MAILERLITE_GROUP_ID` | worker | The group the subscriber joins. The mailing list only — the confirmation email does not come from MailerLite. |
+| `MAILERSEND_API_KEY` | worker (`.dev.vars` locally, Worker secret in production) | Both mails: a contact message to `mladen@macmladen.com` from `no-reply@macmladen.com` with `Reply-To` the sender, and the registration confirmation to the registrant with `Reply-To` `mladen@macmladen.com`. Empty means the row is stored anyway and records `skipped`. The token to use is the scoped site token described in `docs/mail-setup.md`, `email_full` on `macmladen.com` only. |
 | `TURNSTILE_SECRET` | worker | Server-side verification of the widget's token, for both forms. Missing means every submission is rejected — the endpoints fail closed. |
 | `IP_HASH_SALT` | worker | Salt for the SHA-256 in `ip_hash`, in both tables. Missing means no IP is stored at all. |
 | `PUBLIC_TURNSTILE_SITE_KEY` | **build** (`.env`, or the Workers Build environment) | Baked into both forms' widgets at build time. Falls back to Cloudflare's documented always-pass test key. |
@@ -193,7 +208,7 @@ Mladen, in M5. No agent writes them anywhere.
 
 ```sh
 npx wrangler d1 execute macmladen-registrations --remote --json \
-  --command "SELECT id, created_at, name, email, github, os, tool, terminal, ssh_key, own_hosting, watch_only, newsletter, mailerlite_status FROM registrations ORDER BY id" \
+  --command "SELECT id, created_at, name, email, github, os, tool, terminal, ssh_key, own_hosting, watch_only, newsletter, mailerlite_status, confirmation_status FROM registrations ORDER BY id" \
   | python3 -c 'import csv,json,sys; rows=json.load(sys.stdin)[0]["results"]; w=csv.DictWriter(sys.stdout, fieldnames=rows[0].keys()); w.writeheader(); w.writerows(rows)' > registrations.csv
 ```
 
