@@ -5,21 +5,14 @@
  *  is finished either way. The `data-form-success` attribute is the contact
  *  page's handle on it: when the form is submitted with fetch, the script lifts
  *  this very block out of the rendered answer and puts it above the form. */
-import { topicLabel } from '../data/contact';
-
+/** Copy approved by Mladen, 2026-09-10. Props are accepted but unused so the
+ *  endpoint's call site stays unchanged. */
 interface Props {
-  email: string;
-  topic: string;
+  email?: string;
+  topic?: string;
 }
-
-const { email, topic } = Astro.props;
 ---
 
-<!-- draft: Mladen to approve -->
 <div class="notice notice--ok flow" data-form-success>
-  <p><strong>Your message is here.</strong></p>
-  <p>
-    It is filed under "{topicLabel(topic)}" and the reply goes to {email}. Expect an
-    answer within a couple of days; if it matters sooner, say so in a second message.
-  </p>
+  <p><strong>Thank you, your message has been sent successfully.</strong> Expect an answer soon.</p>
 </div>
