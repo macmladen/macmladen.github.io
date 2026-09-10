@@ -25,7 +25,6 @@ Future work by name. An item becomes a backlog task when it is needed and gets t
 - MailerLite: `terminal` custom field; confirmation automation on the workshop group (MM-49).
 - Rebuild and deploy on 18 September after 12:30 so the built pages catch up with the day: the closed notice on the 18th before that, and from 12:30 the workshop page with no form and no seats lines, the "workshop has taken place" notice in their place, and no Register button on the home block or the `/speaking/` highlight (MM-74 put the cut-off at 12:30, ten minutes past the scheduled start; the endpoint already refuses from that moment and the page script swaps the notice in).
 - HSTS is not set on the zone (Cloudflare SSL/TLS → Edge Certificates, Mladen's hand).
-- `www.macmladen.com` serves the site rather than redirecting to the apex, and `public/_redirects` cannot fix it: Cloudflare's static-asset redirects take a file path as the source and list domain-level redirects as unsupported (MM-75 checked the docs; the finding is written into the head of `public/_redirects`). Both hostnames are custom domains on the Worker in `wrangler.toml`. The fix is a zone-level Redirect Rule or a Bulk Redirect in the dashboard — Mladen's hand, like HSTS — then `curl -I https://www.macmladen.com/` should answer 301 to the apex.
 - Draft copy approvals still marked in source: tagline, workshop teaser, meta descriptions, CTA labels, contact line, success texts.
 
 ## After the camp: v2

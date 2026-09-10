@@ -106,7 +106,7 @@ Reserved, not built, must not be taken by anything else: `/speaking/<year>/` ind
 
 Trailing-slash form is canonical for pages (`trailingSlash: 'always'`); Workers static assets normalise the other form.
 
-Host canonicalisation is not a `_redirects` matter. `www.macmladen.com` and the apex are both custom domains on the Worker, and a static-asset redirect's source must be a file path — Cloudflare lists domain-level redirects as unsupported — so sending www to the apex is a zone-level Redirect Rule in the dashboard, not a line in `public/_redirects` (MM-75; the check and the quotes are in the head of that file).
+Host canonicalisation is not a `_redirects` matter. `www.macmladen.com` and the apex are both custom domains on the Worker, and a static-asset redirect's source must be a file path — Cloudflare lists domain-level redirects as unsupported — so www goes to the apex through a zone-level Redirect Rule, created via the API on 2026-09-10 (301, path and query preserved), not a line in `public/_redirects` (MM-75; the check and the quotes are in the head of that file).
 
 ### Pages
 

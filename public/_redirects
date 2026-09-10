@@ -10,8 +10,8 @@
 # `workers.example.com/* workers.example.com/blog/:splat 301` as the example
 # that does not work. wrangler.toml attaches both macmladen.com and
 # www.macmladen.com to this Worker as custom domains, so www serves the site
-# rather than redirecting to the apex. Sending it to the apex is a zone-level
-# Redirect Rule (or a Bulk Redirect) in the Cloudflare dashboard — Mladen's
+# and a zone-level Redirect Rule (created via the API, 2026-09-10) sends it to
+# the apex with a 301. Not the dashboard's business any more — Mladen's
 # hand, like HSTS; see ROADMAP.md.
 
 # Short, sayable aliases for the workshop, for a slide or a spoken URL.
