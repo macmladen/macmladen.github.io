@@ -69,13 +69,17 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
     )
   }
 
+  {
+    /* Email is the only field that is required (MM-73): everything else helps
+       Mladen prepare the room and may be left alone. Nothing but email carries
+       the `required` attribute or the word beside its label. */
+  }
   <div class="field">
-    <label for="name">Name <span class="field__required">required</span></label>
+    <label for="name">Name</label>
     <input
       id="name"
       name="name"
       type="text"
-      required
       autocomplete="name"
       maxlength="100"
       value={value.name === '' ? undefined : value.name}
@@ -105,14 +109,11 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
   </div>
 
   <div class="field">
-    <label for="github">
-      GitHub username <span class="field__required">required</span>
-    </label>
+    <label for="github">GitHub username</label>
     <input
       id="github"
       name="github"
       type="text"
-      required
       autocomplete="off"
       spellcheck="false"
       pattern={githubPattern}
@@ -130,7 +131,7 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
 
   <div class="fieldset-row flow">
     <fieldset class="flow" aria-describedby={describedBy('os')}>
-      <legend>Operating system <span class="field__required">required</span></legend>
+      <legend>Operating system</legend>
       <div class="choices">
         {
           osOptions.map((option) => (
@@ -140,7 +141,6 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
                 name="os"
                 type="radio"
                 value={option.value}
-                required
                 checked={value.os === option.value}
               />
               <label for={`os-${option.value}`}>{option.label}</label>
@@ -169,19 +169,18 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
           ))
         }
       </div>
-      <!-- draft: Mladen to approve — the first sentence is new: the group takes
-           several answers now and at least one is required, and nothing else on
-           the page says so. -->
+      <!-- draft: Mladen to approve — the group takes several answers, and since
+           MM-73 none of them is required, so the hint no longer asks for one. -->
       <p class="field__hint" id="tool-hint">
-        Tick every one you will have with you — at least one. Have it installed and
-        logged in before you arrive.
+        Tick every one you will have with you. Have it installed and logged in before
+        you arrive.
       </p>
       {errors.tool && <p class="field__error" id="tool-error">{errors.tool}</p>}
     </fieldset>
   </div>
 
   <fieldset class="flow" aria-describedby={describedBy('terminal')}>
-    <legend>Terminal experience <span class="field__required">required</span></legend>
+    <legend>Terminal experience</legend>
     <div class="choices">
       {
         terminalOptions.map((option) => (
@@ -191,7 +190,6 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
               name="terminal"
               type="radio"
               value={option.value}
-              required
               checked={value.terminal === option.value}
             />
             <label for={`terminal-${option.value}`}>

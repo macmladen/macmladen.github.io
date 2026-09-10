@@ -143,12 +143,12 @@ The form is `src/components/ContactForm.astro`, the same shape as `RegistrationF
 
 | field | type | required |
 |---|---|---|
-| name | text | yes |
+| name | text | no |
 | email | email | yes |
-| github | text, GitHub username, `^[a-zA-Z0-9-]{1,39}$` | yes |
-| os | radio group "Operating system": macos / windows / linux | yes |
-| tool | checkbox group "AI tool": claude-code / codex / cursor / other, several allowed; the ticked values are stored in the one column, comma-joined, e.g. `claude-code,cursor` | yes, at least one |
-| terminal | radio group "Terminal experience": beginner / comfortable / fluent / expert, labelled "Beginner: I have pasted a command or two", "Comfortable: npm, npx and git from the terminal are routine", "Fluent: the terminal is where I work", "Expert: I have full control of the machine" (draft, marked) | yes |
+| github | text, GitHub username, `^[a-zA-Z0-9-]{1,39}$` when given | no |
+| os | radio group "Operating system": macos / windows / linux | no |
+| tool | checkbox group "AI tool": claude-code / codex / cursor / other, several allowed; the ticked values are stored in the one column, comma-joined, e.g. `claude-code,cursor` | no |
+| terminal | radio group "Terminal experience": beginner / comfortable / fluent / expert, labelled "Beginner: I have pasted a command or two", "Comfortable: npm, npx and git from the terminal are routine", "Fluent: the terminal is where I work", "Expert: I have full control of the machine" (draft, marked) | no |
 | ssh_key | textarea, optional; must start with `ssh-ed25519 ` or `ssh-rsa ` if present; one-line hint on how to print it | no |
 | own_hosting | checkbox "I have my own hosting with SSH access" | no |
 | watch_only | checkbox "I will watch, not work on my own laptop" | no |
@@ -156,7 +156,7 @@ The form is `src/components/ContactForm.astro`, the same shape as `RegistrationF
 
 D1 table `registrations` additionally has `id`, `created_at`, `ip_hash`, `mailerlite_status`. `terminal` arrived after the first deploy, in `migrations/0003_registrations_terminal.sql`, and is therefore nullable: rows written before it carry no answer, every row written after it does.
 
-The word "required" (`.field__required`, as on the contact form) marks name, email, github and the legends of the operating system and terminal groups. The AI tool group is required by the validator but carries the constraint in its hint rather than a mark on the legend.
+Since MM-73 only `email` is required: it is where the confirmation goes and the key the duplicate check uses, and everything else is asked because it helps Mladen prepare the room. The word "required" (`.field__required`, as on the contact form) therefore marks the email label and nothing else, and no other control carries the `required` attribute. The validator looks at an optional field only when it carries a value — an empty one is an answer the visitor chose not to give, a filled one still has to be one of the answers the form offers.
 
 ### Contact form fields (names are the D1 column names)
 

@@ -70,17 +70,18 @@ console.log('validate — accepts');
 {
   check('a complete registration', !hasErrors(validate(readForm(form(complete)))));
 
-  const minimal = readForm(
-    form({
-      name: 'Bo',
-      email: 'bo@example.com',
-      github: 'bo',
-      os: 'macos',
-      tool: 'other',
-      terminal: 'beginner',
-    }),
-  );
-  check('the minimum: one tool, no SSH key, no checkboxes', !hasErrors(validate(minimal)));
+  // Since MM-73 the minimum is one address: everything else helps Mladen
+  // prepare and may be left alone.
+  const minimal = readForm(form({ email: 'bo@example.com' }));
+  check('the minimum: an email and nothing else', !hasErrors(validate(minimal)));
+
+  for (const field of ['name', 'github', 'os', 'tool', 'terminal']) {
+    const errors = validate(readForm(form({ ...complete, [field]: '' })));
+    check(`${field} may be left empty`, !hasErrors(errors), Object.keys(errors).join(', '));
+  }
+
+  const noToolAtAll = validate(readForm(form({ ...complete, tool: [] })));
+  check('no tool field at all', !hasErrors(noToolAtAll), Object.keys(noToolAtAll).join(', '));
 
   const everyTool = readForm(
     form({ ...complete, tool: ['claude-code', 'codex', 'cursor', 'other'] }),
@@ -99,8 +100,6 @@ console.log('validate — rejects');
 {
   const errorsFor = (overrides) => validate(readForm(form({ ...complete, ...overrides })));
 
-  check('a missing name', errorsFor({ name: '' }).name === messages.name);
-  check('a whitespace-only name', errorsFor({ name: '   ' }).name === messages.name);
   check(
     'a name over the limit',
     errorsFor({ name: 'a'.repeat(limits.name + 1) }).name === messages.nameLong,
@@ -114,14 +113,10 @@ console.log('validate — rejects');
   check('a GitHub name with an underscore', errorsFor({ github: 'ana_anic' }).github === messages.github);
   check('a GitHub name with a slash', errorsFor({ github: 'macmladen/repo' }).github === messages.github);
   check('a GitHub name of 40 characters', errorsFor({ github: 'a'.repeat(40) }).github === messages.github);
-  check('an empty GitHub name', errorsFor({ github: '' }).github === messages.github);
   check('a GitHub name of 39 characters passes', errorsFor({ github: 'a'.repeat(39) }).github === undefined);
 
   check('an operating system that is not offered', errorsFor({ os: 'haiku' }).os === messages.os);
-  check('no operating system', errorsFor({ os: '' }).os === messages.os);
   check('a tool that is not offered', errorsFor({ tool: 'notepad' }).tool === messages.tool);
-  check('no tool', errorsFor({ tool: '' }).tool === messages.tool);
-  check('no tool field at all', errorsFor({ tool: [] }).tool === messages.tool);
   check(
     'one made-up tool among two real ones',
     errorsFor({ tool: ['claude-code', 'notepad', 'cursor'] }).tool === messages.tool,
@@ -135,7 +130,6 @@ console.log('validate — rejects');
     'a terminal level that is not offered',
     errorsFor({ terminal: 'wizard' }).terminal === messages.terminal,
   );
-  check('no terminal level', errorsFor({ terminal: '' }).terminal === messages.terminal);
 
   check(
     'an SSH key with the wrong prefix',
@@ -154,10 +148,10 @@ console.log('validate — rejects');
     errorsFor({ ssh_key: `ssh-rsa ${'A'.repeat(limits.ssh_key)}` }).ssh_key === messages.sshKeyLong,
   );
 
-  const several = errorsFor({ name: '', email: 'nope', github: 'no_pe' });
+  const several = errorsFor({ email: 'nope', github: 'no_pe', os: 'haiku' });
   check(
     'reports every bad field at once',
-    Object.keys(several).length === 3 && several.name && several.email && several.github,
+    Object.keys(several).length === 3 && several.email && several.github && several.os,
     Object.keys(several).join(', '),
   );
 }

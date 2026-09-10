@@ -34,14 +34,16 @@ export const limits = {
   ssh_key: 2000,
 } as const;
 
+/** Only `email` can be missing; the rest speak about a value that was given and
+ *  is not one of the answers the form offers, which in practice means a
+ *  hand-made request rather than a mistake at the keyboard (MM-73). */
 export const messages = {
-  name: 'Please add your name.',
   nameLong: `A name longer than ${limits.name} characters will not fit.`,
   email: 'That does not look like an email address.',
   github: 'A GitHub username is letters, numbers and hyphens, up to 39 characters.',
-  os: 'Please pick the operating system you will bring.',
-  tool: 'Please tick at least one AI tool you will use.',
-  terminal: 'Please pick how much time you have spent in a terminal.',
+  os: 'Please pick one of the operating systems offered.',
+  tool: 'Please tick only the AI tools offered.',
+  terminal: 'Please pick one of the terminal levels offered.',
   sshKey:
     'An SSH public key starts with "ssh-ed25519 " or "ssh-rsa ". Leave the field empty ' +
     'if you would rather not paste one.',
@@ -90,33 +92,44 @@ export function readForm(form: FormLike): RegistrationValues {
   };
 }
 
-/** Field-level errors, empty when everything passes. */
+/** Field-level errors, empty when everything passes.
+ *
+ *  Email is the only answer a registration cannot do without: it is where the
+ *  confirmation goes and the key the duplicate check uses. Everything else is
+ *  optional (MM-73) and is looked at only when it carries a value — an empty
+ *  field is an answer the visitor chose not to give, a filled one still has to
+ *  be one of the answers the form offers. */
 export function validate(values: RegistrationValues): RegistrationErrors {
   const errors: RegistrationErrors = {};
-
-  if (values.name === '') errors.name = messages.name;
-  else if (values.name.length > limits.name) errors.name = messages.nameLong;
 
   if (!emailPattern.test(values.email) || values.email.length > limits.email) {
     errors.email = messages.email;
   }
 
-  if (!githubPattern.test(values.github)) errors.github = messages.github;
+  if (values.name.length > limits.name) errors.name = messages.nameLong;
 
-  if (!osOptions.some((option) => option.value === values.os)) errors.os = messages.os;
+  if (values.github !== '' && !githubPattern.test(values.github)) {
+    errors.github = messages.github;
+  }
 
-  // At least one tool, and nothing that was not on offer: a submission carrying
-  // a value the form never rendered is not a mistake to explain, it is a made-up
-  // one to refuse.
+  if (values.os !== '' && !osOptions.some((option) => option.value === values.os)) {
+    errors.os = messages.os;
+  }
+
+  // Nothing that was not on offer: a submission carrying a value the form never
+  // rendered is not a mistake to explain, it is a made-up one to refuse.
   const tools = splitTools(values.tool);
   if (
-    tools.length === 0 ||
+    tools.length > 0 &&
     !tools.every((tool) => toolOptions.some((option) => option.value === tool))
   ) {
     errors.tool = messages.tool;
   }
 
-  if (!terminalOptions.some((option) => option.value === values.terminal)) {
+  if (
+    values.terminal !== '' &&
+    !terminalOptions.some((option) => option.value === values.terminal)
+  ) {
     errors.terminal = messages.terminal;
   }
 

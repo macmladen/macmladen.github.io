@@ -19,7 +19,12 @@ export interface MailerliteEnv {
 /** MailerLite custom fields are text fields; booleans go in as yes/no. A field
  *  that does not exist on the account is dropped silently by the API — the call
  *  still answers 2xx — so every key below has to be created in the dashboard
- *  first (README, "MailerLite fields"). */
+ *  first (README, "MailerLite fields").
+ *
+ *  Since MM-73 every field but the address is optional, so any of these may
+ *  travel as an empty string. That is deliberate: the subscriber is created
+ *  either way, and an empty custom field is the truthful record of an answer
+ *  that was not given. */
 const flag = (value: boolean): string => (value ? 'yes' : 'no');
 
 export async function upsertSubscriber(
