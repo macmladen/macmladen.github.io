@@ -148,6 +148,15 @@
   cursor: pointer;
 }
 
+/* On a phone a button takes the whole column and centres its label; the
+   .row that holds two of them stacks them (layout layer). */
+@media (max-width: 479px) {
+  .button {
+    inline-size: 100%;
+    text-align: center;
+  }
+}
+
 /* Hover deepens the fill to --color-accent-hover #A30 and keeps the white
    label, which reaches 6.60:1 there against 3.45:1 at rest. */
 .button:hover,
@@ -286,6 +295,12 @@
   color: var(--color-ink);
   font-size: var(--text-base);
   line-height: var(--leading-normal);
+}
+
+/* The native chevron sits inside the select's box; give it the same clearance
+   from the right edge as the text has from the left. */
+.field select {
+  padding-inline-end: calc(var(--space-3) + var(--space-6));
 }
 
 .field textarea {

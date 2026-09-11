@@ -25,6 +25,14 @@
   gap: var(--row-gap, var(--space-4));
 }
 
+/* Below 480 px a row of buttons stacks, each spanning the column. */
+@media (max-width: 479px) {
+  .row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
 .flow > * + * {
   margin-block-start: var(--flow-space, var(--space-4));
 }
