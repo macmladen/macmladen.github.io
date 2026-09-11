@@ -49,6 +49,7 @@ export const terminalOptions: Option[] = [
 
 export type TextField =
   | 'name'
+  | 'city'
   | 'email'
   | 'github'
   | 'os'
@@ -60,6 +61,10 @@ export type FieldName = TextField | CheckboxField;
 
 export interface RegistrationValues {
   name: string;
+  /** Where the registrant comes from. Optional and laptop-independent: a
+   *  watcher is asked it too, because it says as much about who is in the room
+   *  as any answer about a machine. */
+  city: string;
   email: string;
   github: string;
   os: string;
@@ -78,6 +83,7 @@ export type RegistrationErrors = Partial<Record<FieldName | 'form', string>>;
 
 export const emptyValues: RegistrationValues = {
   name: '',
+  city: '',
   email: '',
   github: '',
   os: '',

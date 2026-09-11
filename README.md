@@ -106,12 +106,14 @@ npx wrangler d1 migrations apply macmladen-registrations --local
 
 That runs `migrations/0001_registrations.sql` (table `registrations`),
 `migrations/0002_messages.sql` (table `messages`),
-`migrations/0003_registrations_terminal.sql` (adds `registrations.terminal`) and
+`migrations/0003_registrations_terminal.sql` (adds `registrations.terminal`),
 `migrations/0004_registrations_confirmation.sql` (adds
-`registrations.confirmation_status`). Every file's column names are its form's
-field names, so the form, the validator and the table cannot drift.
+`registrations.confirmation_status`) and
+`migrations/0005_registrations_city.sql` (adds `registrations.city`). Every
+file's column names are its form's field names, so the form, the validator and
+the table cannot drift.
 
-**Before the next deploy**, `0003` and `0004` have to be applied to the
+**Before the next deploy**, `0003`, `0004` and `0005` have to be applied to the
 production database as well — `npx wrangler d1 migrations apply
 macmladen-registrations --remote`, Mladen's hand, not an agent's. Until they
 are, every registration on the live site fails on the missing column and answers
@@ -132,7 +134,7 @@ Read the registrations:
 
 ```sh
 npx wrangler d1 execute macmladen-registrations --local \
-  --command "SELECT id, created_at, name, email, github, os, tool, terminal, own_hosting, watch_only, newsletter, mailerlite_status, confirmation_status FROM registrations ORDER BY id"
+  --command "SELECT id, created_at, name, city, email, github, os, tool, terminal, own_hosting, watch_only, newsletter, mailerlite_status, confirmation_status FROM registrations ORDER BY id"
 ```
 
 How many working seats are gone — the same count `/api/seats/` answers with,
@@ -178,10 +180,13 @@ carry `null` for ever.
 ### MailerLite fields
 
 `src/lib/mailerlite.ts` sends these custom fields with every upsert: `name`,
-`github`, `os`, `tool`, `terminal`, `own_hosting`, `watch_only`. Each one has to
-exist as a custom field on the MailerLite account, spelled exactly like this — a
-field MailerLite does not know is dropped silently and the call still answers
-`ok`, so a missing field looks like a success and loses the answer. `terminal` is
+`city`, `github`, `os`, `tool`, `terminal`, `own_hosting`, `watch_only`. Each one
+has to exist as a custom field on the MailerLite account, spelled exactly like
+this — a field MailerLite does not know is dropped silently and the call still
+answers `ok`, so a missing field looks like a success and loses the answer.
+`city` (MM-78) needed no creating: MailerLite ships it as a built-in field with
+the key `city`, which is the key the upsert sends, so it was there already.
+`terminal` is
 the new one (MM-57) and has to be created before the next registration; `tool`
 now arrives as a comma-joined list (`claude-code,cursor`) because the form takes
 several answers, so it stays a text field and must not be turned into a
@@ -224,7 +229,7 @@ Mladen, in M5. No agent writes them anywhere.
 
 ```sh
 npx wrangler d1 execute macmladen-registrations --remote --json \
-  --command "SELECT id, created_at, name, email, github, os, tool, terminal, ssh_key, own_hosting, watch_only, newsletter, mailerlite_status, confirmation_status FROM registrations ORDER BY id" \
+  --command "SELECT id, created_at, name, city, email, github, os, tool, terminal, ssh_key, own_hosting, watch_only, newsletter, mailerlite_status, confirmation_status FROM registrations ORDER BY id" \
   | python3 -c 'import csv,json,sys; rows=json.load(sys.stdin)[0]["results"]; w=csv.DictWriter(sys.stdout, fieldnames=rows[0].keys()); w.writeheader(); w.writerows(rows)' > registrations.csv
 ```
 

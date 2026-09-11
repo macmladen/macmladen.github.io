@@ -89,6 +89,27 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
     {errors.name && <p class="field__error" id="name-error">{errors.name}</p>}
   </div>
 
+  {
+    /* City carries no `data-laptop-only`: where someone comes from is worth
+       knowing whether they bring a laptop or only a chair, so it stays visible
+       for watchers too. */
+  }
+  <div class="field">
+    <label for="city">City</label>
+    <input
+      id="city"
+      name="city"
+      type="text"
+      placeholder="Novi Sad"
+      autocomplete="address-level2"
+      maxlength="100"
+      value={value.city === '' ? undefined : value.city}
+      aria-describedby={describedBy('city')}
+      aria-invalid={invalid('city')}
+    />
+    {errors.city && <p class="field__error" id="city-error">{errors.city}</p>}
+  </div>
+
   <div class="field">
     <label for="email">Email <span class="field__required">required</span></label>
     <input

@@ -87,12 +87,14 @@ export async function insertRegistration(
   const row = await db
     .prepare(
       `INSERT INTO registrations
-         (name, email, github, os, tool, terminal, ssh_key, own_hosting, watch_only, newsletter, ip_hash, mailerlite_status)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+         (name, city, email, github, os, tool, terminal, ssh_key, own_hosting, watch_only, newsletter, ip_hash, mailerlite_status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
        RETURNING id`,
     )
     .bind(
       values.name,
+      // Nullable since 0005, like terminal and ssh_key below.
+      orNull(values.city),
       values.email,
       values.github,
       values.os,

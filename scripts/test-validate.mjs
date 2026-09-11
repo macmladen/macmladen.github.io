@@ -38,6 +38,7 @@ const form = (fields) => {
 
 const complete = {
   name: 'Ana Anić',
+  city: 'Novi Sad',
   email: 'Ana@Example.COM',
   github: 'ana-anic',
   os: 'linux',
@@ -63,11 +64,17 @@ console.log('readForm');
   const oneTool = readForm(form({ ...complete, tool: 'codex' }));
   check('one ticked tool is that value alone', oneTool.tool === 'codex', oneTool.tool);
 
-  const trimmed = readForm(form({ ...complete, name: '  Ana  ', github: ' ana ' }));
+  check('the city comes through as typed', values.city === 'Novi Sad', values.city);
+
+  const trimmed = readForm(form({ ...complete, name: '  Ana  ', github: ' ana ', city: '  Niš  ' }));
   check('trims name and github', trimmed.name === 'Ana' && trimmed.github === 'ana');
+  check('trims the city', trimmed.city === 'Niš', trimmed.city);
+  const blankCity = readForm(form({ ...complete, city: '   ' }));
+  check('a whitespace-only city is an empty string', blankCity.city === '', blankCity.city);
 
   const empty = readForm(form({}));
   check('missing fields become empty strings', empty.name === '' && empty.ssh_key === '');
+  check('an absent city is an empty string', empty.city === '', empty.city);
   check('missing checkboxes become false', empty.own_hosting === false);
   check('no tool ticked is an empty string', empty.tool === '', empty.tool);
   check('no terminal answer is an empty string', empty.terminal === '', empty.terminal);
@@ -101,6 +108,16 @@ console.log('validate — accepts');
 
   const rsa = readForm(form({ ...complete, ssh_key: 'ssh-rsa AAAAB3NzaC1yc2E bo@example.com' }));
   check('an ssh-rsa key', !hasErrors(validate(rsa)));
+
+  // City is optional (MM-78): given, left out, or given right up to the limit.
+  check(
+    'a registration with no city',
+    validate(readForm(form({ ...complete, city: '' }))).city === undefined,
+  );
+  check(
+    'a city of 100 characters',
+    validate(readForm(form({ ...complete, city: 'a'.repeat(limits.city) }))).city === undefined,
+  );
 }
 
 console.log('validate — rejects');
@@ -110,6 +127,11 @@ console.log('validate — rejects');
   check(
     'a name over the limit',
     errorsFor({ name: 'a'.repeat(limits.name + 1) }).name === messages.nameLong,
+  );
+
+  check(
+    'a city over the limit',
+    errorsFor({ city: 'a'.repeat(limits.city + 1) }).city === messages.cityLong,
   );
 
   check('an address with no @', errorsFor({ email: 'ana.example.com' }).email === messages.email);
@@ -173,6 +195,7 @@ console.log('watch-only registrations');
   check('the SSH key is dropped', watching.ssh_key === '', watching.ssh_key);
   check('own hosting is dropped', watching.own_hosting === false);
   check('the name is kept', watching.name === 'Ana Anić', watching.name);
+  check('the city is kept', watching.city === 'Novi Sad', watching.city);
   check('the email is kept', watching.email === 'ana@example.com', watching.email);
   check('the newsletter answer is kept', watching.newsletter === true);
   check('watch_only stays ticked', watching.watch_only === true);

@@ -38,6 +38,7 @@ export async function upsertSubscriber(
     email: values.email,
     fields: {
       name: values.name,
+      city: values.city,
       github: values.github,
       os: values.os,
       // The joined string, exactly as it goes into the D1 column: MailerLite

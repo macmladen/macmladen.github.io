@@ -29,6 +29,7 @@ export interface FormLike {
 
 export const limits = {
   name: 100,
+  city: 100,
   email: 254,
   github: 39,
   ssh_key: 2000,
@@ -39,6 +40,7 @@ export const limits = {
  *  hand-made request rather than a mistake at the keyboard (MM-73). */
 export const messages = {
   nameLong: `A name longer than ${limits.name} characters will not fit.`,
+  cityLong: `A city name longer than ${limits.city} characters will not fit.`,
   email: 'That does not look like an email address.',
   github: 'A GitHub username is letters, numbers and hyphens, up to 39 characters.',
   os: 'Please pick one of the operating systems offered.',
@@ -80,6 +82,7 @@ export function readForm(form: FormLike): RegistrationValues {
   return {
     ...emptyValues,
     name: text(form, 'name'),
+    city: text(form, 'city'),
     email: text(form, 'email').toLowerCase(),
     github: text(form, 'github'),
     os: text(form, 'os'),
@@ -130,6 +133,10 @@ export function validate(values: RegistrationValues): RegistrationErrors {
   }
 
   if (values.name.length > limits.name) errors.name = messages.nameLong;
+
+  // City is asked of everyone, watchers included, so it is not touched by
+  // dropLaptopAnswers(); an empty one is simply an answer not given.
+  if (values.city.length > limits.city) errors.city = messages.cityLong;
 
   if (values.github !== '' && !githubPattern.test(values.github)) {
     errors.github = messages.github;
