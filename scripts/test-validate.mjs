@@ -213,45 +213,17 @@ console.log('watch-only registrations');
   check('a stale value in a hidden field cannot fail it', !hasErrors(validate(stale)));
 }
 
-console.log('registration window');
+console.log('registration window (MM-80)');
 {
-  // Both instants are read from the data object rather than typed out again:
-  // the close date moved once already (MM-62) and left this file behind.
-  const onCloseDate = Date.parse(workshop.closeDate);
-  const justAfterClose = Date.parse(workshop.closesAt) + 1000;
-  check('open on the close date itself', isRegistrationOpen(onCloseDate) === true);
-  check('closed the moment after', isRegistrationOpen(justAfterClose) === false);
-  check('closed well after the workshop', isRegistrationOpen(Date.parse('2026-10-01')) === false);
-  check('closeDate matches closesAt', workshop.closeDate === workshop.closesAt.slice(0, 10));
-}
-
-console.log('the workshop itself (MM-74)');
-{
-  // Same rule as above: every instant is derived from the data object, so
-  // moving the cut-off moves the checks with it.
-  const start = Date.parse(workshop.startsAt);
-  check('before the cut-off', isBeforeStart(start - 1000) === true);
-  check('not at the cut-off itself', isBeforeStart(start) === false);
-  check('not a minute later', isBeforeStart(start + 60_000) === false);
-  check('not the day after', isBeforeStart(Date.parse('2026-09-19')) === false);
-
-  // The ten-minute grace Mladen asked for: the cut-off is the scheduled start
-  // plus ten minutes, and it is still inside the session's own hour.
-  check(
-    'the cut-off is ten minutes past the scheduled start',
-    start - Date.parse(workshop.start) === 10 * 60_000,
-    `${start - Date.parse(workshop.start)} ms`,
-  );
-  check('the cut-off is before the session ends', start < Date.parse(workshop.end));
-
-  // Registration is shut by the time the room opens, whichever cut-off is
-  // reached first.
-  check('registration is not open at the cut-off', isRegistrationOpen(start) === false);
-  check(
-    'registration is not open during the session',
-    isRegistrationOpen(start + 60_000) === false,
-  );
-  check('the close date is before the cut-off', Date.parse(workshop.closesAt) < start);
+  // Open until the workshop ends; every instant is read from the data object.
+  const end = Date.parse(workshop.endsAt);
+  check('open the day before', isRegistrationOpen(end - 24 * 60 * 60_000) === true);
+  check('open while the workshop runs', isRegistrationOpen(Date.parse(workshop.start) + 60_000) === true);
+  check('open a minute before the end', isRegistrationOpen(end - 60_000) === true);
+  check('closed at the end itself', isRegistrationOpen(end) === false);
+  check('closed the day after', isRegistrationOpen(Date.parse('2026-09-19')) === false);
+  check('endsAt is the session end', workshop.endsAt === workshop.end);
+  check('isBeforeStart is the same gate', isBeforeStart(end - 1000) === true && isBeforeStart(end) === false);
 }
 
 console.log('');

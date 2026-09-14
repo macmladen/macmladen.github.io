@@ -4,7 +4,6 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import StructuredData from '../../../components/StructuredData.astro';
 import Facts from '../../../components/Facts.astro';
 import RegistrationForm from '../../../components/RegistrationForm.astro';
-import RegistrationClosed from '../../../components/RegistrationClosed.astro';
 import headshot from '../../../assets/mladen-head-2020.jpg';
 import { workshop, isBeforeStart, isRegistrationOpen } from '../../../data/workshop';
 import { fullDate } from '../../../lib/dates';
@@ -132,11 +131,6 @@ const schema = graph(
       <div class="container container--narrow flow">
         <h2 id="resources-title">Resources</h2>
         <ul>
-          {registrationOpen && (
-            <li>
-              <a href="#register">Registration</a>
-            </li>
-          )}
           <li>
             <a href={workshop.repoUrl}>Preparation guide and repository</a>
           </li>
@@ -171,21 +165,17 @@ const schema = graph(
         }
         <h2 id="register-title">{beforeStart ? 'Registration' : 'After the workshop'}</h2>
         {
-          beforeStart ? (
-            registrationOpen ? (
-              <Fragment>
-                <p>
-                  Registration closes{' '}
-                  <time datetime={workshop.closeDate}>{fullDate(workshop.closesAt)}</time>.
-                </p>
-                <p class="seats" data-seats>
-                  {workshop.capacity} seats for working on your own laptop
-                </p>
-                <RegistrationForm />
-              </Fragment>
-            ) : (
-              <RegistrationClosed />
-            )
+          registrationOpen ? (
+            <Fragment>
+              <p>
+                Registration is open until the workshop ends,{' '}
+                <time datetime={workshop.end}>{fullDate(workshop.end)}</time>.
+              </p>
+              <p class="seats" data-seats>
+                {workshop.capacity} seats for working on your own laptop
+              </p>
+              <RegistrationForm />
+            </Fragment>
           ) : (
             <p class="notice">
               The workshop has taken place. Slides and the recording will appear here.

@@ -2,15 +2,11 @@
  *  workshop page itself and its Event JSON-LD. Venue verified on
  *  belgrade.wordcamp.org, 2026-09-08. */
 
-/** End of the day registration closes, in Europe/Belgrade. */
-const closesAt = '2026-09-17T23:59:59+02:00';
-
-/** The moment the workshop counts as under way: ten minutes past the scheduled
- *  start, Mladen's cut-off, so a slot that begins a few minutes late does not
- *  take the page down while people are still walking in. Everything the site
- *  offers before the event — the form, the Register buttons, the seats lines —
- *  is gone from the build after this instant. */
-const startsAt = '2026-09-18T12:30:00+02:00';
+/** Registration stays open through the workshop itself, so participants can
+ *  be sent to the form from the stage (Mladen, 2026-09-14). It closes when the
+ *  workshop ends; from that instant the form, the Register buttons and the seats
+ *  lines are gone from the build and the post-event notice takes their place. */
+const endsAt = '2026-09-18T13:40:00+02:00';
 
 /** Street and city are kept apart so the PostalAddress in the JSON-LD and the
  *  visible venue line come from the same two values. */
@@ -92,7 +88,7 @@ export const workshop = {
   title: 'WordPress, Docker and AI agents — hands-on',
   date: '2026-09-18',
   start: '2026-09-18T12:20:00+02:00',
-  end: '2026-09-18T13:40:00+02:00',
+  end: endsAt,
   venue: 'Dom Omladine Beograda',
   street,
   city,
@@ -115,10 +111,7 @@ export const workshop = {
   wordcampName: 'WordCamp Belgrade 2026',
   wordcampStart: '2026-09-18',
   wordcampEnd: '2026-09-19',
-  /** Date part of closesAt, so the two can never drift apart. */
-  closeDate: closesAt.slice(0, 10),
-  closesAt,
-  startsAt,
+  endsAt,
   abstract,
   audience,
   waysToFollow,
@@ -140,24 +133,13 @@ export const workshop = {
     'https://docs.google.com/presentation/d/1zsYWcF8TTJJivXWKn0GpL7B_lvlxO2fJ/edit?usp=sharing',
 } as const;
 
-/** True until the workshop is under way — see `startsAt`. `now` is injectable
- *  so the after state can be exercised without touching the clock.
- *
- *  Call this from a page or from the endpoint, never at module scope: workerd —
- *  which runs both the prerender and the deployed worker — reports Date.now() as
- *  0 while modules are being evaluated, so a constant computed up here would say
- *  "before" for ever. Verified in a build on 2026-09-08 (MM-08).
- */
-export const isBeforeStart = (now: number = Date.now()): boolean =>
-  now < Date.parse(startsAt);
-
-/** True until the end of the close date, and never once the workshop has begun.
- *  The close date sits a day before the start, so the second clause is only ever
- *  load-bearing if the close date is moved again — it has moved once already
- *  (MM-62) — but it is what makes "registration is open" impossible to read as
- *  true during or after the session. Same module-scope caveat as isBeforeStart.
- */
+/** True until the workshop ends. `now` is injectable for tests. Asked at
+ *  render time, never at module scope: under the Cloudflare adapter a module
+ *  evaluates inside workerd, where Date.now() is not the wall clock. */
 export const isRegistrationOpen = (now: number = Date.now()): boolean =>
-  now <= Date.parse(closesAt) && isBeforeStart(now);
+  now < Date.parse(endsAt);
+
+/** Alias kept for the pages that gate the seats lines on it. */
+export const isBeforeStart = isRegistrationOpen;
 
 export default workshop;

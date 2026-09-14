@@ -183,7 +183,7 @@ export function eventNode(site: URL | string | undefined): Node {
       priceCurrency: 'EUR',
       availability: 'https://schema.org/InStock',
       url: absolute(workshop.path, site),
-      validThrough: workshop.closesAt,
+      validThrough: workshop.endsAt,
     },
   };
 }
