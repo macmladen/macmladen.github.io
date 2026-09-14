@@ -1,9 +1,10 @@
 ---
 id: TASK-86
 title: 'MM-86: Live questions, integration and rehearsal'
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-09-14 09:51'
+updated_date: '2026-09-14 11:50'
 labels:
   - test
 milestone: m-5
@@ -19,5 +20,11 @@ Effort: S. Actual: . Billable: no. AI cost: pending script. AI time: . Fable: wi
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Rehearsed on the preview; run-book in README; deployed
+- [x] #1 Rehearsed on the preview; run-book in README; deployed
 <!-- AC:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+Done 2026-09-14: integration (register endpoint honours the flag, summary label, band colour, run-book), rehearsed by Mladen on the preview (ask, host tick, switches), HOST_KEY on the Worker and in .env, migration 0006 remote, deployed as v2.5; live probes: stream sends state and questions, host and cover answer 403 without the key/cookie, seats 29 of 30. AI time 20 min.
+<!-- SECTION:FINAL_SUMMARY:END -->
