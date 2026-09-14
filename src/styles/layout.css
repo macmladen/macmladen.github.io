@@ -204,3 +204,12 @@
 .section--compact {
   padding-block: var(--space-6);
 }
+
+/* The host's People table (MM-89). Thirteen columns do not fit a phone and
+   never will, so the table keeps its own width and the box around it scrolls.
+   Nothing else on this site scrolls sideways; a list of thirty registrations
+   read from a lectern is the one place where shrinking the type further would
+   cost more than the scroll does. */
+.table-scroll {
+  overflow-x: auto;
+}

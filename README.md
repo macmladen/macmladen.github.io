@@ -366,6 +366,22 @@ npx wrangler d1 execute macmladen-registrations --remote --json \
 
 Contact messages: the same with `FROM messages`.
 
+## People
+
+The same list, without a terminal: `/speaking/2026/wordcamp-belgrade-ddev-ai/people/`
+shows every registration newest first — when, name, city, email, OS, tools,
+terminal experience, whether an SSH key and their own hosting were given,
+whether they came to watch, the newsletter tick and the confirmation email's
+status — with a count line above it and a **Download CSV** link to
+`/api/people.csv` beside it. The CSV carries one column more,
+`mailerlite_status`, and the same header names as the export above.
+
+Both need the host cookie, the one `/api/host/?key=<HOST_KEY>` leaves behind
+(MM-84); without it they answer 404 rather than 403, so the address gives
+nothing away. Neither ever carries an SSH key: the column is read only to
+answer yes or no. The page is `noindex`, `no-store` and kept out of the
+sitemap.
+
 ## DNS
 
 Done 2026-09-09. The custom domains in `wrangler.toml` own the apex and `www`

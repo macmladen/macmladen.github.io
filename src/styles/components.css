@@ -589,3 +589,49 @@ a[target='_blank']:not(.button):not(.site-footer a)::after {
   cursor: default;
   opacity: 0.6;
 }
+
+/* The host's People table (MM-89). The only table on the site, and it is read
+   once, on a laptop, by one person deciding who is in the room — so it is
+   compact rather than airy: the small step, tight leading, and a rule under
+   every row instead of space between them. Zebra on the alternate band colour
+   carries the eye across thirteen columns; the header keeps the same colour at
+   full strength so it reads as a header without a second treatment. */
+.table {
+  border-collapse: collapse;
+  inline-size: 100%;
+  font-size: var(--text-sm);
+  line-height: var(--leading-tight);
+}
+
+.table caption {
+  margin-block-end: var(--space-2);
+  color: var(--color-ink-soft);
+  text-align: start;
+}
+
+.table th,
+.table td {
+  padding: var(--space-2) var(--space-3);
+  border-block-end: var(--border-width) solid var(--color-border);
+  text-align: start;
+  /* A name, a city or a tool list is one line each; wrapping them would make
+     every row a different height and the list harder to run an eye down. */
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+
+.table thead th {
+  background-color: var(--color-bg-alt);
+  font-weight: var(--weight-semibold);
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: var(--color-bg-alt);
+}
+
+/* The row heading is the registration's id: a number, and the one column that
+   is a label rather than an answer. */
+.table tbody th {
+  font-weight: var(--weight-normal);
+  font-variant-numeric: tabular-nums;
+}

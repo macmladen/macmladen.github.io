@@ -1,0 +1,148 @@
+---
+/** The host's list of people (MM-89): who registered, in one table, newest
+ *  first, with a CSV beside it. It lives next to the workshop page rather than
+ *  under /api/ because it is a page to read in a room — the same header, the
+ *  same footer, the same stylesheet — and Astro takes a directory of the same
+ *  name as the page file for the nested route.
+ *
+ *  Server-rendered, like /api/register/: the list is current or it is nothing.
+ *  Behind the host cookie, like /api/questions/cover/ and /api/state/, and a
+ *  visitor without it gets a 404 rather than a 403. A 403 would confirm the
+ *  route exists, and the one thing this page must not do is advertise where the
+ *  registrations are; a missing page is the honest answer to someone who was
+ *  never given the link.
+ *
+ *  noindex and no-store on top of that: nothing here belongs in an index or in
+ *  a proxy, and the page carries no JSON-LD and no sharing card for the same
+ *  reason. There is no inline script — the table is rendered on the server and
+ *  never changes under the reader — so the CSP needs nothing new. */
+export const prerender = false;
+
+import { env as workerEnv } from 'cloudflare:workers';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { workshop } from '../../../../data/workshop';
+import { isHost } from '../../../../lib/host';
+import { listRegistrations, peopleCounts, whenInBelgrade, type Person } from '../../../../lib/people';
+
+const env = workerEnv as WorkerEnv;
+
+/** What anyone without the cookie gets: the smallest page that says a URL leads
+ *  nowhere, and nothing else. No layout, because the site's furniture around
+ *  "Not found" would be a hint that something is here. */
+if (!(await isHost(Astro.request, env))) {
+  return new Response(
+    '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Not found</title></head><body><h1>Not found</h1></body></html>',
+    {
+      status: 404,
+      headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' },
+    },
+  );
+}
+
+let people: Person[] = [];
+/** The binding is missing, or the database would not answer. Said out loud on
+ *  the page: an empty table and a broken one must not look alike. */
+let unavailable = false;
+
+const db = env.DB;
+if (!db) {
+  unavailable = true;
+} else {
+  try {
+    people = await listRegistrations(db);
+  } catch (error) {
+    console.error('[people] database error', error);
+    unavailable = true;
+  }
+}
+
+const counts = peopleCounts(people);
+
+Astro.response.headers.set('Cache-Control', 'no-store');
+
+const yesNo = (value: boolean): string => (value ? 'yes' : 'no');
+---
+
+<BaseLayout
+  title="People · WordPress, Docker and AI agents"
+  description={workshop.summary}
+  canonical={`${workshop.path}people/`}
+>
+  <meta name="robots" content="noindex" slot="head" />
+
+  <section class="section section--compact" aria-labelledby="people-title">
+    <div class="container flow">
+      <h1 id="people-title">People</h1>
+      <p class="eyebrow">
+        <a href={workshop.path}>{workshop.title}</a>
+      </p>
+
+      {unavailable && <p>The registration list is unavailable: the database did not answer.</p>}
+
+      {
+        !unavailable && (
+          <Fragment>
+            <p>
+              {counts.total} registered · {counts.working} working · {counts.watching} watching
+            </p>
+            <p>
+              <a href="/api/people.csv">Download CSV</a>
+            </p>
+          </Fragment>
+        )
+      }
+
+      {!unavailable && people.length === 0 && <p>Nobody has registered yet.</p>}
+
+      {
+        people.length > 0 && (
+          <div class="table-scroll">
+            <table class="table">
+              <caption>Registrations, newest first.</caption>
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">When</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">City</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">OS</th>
+                  <th scope="col">Tools</th>
+                  <th scope="col">Terminal</th>
+                  <th scope="col">SSH</th>
+                  <th scope="col">Hosting</th>
+                  <th scope="col">Watching</th>
+                  <th scope="col">News</th>
+                  <th scope="col">Confirmation</th>
+                </tr>
+              </thead>
+              <tbody>
+                {people.map((person) => (
+                  <tr>
+                    <th scope="row">{person.id}</th>
+                    <td>
+                      <time datetime={person.createdAt}>{whenInBelgrade(person.createdAt)}</time>
+                    </td>
+                    <td>{person.name}</td>
+                    <td>{person.city ?? '—'}</td>
+                    <td>
+                      <a href={`mailto:${person.email}`}>{person.email}</a>
+                    </td>
+                    <td>{person.os === '' ? '—' : person.os}</td>
+                    <td>{person.tool === '' ? '—' : person.tool}</td>
+                    <td>{person.terminal ?? '—'}</td>
+                    <td>{yesNo(person.sshKey)}</td>
+                    <td>{yesNo(person.ownHosting)}</td>
+                    <td>{yesNo(person.watchOnly)}</td>
+                    <td>{yesNo(person.newsletter)}</td>
+                    <td>{person.confirmationStatus ?? '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
