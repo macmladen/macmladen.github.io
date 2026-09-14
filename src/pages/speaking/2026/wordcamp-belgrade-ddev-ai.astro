@@ -75,14 +75,14 @@ const schema = graph(
             </p>
           )
         }
-        {workshop.abstract.map((paragraph) => <p>{paragraph}</p>)}
+        {workshop.abstract.map((paragraph) => <p set:html={paragraph} />)}
       </div>
     </section>
 
     <section class="section section--compact" aria-labelledby="audience-title">
       <div class="container container--narrow flow">
         <h2 id="audience-title">Who it is for</h2>
-        <p>{workshop.audience}</p>
+        <p set:html={workshop.audience} />
       </div>
     </section>
 
@@ -95,7 +95,7 @@ const schema = graph(
       <div class="container container--narrow flow">
         <h2 id="ways-title">Three ways to follow</h2>
         <ul>
-          {workshop.waysToFollow.map((way) => <li>{way}</li>)}
+          {workshop.waysToFollow.map((way) => <li set:html={way} />)}
         </ul>
       </div>
     </section>
@@ -110,11 +110,11 @@ const schema = graph(
           <a href={workshop.repoUrl}>preparation guide on GitHub</a>.
         </p>
         <ul>
-          {workshop.prerequisites.map((item) => <li>{item}</li>)}
+          {workshop.prerequisites.map((item) => <li set:html={item} />)}
         </ul>
         <p>{workshop.optionalPrerequisite}</p>
         <p>
-          {workshop.osNote.before} <code>{workshop.osNote.command}</code>{' '}
+          <Fragment set:html={workshop.osNote.before} /> <code>{workshop.osNote.command}</code>{' '}
           {workshop.osNote.after}
         </p>
       </div>
@@ -167,9 +167,14 @@ const schema = graph(
         {
           registrationOpen ? (
             <Fragment>
+              {
+                /* The line says 12:30; the form itself is closed live, by a
+                   rebuild from the room, and the endpoint stays open until the
+                   workshop ends (MM-80, MM-81). */
+              }
               <p>
-                Registration is open until the workshop ends,{' '}
-                <time datetime={workshop.end}>{fullDate(workshop.end)}</time>.
+                Registration closes{' '}
+                <time datetime={workshop.closesLine}>{workshop.closesLineText}</time>.
               </p>
               <p class="seats" data-seats>
                 {workshop.capacity} seats for working on your own laptop

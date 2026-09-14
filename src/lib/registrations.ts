@@ -33,11 +33,11 @@ export interface Seats {
   left: number;
 }
 
-/** How many working seats are gone. Watchers are not counted — they take a
- *  chair, not a seat at the exercise (MM-71). */
+/** How many seats are gone: every registration counts, watchers included
+ *  (Mladen, 2026-09-14, MM-81; MM-71 had counted working seats only). */
 export async function countSeatsTaken(db: D1Like): Promise<number> {
   const row = await db
-    .prepare('SELECT COUNT(*) AS taken FROM registrations WHERE watch_only = 0')
+    .prepare('SELECT COUNT(*) AS taken FROM registrations')
     .first<{ taken: number }>();
   return row?.taken ?? 0;
 }

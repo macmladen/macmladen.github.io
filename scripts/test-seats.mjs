@@ -42,8 +42,8 @@ console.log('counting');
   const db = fakeDb({ taken: 12 });
   check('reads the count', (await countSeatsTaken(db)) === 12);
   check(
-    'counts only the registrations that take a seat',
-    /watch_only\s*=\s*0/.test(db.queries[0]),
+    'counts every registration, watchers included (MM-81)',
+    !/watch_only/.test(db.queries[0]),
     db.queries[0],
   );
   check('counts the registrations table', /FROM registrations/.test(db.queries[0]));

@@ -19,53 +19,65 @@ const city = 'Belgrade';
  *  on the session page. The theme-and-plugin paragraph of the first version is
  *  gone; the Invictus paragraph and the three pillars are now one.
  *  approved-pending: Mladen approves the translation (MM-79). */
+/** Links and bold live in the strings (rendered with set:html), so the page,
+ *  the JSON-LD description (stripped) and any future feed read one source. */
 const abstract: string[] = [
   `Working with AI tools is neither hype nor a luxury — it's a necessity if you ` +
     `want to strike the best balance between your own knowledge and experience while ` +
     `your AI collaborator does its share of the work.`,
-  `In the workshop I show how I work on a current, real project for the Invictus ` +
-    `gym: planning, local development and the procedure by which the AI tool checks ` +
-    `and deploys code to the server. We rely on serious tools: the terminal, git and ` +
-    `Docker. The workflow rests on three things: DDEV, which gives every project a ` +
-    `local environment that faithfully reproduces production (the same PHP version, ` +
-    `the same extensions, the same database); parallel work on several tasks through ` +
-    `git worktree; and an AI agent that doesn't just "suggest" code but helps with ` +
-    `planning, estimation and keeping a record of the work, runs checks, and spins up ` +
-    `subagents that work in parallel.`,
-  `The key difference from "chat" vibe-coding is the environment: an agent that sees ` +
-    `the whole codebase, works where it is allowed to make mistakes, under version ` +
-    `control, with a plan and acceptance criteria in place before anything goes further.`,
-  `We go through one full loop, live, on the participants' machines: environment → ` +
-    `task with acceptance criteria → plan → the agent works and checks → review → ` +
-    `code on the server. Everyone leaves with a local WordPress environment in DDEV, ` +
-    `a project under git, an agent set up to plan and work on their own code, and a ` +
-    `repository to use as their own starting point.`,
+  `In the workshop I show how I work on a current, real project for the ` +
+    `<a href="https://invictuschallenge.rs/">Invictus</a> gym: planning, local ` +
+    `development and the procedure by which the AI tool checks and deploys code to ` +
+    `the server. We rely on serious tools: the terminal, ` +
+    `<a href="https://git-scm.com/">git</a> and ` +
+    `<a href="https://www.docker.com/">Docker</a>. The workflow rests on ` +
+    `<strong>three things</strong>: <a href="https://ddev.com/">DDEV</a>, which gives ` +
+    `every project a local environment that faithfully reproduces production (the ` +
+    `same PHP version, the same extensions, the same database); parallel work on ` +
+    `several tasks through ` +
+    `<a href="https://git-scm.com/docs/git-worktree">git worktree</a>; and an ` +
+    `<strong>AI agent</strong> that doesn't just "suggest" code but helps with ` +
+    `planning, estimation and keeping a record of the work, runs checks, and spins ` +
+    `up subagents that work in parallel.`,
+  `The key difference from "chat" vibe-coding is <strong>the environment</strong>: ` +
+    `an agent that sees the whole codebase, works where it is allowed to make ` +
+    `mistakes, under version control, with a plan and acceptance criteria in place ` +
+    `before anything goes further.`,
+  `We go through <strong>one full loop, live</strong>, on the participants' ` +
+    `machines: environment → task with acceptance criteria → plan → the agent works ` +
+    `and checks → review → code on the server. Everyone leaves with a local ` +
+    `<a href="https://wordpress.org/">WordPress</a> environment in DDEV, a project ` +
+    `under git, an agent set up to plan and work on their own code, and a ` +
+    `<a href="https://github.com/macmladen/workshop-wp-ddev-ai">repository</a> to use ` +
+    `as their own starting point.`,
 ];
+
 
 /** Target audience, from the same v2 text, one sentence now.
  *  approved-pending: Mladen approves the translation (MM-79). */
 const audience =
-  `Experienced WordPress developers who want to bring AI into their work seriously ` +
-  `and systematically. Familiarity with git and the command line is assumed; ` +
-  `experience with Docker or DDEV is not required.`;
+  `<strong>Experienced WordPress developers</strong> who want to bring AI into ` +
+  `their work seriously and systematically. Familiarity with git and the command ` +
+  `line is assumed; experience with Docker or DDEV is not required.`;
 
 /** The three ways to be in the room, from the v2 text: nobody has to bring a
  *  laptop, and the page says so before the prerequisites ask for anything.
  *  approved-pending: Mladen approves the translation (MM-79). */
 const waysToFollow: string[] = [
-  'Work on your own laptop (registration required, preparation before you come)',
-  'Watch, then repeat at home from the guides',
-  'Just listen',
+  '<strong>Work on your own laptop</strong> (registration required, preparation before you come)',
+  '<strong>Watch</strong>, then repeat at home from the <a href="https://github.com/macmladen/workshop-wp-ddev-ai/tree/main/docs">guides</a>',
+  '<strong>Just listen</strong>',
 ];
 
 /** Mandatory prerequisites. DDEV is the fix the handover flagged: the submitted
  *  text lists Docker and git but the workshop runs on DDEV. */
 const prerequisites: string[] = [
-  'Docker',
-  'DDEV',
-  'git',
-  'A GitHub account',
-  'An AI tool of your choice: Claude Code, Codex or Cursor',
+  '<a href="https://www.docker.com/products/docker-desktop/">Docker</a>',
+  '<a href="https://ddev.com/get-started/">DDEV</a>',
+  '<a href="https://git-scm.com/downloads">git</a>',
+  'A <a href="https://github.com/signup">GitHub account</a>',
+  'An AI tool of your choice: <a href="https://claude.com/product/claude-code">Claude Code</a>, ' +
+    '<a href="https://openai.com/codex/">Codex</a> or <a href="https://cursor.com/">Cursor</a>',
 ];
 
 /** The one prerequisite that stays optional. */
@@ -79,7 +91,7 @@ const optionalPrerequisite =
  *  cut a sentence apart.
  *  approved-pending: Mladen approves the translation (MM-79). */
 const osNote = {
-  before: 'Guides for macOS, Windows (WSL2) and Linux are in the repository; run',
+  before: 'Guides for <strong>macOS</strong>, <strong>Windows (WSL2)</strong> and <strong>Linux</strong> are in the repository; run',
   command: 'ddev start',
   after: 'once at home so the images download before the workshop.',
 } as const;
@@ -112,6 +124,11 @@ export const workshop = {
   wordcampStart: '2026-09-18',
   wordcampEnd: '2026-09-19',
   endsAt,
+  /** What the registration band says; the form is closed live from the room
+   *  around this time by a rebuild, while the endpoint stays open until the end
+   *  (MM-81). */
+  closesLine: '2026-09-18T12:30:00+02:00',
+  closesLineText: 'Friday, 18 September 2026 at 12:30',
   abstract,
   audience,
   waysToFollow,
