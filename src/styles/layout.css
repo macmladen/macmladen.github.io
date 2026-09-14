@@ -99,11 +99,7 @@
    are side by side and the row gap takes over. */
 .facts {
   display: grid;
-  gap: var(--space-1);
-}
-
-.facts dd + dt {
-  margin-block-start: var(--space-2);
+  gap: 0;
 }
 
 /* Two halves: stacked on mobile, side by side from 768px.
@@ -157,11 +153,7 @@
   .facts {
     grid-template-columns: auto 1fr;
     align-items: baseline;
-    gap: var(--space-2) var(--space-6);
-  }
-
-  .facts dd + dt {
-    margin-block-start: 0;
+    gap: 0 var(--space-6);
   }
 
   .split {

@@ -22,11 +22,11 @@ const city = 'Belgrade';
 /** Links and bold live in the strings (rendered with set:html), so the page,
  *  the JSON-LD description (stripped) and any future feed read one source. */
 const abstract: string[] = [
-  `Working with AI tools is neither hype nor a luxury — it's a necessity if you ` +
+  `Working with AI tools is neither hype nor a luxury — it’s a necessity if you ` +
     `want to strike the best balance between your own knowledge and experience while ` +
     `your AI collaborator does its share of the work.`,
   `In the workshop I show how I work on a current, real project for the ` +
-    `<a href="https://invictuschallenge.rs/">Invictus</a> gym: planning, local ` +
+    `Invictus gym: planning, local ` +
     `development and the procedure by which the AI tool checks and deploys code to ` +
     `the server. We rely on serious tools: the terminal, ` +
     `<a href="https://git-scm.com/">git</a> and ` +
@@ -36,14 +36,14 @@ const abstract: string[] = [
     `same PHP version, the same extensions, the same database); parallel work on ` +
     `several tasks through ` +
     `<a href="https://git-scm.com/docs/git-worktree">git worktree</a>; and an ` +
-    `<strong>AI agent</strong> that doesn't just "suggest" code but helps with ` +
+    `<strong>AI agent</strong> that doesn’t just “suggest” code but helps with ` +
     `planning, estimation and keeping a record of the work, runs checks, and spins ` +
     `up subagents that work in parallel.`,
-  `The key difference from "chat" vibe-coding is <strong>the environment</strong>: ` +
+  `The key difference from “chat” vibe-coding is <strong>the environment</strong>: ` +
     `an agent that sees the whole codebase, works where it is allowed to make ` +
     `mistakes, under version control, with a plan and acceptance criteria in place ` +
     `before anything goes further.`,
-  `We go through <strong>one full loop, live</strong>, on the participants' ` +
+  `We go through <strong>one full loop, live</strong>, on the participants’ ` +
     `machines: environment → task with acceptance criteria → plan → the agent works ` +
     `and checks → review → code on the server. Everyone leaves with a local ` +
     `<a href="https://wordpress.org/">WordPress</a> environment in DDEV, a project ` +

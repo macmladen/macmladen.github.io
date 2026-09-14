@@ -107,10 +107,6 @@ ol {
   padding-inline-start: var(--space-6);
 }
 
-li + li {
-  margin-block-start: var(--space-2);
-}
-
 img,
 video {
   max-inline-size: 100%;

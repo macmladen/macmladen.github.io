@@ -71,7 +71,7 @@ const schema = graph(
         {
           beforeStart && (
             <p class="seats" data-seats>
-              {workshop.capacity} seats for working on your own laptop
+              {workshop.capacity} seats
             </p>
           )
         }
@@ -177,7 +177,7 @@ const schema = graph(
                 <time datetime={workshop.closesLine}>{workshop.closesLineText}</time>.
               </p>
               <p class="seats" data-seats>
-                {workshop.capacity} seats for working on your own laptop
+                {workshop.capacity} seats
               </p>
               <RegistrationForm />
             </Fragment>
@@ -273,9 +273,9 @@ const schema = graph(
 
         const text =
           answer.left === 0
-            ? `All ${answer.capacity} seats for working on your own laptop are taken; ` +
+            ? `All ${answer.capacity} seats are taken; ` +
               `you can still register to watch`
-            : `${answer.left} of ${answer.capacity} seats left for working on your own laptop`;
+            : `${answer.left} of ${answer.capacity} seats left`;
         for (const line of lines) line.textContent = text;
 
         if (answer.left > 0) return;

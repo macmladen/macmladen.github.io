@@ -81,10 +81,6 @@ const here = Astro.url.pathname.replace(/\/+$/, '');
       list-style: none;
     }
 
-    .site-header__nav li + li {
-      margin-block-start: 0;
-    }
-
     /* "You are here": weight plus a thick accent rule under the white link. */
     .site-header__nav [aria-current='page'] {
       font-weight: var(--weight-semibold);
