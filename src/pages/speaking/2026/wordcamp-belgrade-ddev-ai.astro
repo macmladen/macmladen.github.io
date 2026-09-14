@@ -51,6 +51,40 @@ const schema = graph(
   <StructuredData slot="head" data={schema} />
 
   <article>
+    {
+      /* The host bar (MM-87). Hidden in every copy of the page and revealed
+         only when the stream says this visitor is the host, which is the same
+         cookie that shows the cover buttons. Two switches, the same two that
+         are otherwise flipped with a `wrangler d1 execute` line from a
+         terminal: it is the difference between a laptop logged in to
+         Cloudflare and one tap on the page already open on the lectern.
+
+         The labels carry the live state and are written by the script from the
+         stream's own `state` event, never optimistically on the click: what
+         the bar shows is what the room is being served, and if a flip does not
+         land the label does not move. */
+    }
+    <div class="hostbar" data-hostbar hidden>
+      <div class="container container--narrow hostbar__row">
+        <button
+          type="button"
+          class="button button--secondary"
+          data-flip="questions_open"
+          aria-pressed="false"
+        >
+          Questions: off
+        </button>
+        <button
+          type="button"
+          class="button button--secondary"
+          data-flip="registration_open"
+          aria-pressed="true"
+        >
+          Registration: on
+        </button>
+      </div>
+    </div>
+
     <section class="section section--compact" aria-labelledby="workshop-title">
       <div class="container container--narrow flow">
         {
@@ -252,12 +286,12 @@ const schema = graph(
        reveals the copy buttons on the SSH-key hint, fills in how many seats are
        left from /api/seats/, hides the laptop-only part of the registration
        form while the watch-only box is ticked, submits that form without
-       leaving the page, and — from MM-85 — keeps the live questions band in
-       step with /api/questions/stream/. Everything below is enhancement: with
-       JavaScript off the copy buttons stay hidden, the seats line says how big
-       the room is, every field is visible, the questions band never appears at
-       all, and the registration form posts to /api/register/ as a form always
-       has.
+       leaving the page, keeps the live questions band in step with
+       /api/questions/stream/ (MM-85) and, from MM-87, drives the host bar's two
+       switches. Everything below is enhancement: with JavaScript off the copy
+       buttons stay hidden, the seats line says how big the room is, every field
+       is visible, neither the questions band nor the host bar ever appears, and
+       the registration form posts to /api/register/ as a form always has.
 
        The registration half is the same block as on /contact/, on purpose: one
        script per page keeps the CSP to one hash per page, and the endpoints
@@ -475,6 +509,8 @@ const schema = graph(
         const coveredList = coveredGroup?.querySelector('ol');
         const countLine = document.querySelector('[data-questions-count]');
         const group = document.querySelector('[data-registration]');
+        const hostbar = document.querySelector('[data-hostbar]');
+        const flips = hostbar ? [...hostbar.querySelectorAll('[data-flip]')] : [];
         if (!band || !form || !list || !countLine || !window.EventSource) return;
 
         const nameField = form.querySelector('#q-name');
@@ -582,8 +618,51 @@ const schema = graph(
           closedLine.hidden = open;
         };
 
+        /* The host bar (MM-87). Its labels are written from the stream and never
+           from the tap: a tap posts the opposite value to /api/state/ and then
+           waits, so what the bar says is always what the room is being served
+           rather than what was asked for. If a flip does not land, the label
+           does not move — which is the point of not guessing. */
+        const names = { questions_open: 'Questions', registration_open: 'Registration' };
+
+        const switches = (data) => {
+          if (!hostbar) return;
+          hostbar.hidden = !host;
+          if (!host) return;
+          for (const button of flips) {
+            const on =
+              button.dataset.flip === 'questions_open'
+                ? data.questionsOpen === true
+                : data.registrationOpen === true;
+            button.textContent = `${names[button.dataset.flip]}: ${on ? 'on' : 'off'}`;
+            button.setAttribute('aria-pressed', on ? 'true' : 'false');
+          }
+        };
+
+        const flip = async (button) => {
+          const body = new FormData();
+          body.append('key', button.dataset.flip);
+          body.append('value', button.getAttribute('aria-pressed') === 'true' ? '0' : '1');
+          button.disabled = true;
+          try {
+            await fetch('/api/state/', {
+              method: 'POST',
+              body,
+              headers: { 'X-Requested-With': 'fetch' },
+              credentials: 'same-origin',
+            });
+          } catch {}
+          /* Re-enabled whatever happened: the label moves when the stream says
+             it has, and a request that never arrived should still leave a
+             button that can be pressed again. */
+          button.disabled = false;
+        };
+
+        for (const button of flips) button.addEventListener('click', () => flip(button));
+
         const state = (data) => {
           host = data.host === true;
+          switches(data);
           band.hidden = data.questionsOpen !== true;
           registrationState(data.registrationOpen === true);
 

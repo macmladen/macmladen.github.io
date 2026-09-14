@@ -1,7 +1,7 @@
 /** Unit checks for the live questions (MM-84). Run with
  *  `node scripts/test-questions.mjs`. Exits non-zero on the first failure.
  *
- *  The database is a fake: a small in-memory store that answers the five
+ *  The database is a fake: a small in-memory store that answers the six
  *  statements src/lib/questions.ts and src/lib/state.ts send, the way D1 would.
  *  That is enough to drive a question from asked to covered and back and watch
  *  the version move, without a server and without wrangler.
@@ -23,7 +23,14 @@ import {
   setCovered,
   validateQuestion,
 } from '../src/lib/questions.ts';
-import { closedState, readState, stateVersion } from '../src/lib/state.ts';
+import {
+  closedState,
+  readState,
+  readStateChange,
+  setState,
+  stateKeys,
+  stateVersion,
+} from '../src/lib/state.ts';
 import {
   HOST_COOKIE,
   hostCookie,
@@ -49,7 +56,7 @@ const check = (name, condition, detail = '') => {
 /** FormData-shaped enough for readQuestionForm. */
 const form = (fields) => ({ get: (name) => (name in fields ? fields[name] : null) });
 
-/** The fake D1. It knows the five statements the two libraries send and nothing
+/** The fake D1. It knows the six statements the two libraries send and nothing
  *  else: an unknown query throws rather than quietly answering nothing, so a
  *  query that changes without this file changing is a failing test, not a
  *  silent pass. `now` is a counter so covered_at values sort the way real
@@ -94,6 +101,13 @@ const fakeDb = (state = {}) => {
     if (query.startsWith('UPDATE questions SET covered_at')) {
       const row = rows.find((candidate) => candidate.id === values[0]);
       if (row) row.covered_at = query.includes('NULL') ? null : stamp();
+      return { first: null, all: [] };
+    }
+
+    if (query.startsWith('UPDATE workshop_state SET value')) {
+      // The real table is seeded by migration 0006, so an UPDATE for a key that
+      // is not there changes nothing rather than creating a row.
+      if (switches.has(values[1])) switches.set(values[1], values[0]);
       return { first: null, all: [] };
     }
 
@@ -285,6 +299,65 @@ console.log('the two switches');
         stateVersion({ registrationOpen, questionsOpen }),
       ),
     ).size === 4,
+  );
+}
+
+console.log('flipping a switch');
+{
+  const db = fakeDb({ registration_open: '1', questions_open: '0' });
+
+  await setState(db, stateKeys.questionsOpen, '1');
+  check('questions open', (await readState(db)).questionsOpen);
+  check('and registration is left alone', (await readState(db)).registrationOpen);
+
+  await setState(db, stateKeys.registrationOpen, '0');
+  check('registration closes', !(await readState(db)).registrationOpen);
+  check('and questions stay open', (await readState(db)).questionsOpen);
+
+  await setState(db, stateKeys.questionsOpen, '0');
+  check('and a switch goes back the way it came', !(await readState(db)).questionsOpen);
+
+  const empty = fakeDb({});
+  await setState(empty, stateKeys.questionsOpen, '1');
+  check('a row that is not there is not invented', empty.switches.size === 0);
+}
+
+console.log('what /api/state/ accepts');
+{
+  const source = (fields) => ({ get: (name) => (name in fields ? fields[name] : null) });
+
+  const open = readStateChange(source({ key: 'questions_open', value: '1' }));
+  check('the key comes through', open?.key === stateKeys.questionsOpen);
+  check('and the value with it', open?.value === '1');
+  check(
+    'the other switch too',
+    readStateChange(source({ key: 'registration_open', value: '0' }))?.key ===
+      stateKeys.registrationOpen,
+  );
+
+  check('a third key is refused', readStateChange(source({ key: 'admin', value: '1' })) === null);
+  check(
+    'a key that only looks like one of the two is refused',
+    readStateChange(source({ key: 'questions_open ', value: '1' })) === null,
+  );
+  check(
+    'a third value is refused',
+    readStateChange(source({ key: 'questions_open', value: 'yes' })) === null,
+  );
+  check(
+    'an empty value is refused',
+    readStateChange(source({ key: 'questions_open', value: '' })) === null,
+  );
+  check('a missing key is refused', readStateChange(source({ value: '1' })) === null);
+  check('a missing value is refused', readStateChange(source({ key: 'questions_open' })) === null);
+  check('nothing at all is refused', readStateChange(source({})) === null);
+  check(
+    'anything that is not a string is refused',
+    readStateChange(source({ key: 42, value: 1 })) === null,
+  );
+  check(
+    'and the query string of the bookmarked link is read the same way',
+    readStateChange(new URLSearchParams('key=questions_open&value=1'))?.value === '1',
   );
 }
 

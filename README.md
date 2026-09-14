@@ -208,16 +208,30 @@ row sitting at `failed:` is a message to answer by hand.
 
 During the workshop the page carries a question list the room writes into, live
 (MM-84). Two switches in D1 decide what it offers, and both are flipped from the
-command line on the day — the site is static, and a rebuild in front of a room is
-not a plan. They live in `workshop_state`, `'1'` is open and anything else is
-closed.
+room on the day — the site is static, and a rebuild in front of a room is not a
+plan. They live in `workshop_state`, `'1'` is open and anything else is closed.
+
+There are three hands on those two switches, in order of how much they ask of
+you on the day (MM-87):
+
+1. **The host bar** on the workshop page. It appears at the top of the page for
+   the browser that has opened the host link, and its two buttons carry the live
+   state — "Questions: off", "Registration: on". One tap flips one switch, and
+   the stream carries the new state to every open page, this one included,
+   within two seconds.
+2. **A bookmarked link**, for a home screen rather than a page already open:
+   `https://macmladen.com/api/state/?key=questions_open&value=1` and the three
+   others like it. Same host cookie, and it lands back on the workshop page.
+3. **`wrangler d1 execute`**, the fallback. It needs a terminal logged in to
+   Cloudflare, which is the thing the first two exist to avoid, but it is the
+   one that still works when the Worker does not.
 
 **Migration `0006_questions.sql` has to be applied first**, locally and, before
 the next deploy, remotely: `npx wrangler d1 migrations apply
 macmladen-registrations --remote`. Without it every question endpoint answers
 503 and the registration form has no state to read.
 
-Close the registration form once the room is settled:
+Close the registration form once the room is settled, the long way round:
 
 ```sh
 npx wrangler d1 execute macmladen-registrations --local \
@@ -252,9 +266,9 @@ https://macmladen.com/api/host/?key=<HOST_KEY>
 
 once. That answers with a cookie — the HMAC-SHA256 of `"host"` under `HOST_KEY`,
 so nothing is stored server-side and forging it means knowing the secret — and
-sends the browser to the workshop page, where the cover buttons are now live. The
-cookie lasts a week. Opening the link on a second device makes that one a host
-too; there is no list to keep.
+sends the browser to the workshop page, where the host bar and the cover buttons
+are now live. The cookie lasts a week. Opening the link on a second device makes
+that one a host too; there is no list to keep.
 
 Set the secret once, on the Worker:
 
@@ -263,10 +277,11 @@ npx wrangler secret put HOST_KEY
 ```
 
 Locally it goes in `.dev.vars` (`HOST_KEY=` is in `.dev.vars.example`). An empty
-or unset `HOST_KEY` means nobody is the host: `/api/host/` answers 403 and no
-question can be marked. The key travels in a query string and so lands in that
-browser's history, which is the price of a link that works from a phone on a
-lectern; rotate it by setting the secret again.
+or unset `HOST_KEY` means nobody is the host: `/api/host/` answers 403, no
+question can be marked and neither switch can be flipped from the page. The key
+travels in a query string and so lands in that browser's history, which is the
+price of a link that works from a phone on a lectern; rotate it by setting the
+secret again.
 
 ### The endpoints
 
@@ -275,6 +290,8 @@ lectern; rotate it by setting the secret again.
 | `POST /api/questions/` | Takes a question. Turnstile as on the other two forms; name optional and up to 100 characters, the question 1–500. Refused with 403 while `questions_open` is `'0'`. Answers JSON to the page's script (`X-Requested-With: fetch`), a redirect back to the page to a browser without one. |
 | `GET /api/questions/stream/` | The live feed, as server-sent events: a `state` event (both switches, and whether this listener is the host) and a `questions` event (the whole list), sent on connect and again whenever they change. D1 has no change feed, so the worker polls it every two seconds for four numbers and only reads the list when those move. A connection is capped at thirty minutes; the browser reconnects on its own. |
 | `POST /api/questions/cover/` | Marks a question answered, or takes the mark off. Host cookie or 403. |
+| `POST /api/state/` | Flips one of the two switches: `key` is `questions_open` or `registration_open`, `value` is `'0'` or `'1'`. Host cookie or 403; anything else 422. What the host bar sends — 204 to it (`X-Requested-With: fetch`), a redirect back to the page to a browser without a script. |
+| `GET /api/state/?key=&value=` | The same write from a link, so a switch can be bookmarked on the iPad's home screen. Host cookie all the same, and always a redirect back to the workshop page. A GET that writes, chosen deliberately: on a lectern a bookmark that does the thing beats a page with a form on it, and the write is idempotent. |
 | `GET /api/host/?key=` | The host link above. |
 
 ### Run-book for Friday 18 September
@@ -286,15 +303,32 @@ Before the day (once):
 3. Open `https://macmladen.com/api/host/?key=<HOST_KEY>` on the laptop that drives the
    projector and on the iPad: each gets the host cookie for seven days.
 
-In the room, from any terminal that is logged in to wrangler:
+In the room, from the page itself — the host bar is at the top of it once the
+host link has been opened, and both buttons say what the switch is doing now:
 
-- Registration off (the form folds, the endpoint refuses):
-  `npx wrangler d1 execute macmladen-registrations --remote --command "UPDATE workshop_state SET value='0' WHERE key='registration_open'"`
-- Questions on (the band appears on every open page within two seconds):
-  `npx wrangler d1 execute macmladen-registrations --remote --command "UPDATE workshop_state SET value='1' WHERE key='questions_open'"`
+- **Registration: on → off** once the room is settled. The form folds away on
+  every open page and the endpoint starts refusing.
+- **Questions: off → on** when the workshop starts. The band appears on every
+  open page within two seconds.
 - Tick a question as covered from the host view; participants stop seeing it.
 - After the workshop: questions off, then the rebuild-and-deploy that turns the page
   into its post-event state (`ROADMAP.md`).
+
+Bookmark these four on the iPad's home screen if the page is not the one already
+in front of you; each answers with a redirect back to the workshop page:
+
+```
+https://macmladen.com/api/state/?key=questions_open&value=1
+https://macmladen.com/api/state/?key=questions_open&value=0
+https://macmladen.com/api/state/?key=registration_open&value=1
+https://macmladen.com/api/state/?key=registration_open&value=0
+```
+
+The fallback, when the page or the Worker is not cooperating, is the same two
+writes from any terminal that is logged in to wrangler:
+
+- `npx wrangler d1 execute macmladen-registrations --remote --command "UPDATE workshop_state SET value='0' WHERE key='registration_open'"`
+- `npx wrangler d1 execute macmladen-registrations --remote --command "UPDATE workshop_state SET value='1' WHERE key='questions_open'"`
 
 Participants need nothing but the page URL; questions are anonymous unless they
 type a name or email, which the page remembers for the next question.

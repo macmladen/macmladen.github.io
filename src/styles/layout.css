@@ -178,6 +178,16 @@
   }
 }
 
+/* The host bar's row (MM-87): two small buttons in a line, wrapping rather
+   than stacking, at every width. Not .row, which is built to stack a pair of
+   full-width buttons on a phone — the opposite of what a control strip wants. */
+.hostbar__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
 /* Both variants sit after the 768px step on purpose: same specificity as
    .section, so the later rule is the one that wins and the value holds at
    every width instead of being reopened on desktop. */
