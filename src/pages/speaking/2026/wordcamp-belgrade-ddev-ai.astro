@@ -4,6 +4,8 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import StructuredData from '../../../components/StructuredData.astro';
 import Facts from '../../../components/Facts.astro';
 import RegistrationForm from '../../../components/RegistrationForm.astro';
+import QuestionsForm from '../../../components/QuestionsForm.astro';
+import QuestionsList from '../../../components/QuestionsList.astro';
 import headshot from '../../../assets/mladen-head-2020.jpg';
 import { workshop, isBeforeStart, isRegistrationOpen } from '../../../data/workshop';
 import { fullDate } from '../../../lib/dates';
@@ -148,6 +150,47 @@ const schema = graph(
     </section>
 
     {
+      /* Live questions (MM-85). The band is built into every copy of the page
+         and hidden; the script reveals it when /api/questions/stream/ says
+         questions are open, which is Mladen's own switch from the room. It
+         sits between the Resources list and the registration band, so during
+         the workshop the two things a participant is asked to do — ask, and
+         register — stand next to each other.
+
+         The list below the form is empty in the build: it is filled from the
+         stream, and with JavaScript off the whole band never appears. */
+    }
+    <section
+      id="questions"
+      class="section section--alt section--compact"
+      aria-labelledby="questions-title"
+      hidden
+    >
+      <div class="container container--narrow flow">
+        {/* draft: Mladen to approve — the heading and the line under it. */}
+        <h2 id="questions-title">Questions</h2>
+        <p>Ask during the workshop; questions appear on the screen in the order they arrive.</p>
+        <QuestionsForm />
+        <QuestionsList />
+      </div>
+    </section>
+    {
+      /* Turnstile's loader, for the one state in which the registration form
+         is no longer on the page: the widget in the questions form still needs
+         it, and the registration form is what normally brings it. Loading
+         api.js twice would leave two copies racing to render the same
+         containers, so it is never emitted while both forms are here. */
+      !registrationOpen && (
+        <script
+          is:inline
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+          async
+          defer
+        />
+      )
+    }
+
+    {
       /* id="register": every "Register for the workshop" link on the site
          points at this band, not at the top of the page. */
     }
@@ -168,18 +211,32 @@ const schema = graph(
           registrationOpen ? (
             <Fragment>
               {
-                /* The line says 12:30; the form itself is closed live, by a
-                   rebuild from the room, and the endpoint stays open until the
-                   workshop ends (MM-80, MM-81). */
+                /* Everything the band asks of a visitor sits in one
+                   collapsible group (MM-85), so Mladen can fold the whole
+                   registration away from the room the moment the last seat is
+                   given out: the stream's `registration_open` flag closes it,
+                   and the script puts the "Registration is closed" line next
+                   to the folded summary. Open in the build and with JavaScript
+                   off, which is the state the endpoint's own rule still backs.
+                   The h2 stays outside the group: the heading of the band is
+                   not part of what folds. */
               }
-              <p>
-                Registration closes{' '}
-                <time datetime={workshop.closesLine}>{workshop.closesLineText}</time>.
-              </p>
-              <p class="seats" data-seats>
-                {workshop.capacity} seats
-              </p>
-              <RegistrationForm />
+              <details class="registration flow" open data-registration>
+                <summary>Registration</summary>
+                {
+                  /* The line says 12:30; the form itself is closed live, by a
+                     rebuild from the room, and the endpoint stays open until
+                     the workshop ends (MM-80, MM-81). */
+                }
+                <p>
+                  Registration closes{' '}
+                  <time datetime={workshop.closesLine}>{workshop.closesLineText}</time>.
+                </p>
+                <p class="seats" data-seats>
+                  {workshop.capacity} seats
+                </p>
+                <RegistrationForm />
+              </details>
             </Fragment>
           ) : (
             <p class="notice">
@@ -192,17 +249,21 @@ const schema = graph(
   </article>
   {
     /* The page's one inline script, hashed in the CSP (npm run check:csp). It
-       does four things: it reveals the copy buttons on the SSH-key hint, it
-       fills in how many seats are left from /api/seats/, it hides the
-       laptop-only part of the registration form while the watch-only box is
-       ticked, and it submits the form without leaving the page. Everything
-       below is enhancement — with JavaScript off the copy buttons stay hidden,
-       the seats line says how big the room is, every field is visible, and the
-       form posts to /api/register/ as a form always has.
+       reveals the copy buttons on the SSH-key hint, fills in how many seats are
+       left from /api/seats/, hides the laptop-only part of the registration
+       form while the watch-only box is ticked, submits that form without
+       leaving the page, and — from MM-85 — keeps the live questions band in
+       step with /api/questions/stream/. Everything below is enhancement: with
+       JavaScript off the copy buttons stay hidden, the seats line says how big
+       the room is, every field is visible, the questions band never appears at
+       all, and the registration form posts to /api/register/ as a form always
+       has.
 
-       The second half is the same block as on /contact/, on purpose: one script
-       per page keeps the CSP to one hash per page, and the endpoints answer
-       both forms the same way. */
+       The registration half is the same block as on /contact/, on purpose: one
+       script per page keeps the CSP to one hash per page, and the endpoints
+       answer both forms the same way. The questions half talks to an endpoint
+       that answers JSON instead, because there is no server-rendered page for
+       it to lift an answer out of. */
   }
   <script is:inline>
     (() => {
@@ -248,6 +309,24 @@ const schema = graph(
 
       wire();
 
+      /* Turnstile keeps one widget per container. A container it has already
+         filled — Turnstile renders the widget into a child of its own — is
+         reset; an empty one, which is what new markup brings, has to be
+         rendered into. Shared by both forms on the page. */
+      const challenge = (form) => {
+        const box = form.querySelector('.cf-turnstile');
+        if (!box || !window.turnstile) return;
+        if (box.firstElementChild) window.turnstile.reset(box);
+        else {
+          window.turnstile.render(box, { sitekey: box.dataset.sitekey, theme: box.dataset.theme });
+        }
+      };
+
+      const submitting = (form, state) => {
+        const button = form.querySelector('[type="submit"]');
+        if (button) button.disabled = state;
+      };
+
       /* Seats left. The page is static and cached, so the only current number
          on it comes from /api/seats/ after the page has loaded. Anything less
          than a clean answer leaves the built-in line alone: "30 seats for
@@ -287,104 +366,341 @@ const schema = graph(
 
       seats();
 
-      /* Submitting without leaving the page. The endpoint keeps answering with
-         a whole rendered page — the very one a submission without JavaScript
-         lands on — and this lifts out of it the part that changed: the success
-         block, or the form carrying its errors and the values that were typed.
-         The rendering path stays on the server either way. */
-      const form = document.querySelector('[data-form-root]');
-      if (!form) return;
+      /* Submitting the registration form without leaving the page. The
+         endpoint keeps answering with a whole rendered page — the very one a
+         submission without JavaScript lands on — and this lifts out of it the
+         part that changed: the success block, or the form carrying its errors
+         and the values that were typed. The rendering path stays on the server
+         either way.
 
-      const pristine = form.innerHTML;
-      let notice = null;
+         The selector names the form: since MM-85 the questions form is on this
+         page too, and it is answered in JSON by an endpoint of its own. */
+      const registration = () => {
+        const form = document.querySelector('[data-form-root="register"]');
+        if (!form) return;
 
-      /* The one block above the form: replaced on every attempt and focused, so
-         the answer is both read out and scrolled to. */
-      const answer = (block, role) => {
-        if (notice) notice.remove();
-        notice = block;
-        block.classList.add('notice--live');
-        block.setAttribute('role', role);
-        block.tabIndex = -1;
-        form.before(block);
-        block.focus();
-      };
+        const pristine = form.innerHTML;
+        let notice = null;
 
-      const failed = (text) => {
-        const block = document.createElement('p');
-        block.className = 'notice notice--error';
-        block.textContent = text || form.dataset.fail;
-        return block;
-      };
+        /* The one block above the form: replaced on every attempt and focused,
+           so the answer is both read out and scrolled to. */
+        const answer = (block, role) => {
+          if (notice) notice.remove();
+          notice = block;
+          block.classList.add('notice--live');
+          block.setAttribute('role', role);
+          block.tabIndex = -1;
+          form.before(block);
+          block.focus();
+        };
 
-      /* Turnstile keeps one widget per container. A container it has already
-         filled — Turnstile renders the widget into a child of its own — is
-         reset; an empty one, which is what new markup brings, has to be
-         rendered into. */
-      const challenge = () => {
-        const box = form.querySelector('.cf-turnstile');
-        if (!box || !window.turnstile) return;
-        if (box.firstElementChild) window.turnstile.reset(box);
-        else {
-          window.turnstile.render(box, { sitekey: box.dataset.sitekey, theme: box.dataset.theme });
-        }
-      };
+        const failed = (text) => {
+          const block = document.createElement('p');
+          block.className = 'notice notice--error';
+          block.textContent = text || form.dataset.fail;
+          return block;
+        };
 
-      const submitting = (state) => {
-        const button = form.querySelector('[type="submit"]');
-        if (button) button.disabled = state;
-      };
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          submitting(form, true);
 
-      form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        submitting(true);
+          try {
+            const response = await fetch(form.action, {
+              method: 'POST',
+              body: new FormData(form),
+              headers: { 'X-Requested-With': 'fetch' },
+              credentials: 'same-origin',
+            });
+            const page = new DOMParser().parseFromString(await response.text(), 'text/html');
+            const success = page.querySelector('[data-form-success]');
+            const again = page.querySelector('[data-form-root]');
+            const closed = page.querySelector('[data-form-closed]');
 
-        try {
-          const response = await fetch(form.action, {
-            method: 'POST',
-            body: new FormData(form),
-            headers: { 'X-Requested-With': 'fetch' },
-            credentials: 'same-origin',
-          });
-          const page = new DOMParser().parseFromString(await response.text(), 'text/html');
-          const success = page.querySelector('[data-form-success]');
-          const again = page.querySelector('[data-form-root]');
-          const closed = page.querySelector('[data-form-closed]');
+            if (closed) {
+              /* Registration closed since this page was built: the notice
+                 takes the form's place, as a rebuild would have done. */
+              const notice = document.importNode(closed, true);
+              notice.setAttribute('role', 'status');
+              notice.setAttribute('tabindex', '-1');
+              form.replaceWith(notice);
+              notice.focus();
+              return;
+            }
 
-          if (closed) {
-            /* Registration closed since this page was built: the notice
-               takes the form's place, as a rebuild would have done. */
-            const notice = document.importNode(closed, true);
-            notice.setAttribute('role', 'status');
-            notice.setAttribute('tabindex', '-1');
-            form.replaceWith(notice);
-            notice.focus();
-            return;
-          }
-
-          if (response.ok && success) {
-            form.innerHTML = pristine;
-            wire();
-            answer(document.importNode(success, true), 'status');
-          } else if (again) {
-            /* The general message moves above the form; the fields keep the
-               errors beside them and the values that were typed. */
-            const general = again.querySelector('.notice--error');
-            const text = (general ?? again.querySelector('.field__error'))?.textContent.trim();
-            if (general) general.remove();
-            form.innerHTML = again.innerHTML;
-            wire();
-            answer(failed(text), 'alert');
-          } else {
+            if (response.ok && success) {
+              form.innerHTML = pristine;
+              wire();
+              answer(document.importNode(success, true), 'status');
+            } else if (again) {
+              /* The general message moves above the form; the fields keep the
+                 errors beside them and the values that were typed. */
+              const general = again.querySelector('.notice--error');
+              const text = (general ?? again.querySelector('.field__error'))?.textContent.trim();
+              if (general) general.remove();
+              form.innerHTML = again.innerHTML;
+              wire();
+              answer(failed(text), 'alert');
+            } else {
+              answer(failed(), 'alert');
+            }
+          } catch {
             answer(failed(), 'alert');
           }
-        } catch {
-          answer(failed(), 'alert');
-        }
 
-        challenge();
-        submitting(false);
-      });
+          challenge(form);
+          submitting(form, false);
+        });
+      };
+
+      registration();
+
+      /* Live questions (MM-85). One EventSource on /api/questions/stream/
+         carries everything the room needs: a `state` event with the two
+         switches Mladen flips from the stage and whether this visitor is the
+         host, and a `questions` event with the whole list every time it
+         changes. Nothing is polled and nothing is rendered on the server: the
+         page is static, and the list below is written here.
+
+         Reconnection is the browser's own — EventSource retries a dropped
+         stream by itself, which is what carries the page over the half-hourly
+         close of a long-lived connection — so no `error` handler is wired: a
+         gap in the stream is not something the room needs to be told about.
+         Where EventSource does not exist the band simply stays hidden. */
+      const live = () => {
+        const band = document.querySelector('#questions');
+        const form = document.querySelector('[data-form-root="questions"]');
+        const list = document.querySelector('[data-questions-list]');
+        const coveredGroup = document.querySelector('[data-questions-covered]');
+        const coveredList = coveredGroup?.querySelector('ol');
+        const countLine = document.querySelector('[data-questions-count]');
+        const group = document.querySelector('[data-registration]');
+        if (!band || !form || !list || !countLine || !window.EventSource) return;
+
+        const nameField = form.querySelector('#q-name');
+        const bodyField = form.querySelector('#q-body');
+
+        /* The host flag rides on every state event; the list is rendered
+           differently for the one person who can tick a question off. */
+        let host = false;
+        let revealed = false;
+        let closedLine = null;
+
+        /* The room's own clock, whoever is looking and wherever they are. */
+        const clock = new Intl.DateTimeFormat('en-GB', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+          timeZone: 'Europe/Belgrade',
+        });
+
+        const cover = async (id, covered, button) => {
+          button.disabled = true;
+          const body = new FormData();
+          body.append('id', id);
+          body.append('covered', covered);
+          try {
+            await fetch('/api/questions/cover/', {
+              method: 'POST',
+              body,
+              headers: { 'X-Requested-With': 'fetch' },
+              credentials: 'same-origin',
+            });
+          } catch {}
+          /* The stream sends the whole list back after a change, so there is
+             nothing to re-render here; the button is only re-enabled in case
+             the request never arrived. */
+          button.disabled = false;
+        };
+
+        const item = (question, covered) => {
+          const entry = document.createElement('li');
+          entry.dataset.id = question.id;
+
+          const body = document.createElement('p');
+          body.className = 'questions__body';
+          body.textContent = question.body;
+          entry.append(body);
+
+          const meta = document.createElement('p');
+          meta.className = 'questions__meta';
+          const at = Date.parse(question.createdAt);
+          const who = question.name || 'Anonymous';
+          meta.textContent = Number.isNaN(at) ? who : `${who} · ${clock.format(at)}`;
+          entry.append(meta);
+
+          if (host) {
+            const tick = document.createElement('button');
+            tick.type = 'button';
+            tick.className = 'questions__tick';
+            tick.textContent = covered ? 'Uncover' : 'Covered';
+            tick.addEventListener('click', () => cover(question.id, covered ? '0' : '1', tick));
+            entry.append(tick);
+          }
+
+          return entry;
+        };
+
+        /* Covered questions leave the list for everyone. Only the host has
+           anywhere to see them afterwards. */
+        const render = (questions) => {
+          const open = questions.filter((question) => !question.covered);
+          const covered = questions.filter((question) => question.covered);
+
+          list.replaceChildren(...open.map((question) => item(question, false)));
+
+          if (coveredGroup && coveredList) {
+            coveredGroup.hidden = !host || covered.length === 0;
+            coveredList.replaceChildren(
+              ...(host ? covered.map((question) => item(question, true)) : []),
+            );
+          }
+
+          countLine.textContent = host
+            ? `${open.length} open · ${covered.length} covered`
+            : open.length === 0
+              ? 'No questions yet'
+              : open.length === 1
+                ? '1 question'
+                : `${open.length} questions`;
+        };
+
+        /* A closed registration folds the group away. The line that says so has
+           to sit beside it rather than inside it: a folded details shows its
+           summary and nothing else. It is made once and hidden again if
+           registration reopens. */
+        const registrationState = (open) => {
+          if (!group) return;
+          group.open = open;
+          if (open && !closedLine) return;
+          if (!closedLine) {
+            closedLine = document.createElement('p');
+            closedLine.className = 'notice';
+            closedLine.textContent = 'Registration is closed';
+            group.after(closedLine);
+          }
+          closedLine.hidden = open;
+        };
+
+        const state = (data) => {
+          host = data.host === true;
+          band.hidden = data.questionsOpen !== true;
+          registrationState(data.registrationOpen === true);
+
+          /* Turnstile cannot measure a widget inside a display:none band, so
+             the one in the questions form is rendered the first time the band
+             is actually shown. */
+          if (!band.hidden && !revealed) {
+            revealed = true;
+            challenge(form);
+          }
+        };
+
+        /* The form's own answers. Field errors go next to their field, the
+           rest above the form as a status line that takes itself away again —
+           during a workshop nobody should have to dismiss anything. */
+        let notice = null;
+
+        const say = (text, kind, role) => {
+          if (notice) notice.remove();
+          notice = document.createElement('p');
+          notice.className = `notice notice--${kind} notice--live`;
+          notice.setAttribute('role', role);
+          notice.textContent = text;
+          form.before(notice);
+          const shown = notice;
+          setTimeout(() => shown.remove(), 4000);
+        };
+
+        const clearErrors = () => {
+          for (const line of form.querySelectorAll('.field__error')) line.remove();
+          for (const field of [nameField, bodyField]) {
+            field?.removeAttribute('aria-invalid');
+            field?.removeAttribute('aria-describedby');
+          }
+        };
+
+        const fieldError = (field, message) => {
+          if (!field) return;
+          const line = document.createElement('p');
+          line.className = 'field__error';
+          line.id = `${field.id}-error`;
+          line.textContent = message;
+          field.setAttribute('aria-invalid', 'true');
+          field.setAttribute('aria-describedby', line.id);
+          field.after(line);
+        };
+
+        try {
+          const remembered = localStorage.getItem('mm_name');
+          if (remembered && nameField && nameField.value === '') nameField.value = remembered;
+        } catch {}
+
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          submitting(form, true);
+          clearErrors();
+
+          try {
+            const response = await fetch(form.action, {
+              method: 'POST',
+              body: new FormData(form),
+              headers: { 'X-Requested-With': 'fetch', Accept: 'application/json' },
+              credentials: 'same-origin',
+            });
+
+            let answer = null;
+            try {
+              answer = await response.json();
+            } catch {}
+
+            if (response.ok && answer?.ok) {
+              /* The question goes, the name stays: the next one is from the
+                 same person, and the browser remembers it for the next
+                 visit. */
+              if (bodyField) bodyField.value = '';
+              if (nameField && nameField.value !== '') {
+                try {
+                  localStorage.setItem('mm_name', nameField.value);
+                } catch {}
+              }
+              say('Asked', 'ok', 'status');
+            } else {
+              const errors = answer?.errors ?? {};
+              let beside = 0;
+              if (errors.name) {
+                fieldError(nameField, errors.name);
+                beside += 1;
+              }
+              if (errors.body) {
+                fieldError(bodyField, errors.body);
+                beside += 1;
+              }
+              if (errors.form) say(errors.form, 'error', 'alert');
+              else if (beside === 0) say(form.dataset.fail, 'error', 'alert');
+            }
+          } catch {
+            say(form.dataset.fail, 'error', 'alert');
+          }
+
+          challenge(form);
+          submitting(form, false);
+        });
+
+        const stream = new EventSource('/api/questions/stream/');
+        stream.addEventListener('state', (event) => {
+          try {
+            state(JSON.parse(event.data));
+          } catch {}
+        });
+        stream.addEventListener('questions', (event) => {
+          try {
+            render(JSON.parse(event.data));
+          } catch {}
+        });
+      };
+
+      live();
     })();
   </script>
 </BaseLayout>

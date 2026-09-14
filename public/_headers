@@ -17,13 +17,16 @@
 #                             contact form submitted with fetch) and the one on
 #                             the workshop page (copy buttons, seats left read
 #                             from /api/seats/, the laptop fields hidden while
-#                             the watch-only box is ticked, and the registration
-#                             form submitted with fetch)
+#                             the watch-only box is ticked, the registration
+#                             form submitted with fetch, and the live questions
+#                             band driven by /api/questions/stream/)
 #                             (npm run check:csp)
 #   frame-src, connect-src    the Turnstile widget's iframe and its callbacks;
 #                             connect-src also takes Cloudflare Web Analytics,
 #                             whose beacon the zone injects into every page
-#                             (script-src allows static.cloudflareinsights.com)
+#                             (script-src allows static.cloudflareinsights.com),
+#                             and covers the workshop page's EventSource on
+#                             /api/questions/stream/ under 'self'
 #   base-uri, form-action     no injected <base>, no cross-origin form posts;
 #                             both forms post to /api/ on this origin
 #   frame-ancestors 'none'    the site is never framed
@@ -38,4 +41,4 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' https://challenges.cloudflare.com https://static.cloudflareinsights.com 'sha256-/C/7qyOpMgiGka/X5t8A0RErUfPCdk5lgkcD1Rv8XME=' 'sha256-+dwBQKT0wsCBN543FfCurdaHMDqVHDd4+1Ypq0febPM='; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com https://cloudflareinsights.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' https://challenges.cloudflare.com https://static.cloudflareinsights.com 'sha256-/C/7qyOpMgiGka/X5t8A0RErUfPCdk5lgkcD1Rv8XME=' 'sha256-OmwgnIJpft85N9QDpvdWL/ZJrrmNCdFn7lQeo3qJwJM='; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com https://cloudflareinsights.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'

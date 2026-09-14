@@ -495,3 +495,76 @@ a[target='_blank']:not(.button):not(.site-footer a)::after {
 .advanced > summary + .field__hint {
   --flow-space: var(--space-1);
 }
+
+/* The collapsible registration group (MM-85). The band around it already
+   carries the alternate colour and a heading, so the group itself is only a
+   summary line to fold by; the summary takes the same treatment as the
+   Advanced group's inside the form. */
+.registration > summary,
+.questions__covered > summary {
+  cursor: pointer;
+  font-weight: var(--weight-semibold);
+}
+
+/* Live questions (MM-85). The count line is the quietest thing in the band —
+   it is a running total, not a heading. */
+.questions__count {
+  color: var(--color-ink-soft);
+  font-size: var(--text-sm);
+}
+
+/* Both lists: the open questions and the host's Covered group. No markers —
+   the order is the point, not the numbering, and a rule between the items
+   separates them more quietly than numbers and more clearly than space alone. */
+.questions__list,
+.questions__covered ol {
+  padding-inline-start: 0;
+  list-style: none;
+}
+
+/* One question: what was asked, who asked it and when, and — for the host —
+   the button that takes it off the list. Tight, because a room reads this on a
+   screen from several metres away and every item has to fit. */
+.questions__list li,
+.questions__covered li {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-1);
+  padding-block: var(--space-2);
+}
+
+.questions__list li + li,
+.questions__covered li + li {
+  border-block-start: var(--border-width) solid var(--color-border);
+}
+
+.questions__meta {
+  color: var(--color-ink-soft);
+  font-size: var(--text-sm);
+}
+
+/* The host's tick. The secondary button's colours at the small step: it sits
+   inside a list item, so a full .button would take the whole width on a phone
+   and out-shout the question above it. */
+.questions__tick {
+  padding: var(--space-1) var(--space-3);
+  border: var(--border-width) solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  color: var(--color-link);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  cursor: pointer;
+}
+
+.questions__tick:hover,
+.questions__tick:active {
+  border-color: var(--color-accent-hover);
+  color: var(--color-accent-hover);
+}
+
+.questions__tick:disabled {
+  cursor: default;
+  opacity: 0.6;
+}

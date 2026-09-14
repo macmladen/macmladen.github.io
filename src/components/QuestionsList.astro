@@ -1,0 +1,19 @@
+---
+/** The live questions list (MM-85). An empty shell: everything inside it is
+ *  written by the workshop page's script from the `questions` events on
+ *  /api/questions/stream/, so the built page carries no question at all and
+ *  stays as cacheable as the rest of the site.
+ *
+ *  The Covered group is the host's own view. It stays hidden for everyone
+ *  else — a participant never sees a covered question, neither in the list nor
+ *  in this group. */
+---
+
+<div class="questions flow" data-questions>
+  <p class="questions__count" data-questions-count>No questions yet</p>
+  <ol class="questions__list" data-questions-list></ol>
+  <details class="questions__covered" data-questions-covered hidden>
+    <summary>Covered</summary>
+    <ol></ol>
+  </details>
+</div>

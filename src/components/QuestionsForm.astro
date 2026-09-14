@@ -1,0 +1,71 @@
+---
+/** The live questions form on the workshop page (MM-85). Unlike the
+ *  registration and contact forms this one is never re-rendered by its
+ *  endpoint: /api/questions/ answers JSON, and the page's script puts the
+ *  errors beside the fields itself. The markup is therefore the empty form
+ *  only, with no values or errors props.
+ *
+ *  The band this form sits in is hidden until the stream says questions are
+ *  open, so the no-JavaScript path never shows it; the method and action are
+ *  kept all the same, because a form that can post without a script is the
+ *  only kind worth writing.
+ *
+ *  Field ids carry the `q-` prefix: the registration form on the same page
+ *  already owns `name`, and two elements may not share an id. */
+
+/** Cloudflare's documented always-pass test key is the fallback, so the form
+ *  works locally without any configuration. The real key is a build-time
+ *  environment variable, PUBLIC_TURNSTILE_SITE_KEY — the same one both other
+ *  forms read. */
+const turnstileSiteKey =
+  import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '1x00000000000000000000AA';
+
+/** The only message that does not come from the server, because when the
+ *  request fails to arrive there is no answer to quote.
+ *  draft: Mladen to approve. */
+const failure = 'Sending failed. Please try again.';
+---
+
+{
+  /* No Turnstile loader here on purpose: the registration form further down
+     this page brings `challenges.cloudflare.com/turnstile/v0/api.js` with it,
+     and the script renders every `.cf-turnstile` container on the page. The
+     workshop page adds the loader itself for the one state in which the
+     registration form is gone. */
+}
+<form
+  class="flow"
+  method="post"
+  action="/api/questions/"
+  data-form-root="questions"
+  data-fail={failure}
+>
+  <div class="field">
+    <label for="q-name">Name or email</label>
+    <input
+      id="q-name"
+      name="name"
+      type="text"
+      autocomplete="off"
+      maxlength="100"
+      placeholder="Optional"
+    />
+  </div>
+
+  <div class="field field--prose">
+    <label for="q-body">Your question <span class="field__required">required</span></label>
+    <textarea
+      id="q-body"
+      name="body"
+      rows="3"
+      required
+      maxlength="500"
+      placeholder="Ask here; it appears on the screen"></textarea>
+  </div>
+
+  <div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="light"></div>
+
+  <div class="row">
+    <button class="button" type="submit">Ask</button>
+  </div>
+</form>
