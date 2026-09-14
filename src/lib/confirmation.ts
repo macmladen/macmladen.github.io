@@ -3,9 +3,9 @@
  *  send() in mailersend.ts and `node scripts/test-confirmation.mjs` can read
  *  every line of it without a network.
  *
- *  Every fact in the text — the day, the hours, the venue, the repository, the
- *  date the guide lands — comes from src/data/workshop.ts, and the reply address
- *  from src/data/person.ts, so the mail cannot drift from the page.
+ *  Every fact in the text — the day, the hours, the venue, the repository —
+ *  comes from src/data/workshop.ts, and the reply address from
+ *  src/data/person.ts, so the mail cannot drift from the page.
  *
  *  The .ts extensions on the imports are on purpose, as in validate.ts: node's
  *  ESM resolver does not guess them, and this file has to load in plain node as
@@ -17,7 +17,10 @@ import { timeOfDay, weekdayAndDate } from './dates.ts';
 import { FROM, send, type MailerSendEnv, type MailStatus } from './mailersend.ts';
 
 /** Approved by Mladen on 2026-09-10, subject and body both — his wording, not a
- *  draft, with only the facts filled in from the data files. */
+ *  draft, with only the facts filled in from the data files. One change since:
+ *  the sentence naming the day the full guide lands is gone with `prepDeadline`,
+ *  which had already passed, so the mail links the repository and leaves it at
+ *  that (MM-79). */
 export const subject =
   'You are registered: WordPress, Docker and AI agents, WordCamp Belgrade';
 
@@ -38,8 +41,7 @@ export const confirmationText = (name: string): string =>
     `You are on the list for the workshop on ${when}, ${where}.`,
     '',
     `Before you come: install Docker, DDEV, git and your AI tool, and have a GitHub ` +
-      `account. The preparation guide and the demo project are at ${workshop.repoUrl}; ` +
-      `the full guide lands there by ${workshop.prepDeadline}.`,
+      `account. The preparation guide and the demo project are at ${workshop.repoUrl}.`,
     '',
     'Watching without a laptop is fine too.',
     '',

@@ -17,47 +17,50 @@ const startsAt = '2026-09-18T12:30:00+02:00';
 const street = 'Makedonska 22';
 const city = 'Belgrade';
 
-/** The EN abstract, from section 2 of wordcamp-belgrade-2026-workshop-handover.md
- *  in ~/Documents/JOBS/0905 DDEV and AI Radionica WordCamp BG 2026/, with the two
- *  fixes flagged there applied: the workflow "rests on" three things, and DDEV is
- *  named in the prerequisites (see `prerequisites` below). Otherwise verbatim. */
+/** The EN abstract, translated from the v2 description sent to the WordCamp
+ *  organisers on 2026-09-13 (wordcamp-page-request.md in ~/Documents/JOBS/0905
+ *  DDEV and AI Radionica WordCamp BG 2026/), which replaces the whole description
+ *  on the session page. The theme-and-plugin paragraph of the first version is
+ *  gone; the Invictus paragraph and the three pillars are now one.
+ *  approved-pending: Mladen approves the translation (MM-79). */
 const abstract: string[] = [
   `Working with AI tools is neither hype nor a luxury — it's a necessity if you ` +
     `want to strike the best balance between your own knowledge and experience while ` +
     `your AI collaborator does its share of the work.`,
-  `In this session for advanced users, I'll show you how I work on a current, ` +
-    `real project for the Invictus gym using AI tools, planning, local development, ` +
-    `and a procedure by which the AI tool checks and deploys code to the server.`,
-  `We rely on serious tools: the terminal, git and Docker. We go through a workflow ` +
-    `that rests on three things: DDEV, which gives every project its own local ` +
-    `environment faithfully reproducing production (the same PHP version, the same ` +
-    `extensions, the same database); parallel work on several tasks through git ` +
-    `worktree; and an AI agent that doesn't just "suggest" code but also helps ` +
-    `with planning, estimation and keeping a record of the work, runs checks, and ` +
-    `spins up subagents that work in parallel for you.`,
-  `The key difference from "chat" vibe-coding lies precisely in the environment: an ` +
-    `agent that sees the whole codebase (context) and works where it is allowed to ` +
-    `make mistakes — under version control, with a plan and acceptance criteria in ` +
-    `place before anything goes further. That is what makes this process a good ` +
-    `practice, one you adapt to your team and your project.`,
-  `The workshop follows the same flow, but on the participants' own machines, so ` +
-    `they can follow along, ask questions and work themselves. Everyone leaves with ` +
-    `hands-on experience, a working local WordPress environment, a project under ` +
-    `version control, and an agent configured to plan and work on their own code. We ` +
-    `set up the project, develop a theme and a plugin with the agent, and push the ` +
-    `code to the server — in real time, with everything that entails. The ` +
-    `preparation, the demo project itself and the resources will be available on ` +
-    `GitHub, where anyone can see how to get ready, clone it, and use it as their own ` +
-    `starting point ("scaffolding").`,
+  `In the workshop I show how I work on a current, real project for the Invictus ` +
+    `gym: planning, local development and the procedure by which the AI tool checks ` +
+    `and deploys code to the server. We rely on serious tools: the terminal, git and ` +
+    `Docker. The workflow rests on three things: DDEV, which gives every project a ` +
+    `local environment that faithfully reproduces production (the same PHP version, ` +
+    `the same extensions, the same database); parallel work on several tasks through ` +
+    `git worktree; and an AI agent that doesn't just "suggest" code but helps with ` +
+    `planning, estimation and keeping a record of the work, runs checks, and spins up ` +
+    `subagents that work in parallel.`,
+  `The key difference from "chat" vibe-coding is the environment: an agent that sees ` +
+    `the whole codebase, works where it is allowed to make mistakes, under version ` +
+    `control, with a plan and acceptance criteria in place before anything goes further.`,
+  `We go through one full loop, live, on the participants' machines: environment → ` +
+    `task with acceptance criteria → plan → the agent works and checks → review → ` +
+    `code on the server. Everyone leaves with a local WordPress environment in DDEV, ` +
+    `a project under git, an agent set up to plan and work on their own code, and a ` +
+    `repository to use as their own starting point.`,
 ];
 
-/** Target audience, same source, verbatim. */
+/** Target audience, from the same v2 text, one sentence now.
+ *  approved-pending: Mladen approves the translation (MM-79). */
 const audience =
-  `Developers already working with WordPress who want to bring AI into their work ` +
-  `seriously and systematically, not experimentally. Familiarity with git and the ` +
-  `command line is assumed; experience with Docker or DDEV isn't required, but ` +
-  `makes it easier to follow. Those not yet using a local environment will get a ` +
-  `complete working pattern — but the talk doesn't stop there.`;
+  `Experienced WordPress developers who want to bring AI into their work seriously ` +
+  `and systematically. Familiarity with git and the command line is assumed; ` +
+  `experience with Docker or DDEV is not required.`;
+
+/** The three ways to be in the room, from the v2 text: nobody has to bring a
+ *  laptop, and the page says so before the prerequisites ask for anything.
+ *  approved-pending: Mladen approves the translation (MM-79). */
+const waysToFollow: string[] = [
+  'Work on your own laptop (registration required, preparation before you come)',
+  'Watch, then repeat at home from the guides',
+  'Just listen',
+];
 
 /** Mandatory prerequisites. DDEV is the fix the handover flagged: the submitted
  *  text lists Docker and git but the workshop runs on DDEV. */
@@ -72,6 +75,18 @@ const prerequisites: string[] = [
 /** The one prerequisite that stays optional. */
 const optionalPrerequisite =
   'SSH access to your own hosting — optional, for the deploy part at the end.';
+
+/** The note that closes the prerequisites: where the guides for each operating
+ *  system are, and the one command to run at home so the Docker images are
+ *  already downloaded when the workshop starts. Held in three parts so the
+ *  command can be marked up as code on the page without the template having to
+ *  cut a sentence apart.
+ *  approved-pending: Mladen approves the translation (MM-79). */
+const osNote = {
+  before: 'Guides for macOS, Windows (WSL2) and Linux are in the repository; run',
+  command: 'ddev start',
+  after: 'once at home so the images download before the workshop.',
+} as const;
 
 export const workshop = {
   title: 'WordPress, Docker and AI agents — hands-on',
@@ -90,7 +105,7 @@ export const workshop = {
   wordcampUrl: 'https://belgrade.wordcamp.org/2026/',
   /** This session's own page on the WordCamp site. Every visible "WordCamp"
    *  link points here: a visitor following it wants the session, not the
-   *  conference front page. It is also the Event's sameAs. */
+   *  conference front page. It is also the first of the Event's sameAs. */
   sessionUrl:
     'https://belgrade.wordcamp.org/2026/session/wordpress-docker-i-ai-agenti-prakticno-sr/',
   /** Working seats in the room: laptops Mladen can look after in eighty
@@ -106,8 +121,10 @@ export const workshop = {
   startsAt,
   abstract,
   audience,
+  waysToFollow,
   prerequisites,
   optionalPrerequisite,
+  osNote,
   /** draft: Mladen to approve — one-sentence summary, used for the page's meta
    *  description and as the Event description in the JSON-LD. */
   summary:
@@ -116,7 +133,11 @@ export const workshop = {
   /** The scaffolding repository: the preparation guide, the demo project and the
    *  materials. Linked from the workshop page and named in the confirmation email. */
   repoUrl: 'https://github.com/macmladen/workshop-wp-ddev-ai',
-  prepDeadline: 'Friday 11 September',
+  /** The deck, in the two places it lives. Both are listed in the Resources
+   *  section of the page and both are sameAs on the Event (MM-79). */
+  slidesSpeakerDeck: 'https://speakerdeck.com/macmladen/wordpress-docker-and-ai-agents-workshop',
+  slidesGoogle:
+    'https://docs.google.com/presentation/d/1zsYWcF8TTJJivXWKn0GpL7B_lvlxO2fJ/edit?usp=sharing',
 } as const;
 
 /** True until the workshop is under way — see `startsAt`. `now` is injectable

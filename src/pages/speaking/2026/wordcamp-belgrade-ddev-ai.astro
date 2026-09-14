@@ -69,7 +69,13 @@ const schema = graph(
              once the workshop has been given: there is nothing left to take a
              seat for (MM-74). */
         }
-        {beforeStart && <p class="seats" data-seats>{workshop.capacity} seats</p>}
+        {
+          beforeStart && (
+            <p class="seats" data-seats>
+              {workshop.capacity} seats for working on your own laptop
+            </p>
+          )
+        }
         {workshop.abstract.map((paragraph) => <p>{paragraph}</p>)}
       </div>
     </section>
@@ -78,6 +84,20 @@ const schema = graph(
       <div class="container container--narrow flow">
         <h2 id="audience-title">Who it is for</h2>
         <p>{workshop.audience}</p>
+      </div>
+    </section>
+
+    {
+      /* Three ways to follow (MM-79): the workshop asks for a prepared laptop
+         only from the people who want one, and this says so before the
+         prerequisites start listing what to install. */
+    }
+    <section class="section section--compact" aria-labelledby="ways-title">
+      <div class="container container--narrow flow">
+        <h2 id="ways-title">Three ways to follow</h2>
+        <ul>
+          {workshop.waysToFollow.map((way) => <li>{way}</li>)}
+        </ul>
       </div>
     </section>
 
@@ -94,7 +114,42 @@ const schema = graph(
           {workshop.prerequisites.map((item) => <li>{item}</li>)}
         </ul>
         <p>{workshop.optionalPrerequisite}</p>
-        <p>Preparation guide and materials will be on GitHub by {workshop.prepDeadline}.</p>
+        <p>
+          {workshop.osNote.before} <code>{workshop.osNote.command}</code>{' '}
+          {workshop.osNote.after}
+        </p>
+      </div>
+    </section>
+
+    {
+      /* Resources (MM-79): every link this workshop has, in one place and in
+         the order someone needs them — register, prepare, then the slides and
+         the session's own page on the WordCamp site. The registration line is
+         only there while the form is: an anchor to a band that no longer holds
+         a form would be a dead end. */
+    }
+    <section class="section section--compact" aria-labelledby="resources-title">
+      <div class="container container--narrow flow">
+        <h2 id="resources-title">Resources</h2>
+        <ul>
+          {registrationOpen && (
+            <li>
+              <a href="#register">Registration</a>
+            </li>
+          )}
+          <li>
+            <a href={workshop.repoUrl}>Preparation guide and repository</a>
+          </li>
+          <li>
+            <a href={workshop.slidesSpeakerDeck}>Slides on Speaker Deck</a>
+          </li>
+          <li>
+            <a href={workshop.slidesGoogle}>Slides on Google Slides</a>
+          </li>
+          <li>
+            <a href={workshop.sessionUrl}>Session page at {workshop.wordcampName}</a>
+          </li>
+        </ul>
       </div>
     </section>
 
@@ -123,7 +178,9 @@ const schema = graph(
                   Registration closes{' '}
                   <time datetime={workshop.closeDate}>{fullDate(workshop.closesAt)}</time>.
                 </p>
-                <p class="seats" data-seats>{workshop.capacity} seats</p>
+                <p class="seats" data-seats>
+                  {workshop.capacity} seats for working on your own laptop
+                </p>
                 <RegistrationForm />
               </Fragment>
             ) : (
@@ -199,8 +256,8 @@ const schema = graph(
 
       /* Seats left. The page is static and cached, so the only current number
          on it comes from /api/seats/ after the page has loaded. Anything less
-         than a clean answer leaves the built-in line alone: "30 seats" is true
-         whatever the endpoint says. When the last seat has gone the watch-only
+         than a clean answer leaves the built-in line alone: "30 seats for
+         working on your own laptop" is true whatever the endpoint says. When the last seat has gone the watch-only
          box is ticked for the visitor — the server would place them as a
          watcher anyway, and the form should say so before they fill it in. */
       const seats = async () => {
@@ -221,8 +278,9 @@ const schema = graph(
 
         const text =
           answer.left === 0
-            ? `All ${answer.capacity} seats are taken; you can still register to watch`
-            : `${answer.left} of ${answer.capacity} seats left`;
+            ? `All ${answer.capacity} seats for working on your own laptop are taken; ` +
+              `you can still register to watch`
+            : `${answer.left} of ${answer.capacity} seats left for working on your own laptop`;
         for (const line of lines) line.textContent = text;
 
         if (answer.left > 0) return;

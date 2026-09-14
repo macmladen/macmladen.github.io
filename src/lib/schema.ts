@@ -150,10 +150,14 @@ export function eventNode(site: URL | string | undefined): Node {
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
     eventStatus: 'https://schema.org/EventScheduled',
     inLanguage: workshop.language,
+    /** The working seats in the room, the number the page's seats line and
+     *  /api/seats/ both count against (MM-79). */
+    maximumAttendeeCapacity: workshop.capacity,
     url: absolute(workshop.path, site),
-    /** The same session described elsewhere: its page on the WordCamp site.
-     *  `url` stays this site's own page, which is the canonical one. */
-    sameAs: workshop.sessionUrl,
+    /** The same session described elsewhere: its page on the WordCamp site and
+     *  the deck in the two places it is published (MM-79). `url` stays this
+     *  site's own page, which is the canonical one. */
+    sameAs: [workshop.sessionUrl, workshop.slidesSpeakerDeck, workshop.slidesGoogle],
     location: {
       '@type': 'Place',
       name: workshop.venue,
