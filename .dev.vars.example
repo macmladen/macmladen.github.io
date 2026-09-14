@@ -10,4 +10,6 @@ TURNSTILE_SITE_KEY=1x00000000000000000000AA
 # Any long random string. IP addresses are stored only as SHA-256 of salt + IP,
 # and without a salt nothing is stored at all.
 IP_HASH_SALT=
-
+# The workshop-day host secret (MM-84). Opening /api/host/?key=<this> leaves the
+# cookie that lets one browser mark questions answered. Empty means nobody can.
+HOST_KEY=

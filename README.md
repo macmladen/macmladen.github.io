@@ -109,15 +109,16 @@ That runs `migrations/0001_registrations.sql` (table `registrations`),
 `migrations/0003_registrations_terminal.sql` (adds `registrations.terminal`),
 `migrations/0004_registrations_confirmation.sql` (adds
 `registrations.confirmation_status`) and
-`migrations/0005_registrations_city.sql` (adds `registrations.city`). Every
-file's column names are its form's field names, so the form, the validator and
-the table cannot drift.
+`migrations/0005_registrations_city.sql` (adds `registrations.city`) and
+`migrations/0006_questions.sql` (tables `questions` and `workshop_state`, the
+live questions of MM-84). Every file's column names are its form's field names,
+so the form, the validator and the table cannot drift.
 
-**Before the next deploy**, `0003`, `0004` and `0005` have to be applied to the
-production database as well — `npx wrangler d1 migrations apply
+**Before the next deploy**, `0003`, `0004`, `0005` and `0006` have to be applied
+to the production database as well — `npx wrangler d1 migrations apply
 macmladen-registrations --remote`, Mladen's hand, not an agent's. Until they
 are, every registration on the live site fails on the missing column and answers
-503.
+503, and the live questions have no tables to read.
 
 Run the production build with that database bound:
 
@@ -203,6 +204,79 @@ then `sent`, `skipped` (no `MAILERSEND_API_KEY`) or `failed:<reason>`. The messa
 is stored before the send is attempted, so a delivery failure never loses it — a
 row sitting at `failed:` is a message to answer by hand.
 
+## Live questions
+
+During the workshop the page carries a question list the room writes into, live
+(MM-84). Two switches in D1 decide what it offers, and both are flipped from the
+command line on the day — the site is static, and a rebuild in front of a room is
+not a plan. They live in `workshop_state`, `'1'` is open and anything else is
+closed.
+
+**Migration `0006_questions.sql` has to be applied first**, locally and, before
+the next deploy, remotely: `npx wrangler d1 migrations apply
+macmladen-registrations --remote`. Without it every question endpoint answers
+503 and the registration form has no state to read.
+
+Close the registration form once the room is settled:
+
+```sh
+npx wrangler d1 execute macmladen-registrations --local \
+  --command "UPDATE workshop_state SET value='0' WHERE key='registration_open'"
+```
+
+Open the questions when the workshop starts:
+
+```sh
+npx wrangler d1 execute macmladen-registrations --local \
+  --command "UPDATE workshop_state SET value='1' WHERE key='questions_open'"
+```
+
+Read what was asked, oldest first, with the answered ones marked:
+
+```sh
+npx wrangler d1 execute macmladen-registrations --local \
+  --command "SELECT id, created_at, name, body, covered_at FROM questions ORDER BY id"
+```
+
+`--remote` instead of `--local` for the live database, as everywhere else here.
+`value='1'` in either command opens it again; nothing is one-way.
+
+### Being the host
+
+Marking a question answered is one person's to do, and the browser that may do
+it is the one that has opened
+
+```
+https://macmladen.com/api/host/?key=<HOST_KEY>
+```
+
+once. That answers with a cookie — the HMAC-SHA256 of `"host"` under `HOST_KEY`,
+so nothing is stored server-side and forging it means knowing the secret — and
+sends the browser to the workshop page, where the cover buttons are now live. The
+cookie lasts a week. Opening the link on a second device makes that one a host
+too; there is no list to keep.
+
+Set the secret once, on the Worker:
+
+```sh
+npx wrangler secret put HOST_KEY
+```
+
+Locally it goes in `.dev.vars` (`HOST_KEY=` is in `.dev.vars.example`). An empty
+or unset `HOST_KEY` means nobody is the host: `/api/host/` answers 403 and no
+question can be marked. The key travels in a query string and so lands in that
+browser's history, which is the price of a link that works from a phone on a
+lectern; rotate it by setting the secret again.
+
+### The endpoints
+
+| Route | What it does |
+|---|---|
+| `POST /api/questions/` | Takes a question. Turnstile as on the other two forms; name optional and up to 100 characters, the question 1–500. Refused with 403 while `questions_open` is `'0'`. Answers JSON to the page's script (`X-Requested-With: fetch`), a redirect back to the page to a browser without one. |
+| `GET /api/questions/stream/` | The live feed, as server-sent events: a `state` event (both switches, and whether this listener is the host) and a `questions` event (the whole list), sent on connect and again whenever they change. D1 has no change feed, so the worker polls it every two seconds for four numbers and only reads the list when those move. A connection is capped at thirty minutes; the browser reconnects on its own. |
+| `POST /api/questions/cover/` | Marks a question answered, or takes the mark off. Host cookie or 403. |
+| `GET /api/host/?key=` | The host link above. |
+
 ## Secrets
 
 No secret value is ever committed. `.dev.vars.example` is the committed template;
@@ -214,7 +288,8 @@ copy it to `.dev.vars` (gitignored) for local work.
 | `MAILERLITE_GROUP_ID` | worker | The group the subscriber joins. The mailing list only — the confirmation email does not come from MailerLite. |
 | `MAILERSEND_API_KEY` | worker (`.dev.vars` locally, Worker secret in production) | Both mails: a contact message to `mladen@macmladen.com` from `no-reply@macmladen.com` with `Reply-To` the sender, and the registration confirmation to the registrant with `Reply-To` `mladen@macmladen.com`. Empty means the row is stored anyway and records `skipped`. The token to use is the scoped site token described in `docs/mail-setup.md`, `email_full` on `macmladen.com` only. |
 | `TURNSTILE_SECRET` | worker | Server-side verification of the widget's token, for both forms. Missing means every submission is rejected — the endpoints fail closed. |
-| `IP_HASH_SALT` | worker | Salt for the SHA-256 in `ip_hash`, in both tables. Missing means no IP is stored at all. |
+| `IP_HASH_SALT` | worker | Salt for the SHA-256 in `ip_hash`, in all three tables. Missing means no IP is stored at all. |
+| `HOST_KEY` | worker (`.dev.vars` locally, Worker secret in production) | The workshop-day secret behind `/api/host/`, which marks questions answered (MM-84). Empty means nobody is the host and no question can be marked. |
 | `PUBLIC_TURNSTILE_SITE_KEY` | **build** (`.env`, or the Workers Build environment) | Baked into both forms' widgets at build time. Falls back to Cloudflare's documented always-pass test key. |
 
 `.dev.vars.example` ships Cloudflare's documented always-pass Turnstile test keys,
