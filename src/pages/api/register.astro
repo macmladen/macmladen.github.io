@@ -16,6 +16,7 @@ import { emptyValues, type RegistrationErrors, type RegistrationValues } from '.
 import { workshop, isRegistrationOpen } from '../../data/workshop';
 import { dropLaptopAnswers, hasErrors, messages, readForm, validate } from '../../lib/validate';
 import { verifyTurnstile } from '../../lib/turnstile';
+import { readState } from '../../lib/state';
 import { upsertSubscriber } from '../../lib/mailerlite';
 import { sendConfirmation } from '../../lib/confirmation';
 import {
@@ -46,10 +47,14 @@ let registered = false;
 let watching = false;
 let status = 422;
 
-/** False after the close date and false again once the workshop is under way
- *  (MM-80: open until the workshop ends), so the one 403 branch below covers a form posted from a page
- *  cached before either cut-off is refused rather than written to D1. */
-const open = isRegistrationOpen();
+/** Open until the workshop ends (MM-80) and, from the room, until the
+ *  registration_open flag in workshop_state is flipped off (MM-84/86): a form
+ *  posted from a page cached before either moment is refused rather than
+ *  written to D1. A missing table or binding counts as closed. */
+const flag = env.DB
+  ? await readState(env.DB).then((state) => state.registrationOpen, () => false)
+  : false;
+const open = isRegistrationOpen() && flag;
 
 if (open) {
   const form = await Astro.request.formData();

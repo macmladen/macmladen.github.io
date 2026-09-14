@@ -138,12 +138,12 @@ npx wrangler d1 execute macmladen-registrations --local \
   --command "SELECT id, created_at, name, city, email, github, os, tool, terminal, own_hosting, watch_only, newsletter, mailerlite_status, confirmation_status FROM registrations ORDER BY id"
 ```
 
-How many working seats are gone — the same count `/api/seats/` answers with,
-watchers left out:
+How many seats are gone — the same count `/api/seats/` answers with; every
+registration counts, watchers included (MM-81):
 
 ```sh
 npx wrangler d1 execute macmladen-registrations --local \
-  --command "SELECT COUNT(*) AS taken FROM registrations WHERE watch_only = 0"
+  --command "SELECT COUNT(*) AS taken FROM registrations"
 ```
 
 The room holds `workshop.capacity` (30, in `src/data/workshop.ts`). At capacity
@@ -276,6 +276,28 @@ lectern; rotate it by setting the secret again.
 | `GET /api/questions/stream/` | The live feed, as server-sent events: a `state` event (both switches, and whether this listener is the host) and a `questions` event (the whole list), sent on connect and again whenever they change. D1 has no change feed, so the worker polls it every two seconds for four numbers and only reads the list when those move. A connection is capped at thirty minutes; the browser reconnects on its own. |
 | `POST /api/questions/cover/` | Marks a question answered, or takes the mark off. Host cookie or 403. |
 | `GET /api/host/?key=` | The host link above. |
+
+### Run-book for Friday 18 September
+
+Before the day (once):
+
+1. `npx wrangler secret put HOST_KEY` with a long random string; keep it.
+2. `npx wrangler d1 migrations apply macmladen-registrations --remote` (0006).
+3. Open `https://macmladen.com/api/host/?key=<HOST_KEY>` on the laptop that drives the
+   projector and on the iPad: each gets the host cookie for seven days.
+
+In the room, from any terminal that is logged in to wrangler:
+
+- Registration off (the form folds, the endpoint refuses):
+  `npx wrangler d1 execute macmladen-registrations --remote --command "UPDATE workshop_state SET value='0' WHERE key='registration_open'"`
+- Questions on (the band appears on every open page within two seconds):
+  `npx wrangler d1 execute macmladen-registrations --remote --command "UPDATE workshop_state SET value='1' WHERE key='questions_open'"`
+- Tick a question as covered from the host view; participants stop seeing it.
+- After the workshop: questions off, then the rebuild-and-deploy that turns the page
+  into its post-event state (`ROADMAP.md`).
+
+Participants need nothing but the page URL; questions are anonymous unless they
+type a name or email, which the page remembers for the next question.
 
 ## Secrets
 
