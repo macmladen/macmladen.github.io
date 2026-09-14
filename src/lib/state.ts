@@ -1,8 +1,9 @@
 /** The two switches in the D1 `workshop_state` table (MM-84): whether the
  *  registration form is still taking people, and whether the room may ask
- *  questions. Both are flipped from the host bar on the workshop page (MM-87),
- *  or from the command line as the fallback (README, "Live questions"), because
- *  the site is static and a rebuild in front of a room is not a plan.
+ *  questions. `questions_open` is flipped from the switch on the workshop page
+ *  (MM-88) and `registration_open` from the command line, which is the fallback
+ *  under both (README, "Live questions"), because the site is static and a
+ *  rebuild in front of a room is not a plan.
  *
  *  '1' is open. Anything else — another value, a missing row — is closed, so a
  *  half-applied database never reads as an open door. A database without the
@@ -37,8 +38,8 @@ export interface StateChange {
 }
 
 /** Anything with a FormData- or URLSearchParams-shaped get(), which is both of
- *  the ways /api/state/ is asked for a flip: a form post from the host bar and
- *  a bookmarked link from the iPad. */
+ *  the ways /api/state/ is asked for a flip: a form post from the page's switch
+ *  and a bookmarked link from the iPad. */
 export interface StateSource {
   get(name: string): unknown;
 }

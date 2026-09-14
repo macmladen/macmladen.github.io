@@ -1,10 +1,12 @@
 /** The two switches, flipped from the room (MM-87). Until now both lived only
  *  at the end of a `wrangler d1 execute` line, which means a terminal logged in
  *  to Cloudflare while standing at a lectern; this is the same two writes behind
- *  the host cookie, so the host bar on the workshop page can do it in one tap
- *  and the stream carries the change to every screen within two seconds.
+ *  the host cookie, so the switch on the workshop page can do it in one tap
+ *  and the stream carries the change to every screen within two seconds. From
+ *  MM-88 that switch sends only `questions_open`; `registration_open` is still
+ *  accepted here and is what the wrangler fallback writes.
  *
- *  Two methods, because there are two hands. POST is what the bar sends, with
+ *  Two methods, because there are two hands. POST is what the switch sends, with
  *  the fields in a FormData; GET takes the same two values out of the query
  *  string, so a link bookmarked on the iPad works from the home screen with no
  *  page to load first. Both need the host cookie and nothing else — the same

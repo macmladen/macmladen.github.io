@@ -496,25 +496,68 @@ a[target='_blank']:not(.button):not(.site-footer a)::after {
   --flow-space: var(--space-1);
 }
 
-/* The host bar (MM-87): the two switches, on the workshop page, for the one
-   visitor whose cookie says he runs the room. A slim band above everything
-   else — the alternate colour and a rule under it, so it reads as a control
-   strip rather than a section of the page — and never seen by anyone else,
-   because the script leaves it hidden until the stream says host.
-
-   The buttons are the secondary button at the small step: two of them side by
-   side have to stay side by side on a phone, which is where the full-width
-   rule below 480 px would otherwise put one under the other. */
-.hostbar {
-  padding-block: var(--space-2);
-  border-block-end: var(--border-width) solid var(--color-border);
-  background-color: var(--color-bg-alt);
+/* The host's cluster (MM-88): one switch and one link, beside the Registration
+   heading, for the one visitor whose cookie says he runs the room — never seen
+   by anyone else, because the script leaves it hidden until the stream says
+   host. It replaces the host bar of MM-87: a strip across the top of the page
+   was a second thing to look at, and what is actually needed on the day is one
+   switch within reach of the heading it changes. Small print throughout: it is
+   a control, not a part of the page's argument. */
+.hostctl {
+  color: var(--color-ink-soft);
+  font-size: var(--text-sm);
 }
 
-.hostbar .button {
-  padding: var(--space-1) var(--space-3);
-  font-size: var(--text-sm);
-  inline-size: auto;
+/* The switch itself: a label and a pill, and nothing of a button left around
+   them — the whole thing is the control, so the hit area is both. The pill is
+   sized in em so it follows the label's own small step. */
+.switch {
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.switch__track {
+  position: relative;
+  inline-size: 2.25em;
+  block-size: 1.25em;
+  /* Half the track's height: the pill. No token — --radius-sm is the 4px of
+     inputs and buttons, and a switch is neither. */
+  border-radius: 0.625em;
+  background-color: var(--color-border);
+}
+
+/* The knob takes --color-field-bg, which is the white a control's own surface
+   carries here, so it stays the opposite of both track colours if the dormant
+   dark palette is ever switched on. */
+.switch__track::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0.125em;
+  inset-inline-start: 0.125em;
+  inline-size: 1em;
+  block-size: 1em;
+  border-radius: 50%;
+  background-color: var(--color-field-bg);
+  transition: translate 150ms ease;
+}
+
+/* On: the green the notices use for a good answer, and the knob at the far end
+   of the track — 2.25em less the knob and both insets. */
+.switch[aria-checked='true'] .switch__track {
+  background-color: var(--color-ok-ink);
+}
+
+.switch[aria-checked='true'] .switch__track::before {
+  translate: 1em 0;
+}
+
+.switch:disabled {
+  cursor: default;
+  opacity: 0.6;
 }
 
 /* The collapsible registration group (MM-85). The band around it already

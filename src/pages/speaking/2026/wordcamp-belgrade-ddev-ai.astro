@@ -51,40 +51,6 @@ const schema = graph(
   <StructuredData slot="head" data={schema} />
 
   <article>
-    {
-      /* The host bar (MM-87). Hidden in every copy of the page and revealed
-         only when the stream says this visitor is the host, which is the same
-         cookie that shows the cover buttons. Two switches, the same two that
-         are otherwise flipped with a `wrangler d1 execute` line from a
-         terminal: it is the difference between a laptop logged in to
-         Cloudflare and one tap on the page already open on the lectern.
-
-         The labels carry the live state and are written by the script from the
-         stream's own `state` event, never optimistically on the click: what
-         the bar shows is what the room is being served, and if a flip does not
-         land the label does not move. */
-    }
-    <div class="hostbar" data-hostbar hidden>
-      <div class="container container--narrow hostbar__row">
-        <button
-          type="button"
-          class="button button--secondary"
-          data-flip="questions_open"
-          aria-pressed="false"
-        >
-          Questions: off
-        </button>
-        <button
-          type="button"
-          class="button button--secondary"
-          data-flip="registration_open"
-          aria-pressed="true"
-        >
-          Registration: on
-        </button>
-      </div>
-    </div>
-
     <section class="section section--compact" aria-labelledby="workshop-title">
       <div class="container container--narrow flow">
         {
@@ -238,22 +204,48 @@ const schema = graph(
           /* The heading follows the state: while the session is ahead this band
              is about registering, and afterwards it is the note about what the
              page will carry next.
-             draft: Mladen to approve — the heading and the notice below. */
+             draft: Mladen to approve — the heading and the notice below.
+
+             Beside it, the host's one control (MM-88), hidden in every copy of
+             the page and revealed only when the stream says this visitor is the
+             host — the same cookie that shows the cover buttons. One switch for
+             the whole day: turning the questions on is also what folds the
+             registration away, because by then the band is no longer what the
+             room is here for. The switch's own state is written from the
+             stream's `state` event and never from the tap, so what it shows is
+             what the room is being served; if a flip does not land, the switch
+             does not move. The People link is the host's way to the list of who
+             registered (MM-89). */
         }
-        <h2 id="register-title">{beforeStart ? 'Registration' : 'After the workshop'}</h2>
+        <div class="register__head">
+          <h2 id="register-title">{beforeStart ? 'Registration' : 'After the workshop'}</h2>
+          <span class="hostctl" data-hostctl hidden>
+            <button
+              type="button"
+              class="switch"
+              role="switch"
+              aria-checked="false"
+              data-flip="questions_open"
+            >
+              <span class="switch__label">Questions</span>
+              <span class="switch__track" aria-hidden="true"></span>
+            </button>
+            <a class="hostctl__link" href={`${workshop.path}people/`}>People</a>
+          </span>
+        </div>
         {
           registrationOpen ? (
             <Fragment>
               {
                 /* Everything the band asks of a visitor sits in one
-                   collapsible group (MM-85), so Mladen can fold the whole
-                   registration away from the room the moment the last seat is
-                   given out: the stream's `registration_open` flag closes it,
-                   and the script puts the "Registration is closed" line next
-                   to the folded summary. Open in the build and with JavaScript
-                   off, which is the state the endpoint's own rule still backs.
-                   The h2 stays outside the group: the heading of the band is
-                   not part of what folds. */
+                   collapsible group (MM-85), so the whole registration can fold
+                   away from the room the moment the workshop starts: from
+                   MM-88 the switch that opens the questions is what folds it,
+                   and nothing else on the page says so — the group is still
+                   there to open, and the endpoint is still taking people. Open
+                   in the build and with JavaScript off, which is the state the
+                   endpoint's own rule still backs. The h2 stays outside the
+                   group: the heading of the band is not part of what folds. */
               }
               <details class="registration flow" open data-registration>
                 <summary>The form</summary>
@@ -287,11 +279,12 @@ const schema = graph(
        left from /api/seats/, hides the laptop-only part of the registration
        form while the watch-only box is ticked, submits that form without
        leaving the page, keeps the live questions band in step with
-       /api/questions/stream/ (MM-85) and, from MM-87, drives the host bar's two
-       switches. Everything below is enhancement: with JavaScript off the copy
+       /api/questions/stream/ (MM-85) and, from MM-88, drives the host's one
+       switch. Everything below is enhancement: with JavaScript off the copy
        buttons stay hidden, the seats line says how big the room is, every field
-       is visible, neither the questions band nor the host bar ever appears, and
-       the registration form posts to /api/register/ as a form always has.
+       is visible, neither the questions band nor the host's switch ever
+       appears, the registration group stays unfolded, and the registration form
+       posts to /api/register/ as a form always has.
 
        The registration half is the same block as on /contact/, on purpose: one
        script per page keeps the CSP to one hash per page, and the endpoints
@@ -509,8 +502,8 @@ const schema = graph(
         const coveredList = coveredGroup?.querySelector('ol');
         const countLine = document.querySelector('[data-questions-count]');
         const group = document.querySelector('[data-registration]');
-        const hostbar = document.querySelector('[data-hostbar]');
-        const flips = hostbar ? [...hostbar.querySelectorAll('[data-flip]')] : [];
+        const hostctl = document.querySelector('[data-hostctl]');
+        const flip = hostctl ? hostctl.querySelector('[data-flip]') : null;
         if (!band || !form || !list || !countLine || !window.EventSource) return;
 
         const nameField = form.querySelector('#q-name');
@@ -520,7 +513,6 @@ const schema = graph(
            differently for the one person who can tick a question off. */
         let host = false;
         let revealed = false;
-        let closedLine = null;
 
         /* The room's own clock, whoever is looking and wherever they are. */
         const clock = new Intl.DateTimeFormat('en-GB', {
@@ -601,49 +593,22 @@ const schema = graph(
                 : `${open.length} questions`;
         };
 
-        /* A closed registration folds the group away. The line that says so has
-           to sit beside it rather than inside it: a folded details shows its
-           summary and nothing else. It is made once and hidden again if
-           registration reopens. */
-        const registrationState = (open) => {
-          if (!group) return;
-          group.open = open;
-          if (open && !closedLine) return;
-          if (!closedLine) {
-            closedLine = document.createElement('p');
-            closedLine.className = 'notice';
-            closedLine.textContent = 'Registration is closed';
-            group.after(closedLine);
-          }
-          closedLine.hidden = open;
+        /* The host's switch (MM-88). Its state is written from the stream and
+           never from the tap: a tap posts the opposite value to /api/state/ and
+           then waits, so what the switch shows is always what the room is being
+           served rather than what was asked for. If a flip does not land, the
+           switch does not move — which is the point of not guessing. */
+        const switches = (open) => {
+          if (!hostctl) return;
+          hostctl.hidden = !host;
+          if (flip) flip.setAttribute('aria-checked', open ? 'true' : 'false');
         };
 
-        /* The host bar (MM-87). Its labels are written from the stream and never
-           from the tap: a tap posts the opposite value to /api/state/ and then
-           waits, so what the bar says is always what the room is being served
-           rather than what was asked for. If a flip does not land, the label
-           does not move — which is the point of not guessing. */
-        const names = { questions_open: 'Questions', registration_open: 'Registration' };
-
-        const switches = (data) => {
-          if (!hostbar) return;
-          hostbar.hidden = !host;
-          if (!host) return;
-          for (const button of flips) {
-            const on =
-              button.dataset.flip === 'questions_open'
-                ? data.questionsOpen === true
-                : data.registrationOpen === true;
-            button.textContent = `${names[button.dataset.flip]}: ${on ? 'on' : 'off'}`;
-            button.setAttribute('aria-pressed', on ? 'true' : 'false');
-          }
-        };
-
-        const flip = async (button) => {
+        const toggle = async () => {
           const body = new FormData();
-          body.append('key', button.dataset.flip);
-          body.append('value', button.getAttribute('aria-pressed') === 'true' ? '0' : '1');
-          button.disabled = true;
+          body.append('key', flip.dataset.flip);
+          body.append('value', flip.getAttribute('aria-checked') === 'true' ? '0' : '1');
+          flip.disabled = true;
           try {
             await fetch('/api/state/', {
               method: 'POST',
@@ -652,19 +617,27 @@ const schema = graph(
               credentials: 'same-origin',
             });
           } catch {}
-          /* Re-enabled whatever happened: the label moves when the stream says
+          /* Re-enabled whatever happened: the switch moves when the stream says
              it has, and a request that never arrived should still leave a
              button that can be pressed again. */
-          button.disabled = false;
+          flip.disabled = false;
         };
 
-        for (const button of flips) button.addEventListener('click', () => flip(button));
+        if (flip) flip.addEventListener('click', toggle);
 
         const state = (data) => {
           host = data.host === true;
-          switches(data);
-          band.hidden = data.questionsOpen !== true;
-          registrationState(data.registrationOpen === true);
+          const open = data.questionsOpen === true;
+          switches(open);
+          band.hidden = !open;
+
+          /* One switch, both halves of the same moment (MM-88): once the room
+             is asking, the registration is no longer what the band is for, so
+             the group folds — openable all the same, and the endpoint is still
+             taking people. `registration_open` keeps its own meaning for the
+             endpoint and for the wrangler fallback; it no longer moves
+             anything on the page. */
+          if (group) group.open = !open;
 
           /* Turnstile cannot measure a widget inside a display:none band, so
              the one in the questions form is rendered the first time the band

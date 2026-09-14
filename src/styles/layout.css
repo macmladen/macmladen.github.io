@@ -178,12 +178,30 @@
   }
 }
 
-/* The host bar's row (MM-87): two small buttons in a line, wrapping rather
-   than stacking, at every width. Not .row, which is built to stack a pair of
-   full-width buttons on a phone — the opposite of what a control strip wants. */
-.hostbar__row {
+/* The Registration heading and the host's cluster on one line (MM-88): the
+   heading where it has always been, the switch at the far end of the same row,
+   wrapping under it on a narrow phone rather than squeezing the heading. The
+   baseline, not the centre, is what lines the label up with the heading's own
+   text; the pill rides on that baseline. */
+.register__head {
   display: flex;
   flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+}
+
+/* The switch and the People link side by side, and the switch's own label
+   beside its pill. */
+.hostctl {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.switch {
+  display: inline-flex;
   align-items: center;
   gap: var(--space-2);
 }

@@ -20,7 +20,7 @@
 #                             the watch-only box is ticked, the registration
 #                             form submitted with fetch, the live questions
 #                             band driven by /api/questions/stream/, and the
-#                             host bar's two switches posting to /api/state/)
+#                             host's Questions switch posting to /api/state/)
 #                             (npm run check:csp)
 #   frame-src, connect-src    the Turnstile widget's iframe and its callbacks;
 #                             connect-src also takes Cloudflare Web Analytics,
@@ -42,4 +42,4 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' https://challenges.cloudflare.com https://static.cloudflareinsights.com 'sha256-/C/7qyOpMgiGka/X5t8A0RErUfPCdk5lgkcD1Rv8XME=' 'sha256-yi3G0yPti8yIGTsnL6HOOSAmm4TxnwIzmFmkkgtdMTk='; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com https://cloudflareinsights.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' https://challenges.cloudflare.com https://static.cloudflareinsights.com 'sha256-/C/7qyOpMgiGka/X5t8A0RErUfPCdk5lgkcD1Rv8XME=' 'sha256-Wom9uovAGLdqOTdAuySuqxJ4w5HAUZL0tk/lCjYL/+c='; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com https://cloudflareinsights.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
