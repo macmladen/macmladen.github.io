@@ -1,15 +1,20 @@
 /// <reference path="../.astro/types.d.ts" />
 
-/** What the two form endpoints read off the Cloudflare runtime. The D1 binding
- *  is typed structurally in src/lib/registrations.ts, so no Cloudflare types
- *  package is needed for these few uses; both endpoints share the one binding. */
+/** What the server endpoints read off the Cloudflare runtime. The D1 binding is
+ *  typed structurally — no Cloudflare types package is needed for these few
+ *  uses — and every endpoint shares the one binding. The shape is the one in
+ *  src/lib/questions.ts: src/lib/registrations.ts's D1Like plus all(), which the
+ *  question list needs and a single-row read never did. */
 interface WorkerEnv {
-  DB?: import('./lib/registrations').D1Like;
+  DB?: import('./lib/questions').QuestionsDb;
   MAILERLITE_API_KEY?: string;
   MAILERLITE_GROUP_ID?: string;
   MAILERSEND_API_KEY?: string;
   TURNSTILE_SECRET?: string;
   IP_HASH_SALT?: string;
+  /** The workshop-day secret behind /api/host/ (MM-84). Empty means nobody is
+   *  the host and no question can be marked answered. */
+  HOST_KEY?: string;
 }
 
 /** Astro 6 removed Astro.locals.runtime.env; bindings and secrets come from
