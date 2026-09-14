@@ -38,4 +38,4 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' https://challenges.cloudflare.com https://static.cloudflareinsights.com 'sha256-/C/7qyOpMgiGka/X5t8A0RErUfPCdk5lgkcD1Rv8XME=' 'sha256-uny51Q/71ZDtCYIEP7AdtZepE1Qc3Otzlb0oDCO6un0='; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com https://cloudflareinsights.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' https://challenges.cloudflare.com https://static.cloudflareinsights.com 'sha256-/C/7qyOpMgiGka/X5t8A0RErUfPCdk5lgkcD1Rv8XME=' 'sha256-+dwBQKT0wsCBN543FfCurdaHMDqVHDd4+1Ypq0febPM='; frame-src https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com https://cloudflareinsights.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'

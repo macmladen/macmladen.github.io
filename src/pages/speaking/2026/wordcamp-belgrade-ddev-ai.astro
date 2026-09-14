@@ -232,9 +232,8 @@ const schema = graph(
         const box = document.querySelector('#watch_only');
         if (!box) return;
         const apply = () => {
-          for (const part of document.querySelectorAll('[data-laptop-only]')) {
-            part.hidden = box.checked;
-          }
+          const group = document.querySelector('details.advanced');
+          if (group) group.open = !box.checked;
         };
         box.addEventListener('change', apply);
         apply();

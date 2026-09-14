@@ -477,3 +477,21 @@ a[target='_blank']:not(.button):not(.site-footer a)::after {
   -webkit-mask-position: center;
   mask-position: center;
 }
+
+/* The collapsible Advanced group on the registration form: a bordered box on
+   the alternate band, the summary styled as the legend it stands in for. */
+.advanced {
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg-alt);
+}
+
+.advanced > summary {
+  cursor: pointer;
+  font-weight: var(--weight-semibold);
+}
+
+.advanced > summary + .field__hint {
+  --flow-space: var(--space-1);
+}

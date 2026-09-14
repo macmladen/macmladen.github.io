@@ -90,7 +90,7 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
   </div>
 
   {
-    /* City carries no `data-laptop-only`: where someone comes from is worth
+    /* City stays outside the Advanced group: where someone comes from is worth
        knowing whether they bring a laptop or only a chair, so it stays visible
        for watchers too. */
   }
@@ -131,12 +131,11 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
 
   {
     /* The watch-only switch sits directly under the address, because it decides
-       whether the rest of the form is asked at all (MM-72). Every block below
-       that only matters to someone bringing a laptop carries
-       `data-laptop-only`; the page's script hides those blocks while this box
-       is ticked, and the endpoint ignores their values for a watch-only
-       registration. With JavaScript off nothing is hidden and the endpoint's
-       rule is what still holds. */
+       whether the rest of the form is asked at all (MM-72). The laptop-only
+       blocks sit in the Advanced group below (MM-83); the page's script closes
+       that group while this box is ticked, and the endpoint ignores their
+       values for a watch-only registration. With JavaScript off the group is
+       open and the endpoint's rule is what still holds. */
   }
   <div class="field">
     <div class="checkbox">
@@ -151,7 +150,19 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
     </div>
   </div>
 
-  <div class="field" data-laptop-only>
+  {
+    /* Everything that only matters to someone bringing a laptop lives in one
+       collapsible group (MM-83). The summary is always visible; the body is
+       open by default, closed by the watch-only switch above and reopened when
+       it is unticked, all through the native open attribute, so with
+       JavaScript off it is simply open. The endpoint still ignores these
+       answers for a watch-only registration. */
+  }
+  <details class="advanced flow" open>
+    <summary>Advanced</summary>
+    <p class="field__hint">GitHub, operating system, AI tool, terminal experience, SSH key, hosting.</p>
+
+  <div class="field">
     <label for="github">GitHub username</label>
     <input
       id="github"
@@ -172,7 +183,7 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
     {errors.github && <p class="field__error" id="github-error">{errors.github}</p>}
   </div>
 
-  <div class="fieldset-row flow" data-laptop-only>
+  <div class="fieldset-row flow">
     <fieldset class="flow" aria-describedby={describedBy('os')}>
       <legend>Operating system</legend>
       <div class="choices">
@@ -222,7 +233,7 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
     </fieldset>
   </div>
 
-  <fieldset class="flow" aria-describedby={describedBy('terminal')} data-laptop-only>
+  <fieldset class="flow" aria-describedby={describedBy('terminal')}>
     <legend>Terminal experience</legend>
     <div class="choices">
       {
@@ -253,7 +264,7 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
     )}
   </fieldset>
 
-  <div class="field" data-laptop-only>
+  <div class="field">
     <label for="ssh_key">SSH public key</label>
     <textarea
       id="ssh_key"
@@ -273,18 +284,20 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
     {errors.ssh_key && <p class="field__error" id="ssh_key-error">{errors.ssh_key}</p>}
   </div>
 
+  <div class="checkbox">
+    <input
+      id="own_hosting"
+      name="own_hosting"
+      type="checkbox"
+      value="yes"
+      checked={value.own_hosting}
+    />
+    <label for="own_hosting">I have my own hosting with SSH access</label>
+  </div>
+  </details>
+
   <fieldset class="flow">
     <legend>Anything else</legend>
-    <div class="checkbox" data-laptop-only>
-      <input
-        id="own_hosting"
-        name="own_hosting"
-        type="checkbox"
-        value="yes"
-        checked={value.own_hosting}
-      />
-      <label for="own_hosting">I have my own hosting with SSH access</label>
-    </div>
     <div class="checkbox">
       <input
         id="newsletter"
