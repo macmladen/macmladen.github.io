@@ -137,7 +137,7 @@ const failure = `Sending failed. Please try again or write to ${person.email}.`;
     {errors.message && <p class="field__error" id="message-error">{errors.message}</p>}
   </div>
 
-  <div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="light"></div>
+  <div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="light" data-size="compact"></div>
   <noscript>
     <p class="field__hint">
       The anti-spam check needs JavaScript. With JavaScript off, write to{' '}<a
