@@ -40,6 +40,9 @@ export const confirmationText = (name: string): string =>
     '',
     `You are on the list for the workshop on ${when}, ${where}.`,
     '',
+    `Remember that you need a WordCamp Belgrade ticket to be in the building: ` +
+      `${workshop.ticketsUrl}`,
+    '',
     `Before you come: install Docker, DDEV, git and your AI tool, and have a GitHub ` +
       `account. The preparation guide and the demo project are at ${workshop.repoUrl}.`,
     '',

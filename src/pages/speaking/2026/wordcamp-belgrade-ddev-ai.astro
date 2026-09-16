@@ -254,6 +254,11 @@ const schema = graph(
                      rebuild from the room, and the endpoint stays open until
                      the workshop ends (MM-80, MM-81). */
                 }
+                {/* draft: Mladen to approve — the ticket comes first (MM-91). */}
+                <p class="notice">
+                  This form is for the workshop only. To be at WordCamp Belgrade you need a{' '}
+                  <a href={workshop.ticketsUrl}>WordCamp ticket</a> first.
+                </p>
                 <p>
                   Registration closes{' '}
                   <time datetime={workshop.closesLine}>{workshop.closesLineText}</time>.

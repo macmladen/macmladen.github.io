@@ -64,7 +64,7 @@ const audience =
  *  laptop, and the page says so before the prerequisites ask for anything.
  *  approved-pending: Mladen approves the translation (MM-79). */
 const waysToFollow: string[] = [
-  '<strong>Work on your own laptop</strong> (registration required, preparation before you come)',
+  '<strong>Work on your own laptop</strong> (a WordCamp ticket, registration here, preparation before you come)',
   '<strong>Watch</strong>, then repeat at home from the <a href="https://github.com/macmladen/workshop-wp-ddev-ai/tree/main/docs">guides</a>',
   '<strong>Just listen</strong>',
 ];
@@ -114,6 +114,8 @@ export const workshop = {
   /** This session's own page on the WordCamp site. Every visible "WordCamp"
    *  link points here: a visitor following it wants the session, not the
    *  conference front page. It is also the first of the Event's sameAs. */
+  /** Where a WordCamp ticket is bought; the workshop registration is not one. */
+  ticketsUrl: 'https://belgrade.wordcamp.org/2026/en/tickets/',
   sessionUrl:
     'https://belgrade.wordcamp.org/2026/session/wordpress-docker-i-ai-agenti-prakticno-sr/',
   /** Working seats in the room: laptops Mladen can look after in eighty
