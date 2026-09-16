@@ -23,7 +23,7 @@ Future work by name. An item becomes a backlog task when it is needed and gets t
 
 - One live test registration and one contact message; Turnstile siteverify confirmed in the Cloudflare dashboard; MM-48 closed.
 - MailerLite: `terminal` custom field; confirmation automation on the workshop group (MM-49).
-- Rebuild and deploy on 18 September after 13:40, when the workshop ends: registration stays open through the workshop (MM-80), then the built pages need to catch up: no form, no seats lines, no Register buttons, the "workshop has taken place" notice in their place. The endpoint already refuses from 13:40 and the page script swaps the notice in.
+- Rebuild and deploy on 18 September after 14:00, when the workshop ends (slot moved to 12:40–14:00 on 2026-09-16): registration stays open through the workshop (MM-80), then the built pages need to catch up: no form, no seats lines, no Register buttons, the "workshop has taken place" notice in their place. The endpoint already refuses from 13:40 and the page script swaps the notice in.
 - Done 2026-09-10 via the Cloudflare API: HSTS on the zone (six months, no subdomains, no preload) and a zone Redirect Rule sending www to the apex with a 301.
 - Draft copy approvals still marked in source: tagline, workshop teaser, meta descriptions, CTA labels, contact line, success texts.
 

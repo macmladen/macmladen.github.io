@@ -50,7 +50,7 @@ console.log('body');
   const text = payload.text;
   check('greets the registrant by name', text.startsWith('Hi Ana Anić,\n'), text.slice(0, 20));
   check('says they are on the list', text.includes('You are on the list for the workshop on '));
-  check('carries the day and the hours', text.includes('Friday 18 September, 12:20–13:40'));
+  check('carries the day and the hours', text.includes('Friday 18 September, 12:40–14:00'));
   check('carries the venue and the street', text.includes('Dom Omladine Beograda, Makedonska 22'));
   check('names what to install', text.includes('install Docker, DDEV, git and your AI tool, and have a GitHub account'));
   check('links the repository from the data file', text.includes(workshop.repoUrl));

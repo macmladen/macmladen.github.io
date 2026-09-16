@@ -6,7 +6,7 @@
  *  be sent to the form from the stage (Mladen, 2026-09-14). It closes when the
  *  workshop ends; from that instant the form, the Register buttons and the seats
  *  lines are gone from the build and the post-event notice takes their place. */
-const endsAt = '2026-09-18T13:40:00+02:00';
+const endsAt = '2026-09-18T14:00:00+02:00';
 
 /** Street and city are kept apart so the PostalAddress in the JSON-LD and the
  *  visible venue line come from the same two values. */
@@ -99,7 +99,7 @@ const osNote = {
 export const workshop = {
   title: 'WordPress, Docker and AI agents — hands-on',
   date: '2026-09-18',
-  start: '2026-09-18T12:20:00+02:00',
+  start: '2026-09-18T12:40:00+02:00',
   end: endsAt,
   venue: 'Dom Omladine Beograda',
   street,
@@ -111,6 +111,8 @@ export const workshop = {
   /** The conference itself. Kept for the Event's superEvent, which describes
    *  WordCamp Belgrade 2026 rather than this session. */
   wordcampUrl: 'https://belgrade.wordcamp.org/2026/',
+  /** The programme, where the slot is published (12:40–14:00 as of 2026-09-16). */
+  programUrl: 'https://belgrade.wordcamp.org/2026/sr/program/',
   /** This session's own page on the WordCamp site. Every visible "WordCamp"
    *  link points here: a visitor following it wants the session, not the
    *  conference front page. It is also the first of the Event's sameAs. */
@@ -129,8 +131,8 @@ export const workshop = {
   /** What the registration band says; the form is closed live from the room
    *  around this time by a rebuild, while the endpoint stays open until the end
    *  (MM-81). */
-  closesLine: '2026-09-18T12:30:00+02:00',
-  closesLineText: 'Friday, 18 September 2026 at 12:30',
+  closesLine: '2026-09-18T12:40:00+02:00',
+  closesLineText: 'Friday, 18 September 2026 at 12:40',
   abstract,
   audience,
   waysToFollow,
