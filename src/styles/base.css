@@ -1,4 +1,17 @@
 /* Bare tags only. No class ever appears in this file. */
+/* Anchor links glide instead of jumping, unless the OS asks for less motion;
+   the target keeps a little air above it so its heading is not glued to the
+   top edge. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+:target {
+  scroll-margin-block-start: var(--space-8);
+}
+
 body {
   background-color: var(--color-bg);
   color: var(--color-ink);

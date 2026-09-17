@@ -73,9 +73,12 @@ const schema = graph(
         {
           beforeStart && (
             <Fragment>
-              <p class="seats" data-seats>
-                {workshop.capacity} seats
-              </p>
+              <div class="row">
+                <a class="button" href="#register">Register</a>
+                <p class="seats" data-seats>
+                  {workshop.capacity} seats
+                </p>
+              </div>
               <p class="notice">
                 This registration is for the workshop only. To be at WordCamp Belgrade you need
                 a <a href={workshop.ticketsUrl}>WordCamp ticket</a> first.
