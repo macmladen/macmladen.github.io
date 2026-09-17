@@ -35,6 +35,11 @@ export interface OgCard {
    *  a card for a dated event has a job the others do not, which is to answer
    *  "when and where" in the preview itself, before anyone opens the link. */
   subtitle?: string;
+  /** An illustration for the card, relative to the repo root. When set, the
+   *  card is the picture with a caption band under it instead of the text
+   *  card; the workshop card uses the chapter 1 illustration from the deck
+   *  (MM-94). */
+  image?: string;
 }
 
 /** Titles are the page's own words, taken from the data files rather than
@@ -53,6 +58,7 @@ export const ogCards: OgCard[] = [
     path: workshop.path,
     title: workshop.title,
     subtitle: whenAndWhere(workshop.start, workshop.venue),
+    image: 'src/assets/workshop-thesis.jpg',
   },
 ];
 

@@ -31,6 +31,8 @@ import { person } from '../src/data/person.ts';
 
 const root = new URL('../', import.meta.url);
 const outDir = new URL('public/og/', root);
+/** Renders for sharing by hand (Instagram, LinkedIn, X); not served by the site. */
+const socialDir = new URL('docs/social/', root);
 
 /** The card's own copy of the palette: `--color-bg`, `--color-ink`,
  *  `--color-ink-soft` and `--color-accent` from `src/styles/tokens.css`.
@@ -105,10 +107,70 @@ const card = ({ title, subtitle }) =>
     ],
   );
 
+/** The caption band under a picture: title, then event · date · time · venue,
+ *  on sand with the accent rule on top. Sized to the card it sits in. */
+const band = ({ title, subtitle }, width, height, scale) =>
+  box(
+    {
+      width,
+      height,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      backgroundColor: SAND,
+      color: INK,
+      paddingLeft: 48 * scale,
+      paddingRight: 48 * scale,
+      fontFamily: 'Inter',
+      borderTop: `${6 * scale}px solid ${ACCENT}`,
+    },
+    [
+      box({ display: 'flex', fontSize: 34 * scale, fontWeight: 700, letterSpacing: '-0.01em' }, title),
+      ...(subtitle
+        ? [box({ display: 'flex', marginTop: 10 * scale, fontSize: 24 * scale, color: INK_SOFT }, subtitle)]
+        : []),
+    ],
+  );
+
+/** A picture card: the illustration cropped to the top part, the band below.
+ *  `bandHeight` is a fraction of the card height. */
+const pictureCard = async (entry, width, height, bandFraction = 0.21) => {
+  const bandHeight = Math.round(height * bandFraction);
+  const imageHeight = height - bandHeight;
+  const scale = width / 1200;
+  /* Wide cards crop the 2:1 illustration a little top and bottom. The
+     Instagram square fits the whole picture at full width instead, so the
+     robots at the edges stay in; the sand above and below is part of the
+     design there. */
+  const fit = imageHeight / width > 0.55 ? 'contain' : 'cover';
+  const picture = await sharp(new URL(entry.image, root).pathname)
+    .resize(width, imageHeight, { fit, position: 'centre', background: SAND })
+    .png()
+    .toBuffer();
+  const svg = await satori(band(entry, width, bandHeight, scale), { width, height: bandHeight, fonts });
+  const caption = await sharp(Buffer.from(svg)).png().toBuffer();
+  return sharp({ create: { width, height, channels: 3, background: SAND } })
+    .composite([
+      { input: picture, top: 0, left: 0 },
+      { input: caption, top: imageHeight, left: 0 },
+    ])
+    .png()
+    .toBuffer();
+};
+
 const png = async (entry) => {
+  if (entry.image) return pictureCard(entry, OG_WIDTH, OG_HEIGHT);
   const svg = await satori(card(entry), { width: OG_WIDTH, height: OG_HEIGHT, fonts });
   return sharp(Buffer.from(svg)).png().toBuffer();
 };
+
+/** The same picture card at the sizes the networks want, for posting by hand.
+ *  Written to docs/social/, never served. */
+const socialSizes = [
+  ['instagram', 1080, 1080, 0.16],
+  ['linkedin', 1200, 627, 0.21],
+  ['x', 1600, 900, 0.21],
+];
 
 await rm(outDir, { recursive: true, force: true });
 await mkdir(outDir, { recursive: true });
@@ -121,3 +183,13 @@ for (const entry of ogCards) {
 }
 
 console.log(`og: ${ogCards.length} cards, ${OG_WIDTH}x${OG_HEIGHT}`);
+
+for (const entry of ogCards.filter((c) => c.image)) {
+  await mkdir(socialDir, { recursive: true });
+  for (const [name, width, height, fraction] of socialSizes) {
+    const bytes = await (await sharp(await pictureCard(entry, width, height, fraction))).jpeg({ quality: 90 }).toBuffer();
+    const file = new URL(`${entry.slug}-${name}.jpg`, socialDir);
+    await writeFile(file, bytes);
+    console.log(`social: ${fileURLToPath(file)} ${width}x${height} (${bytes.length} bytes)`);
+  }
+}
