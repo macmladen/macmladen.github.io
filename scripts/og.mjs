@@ -164,13 +164,70 @@ const png = async (entry) => {
   return sharp(Buffer.from(svg)).png().toBuffer();
 };
 
-/** The same picture card at the sizes the networks want, for posting by hand.
- *  Written to docs/social/, never served. */
+/** The wide picture card at the sizes LinkedIn and X want, for posting by
+ *  hand. Written to docs/social/, never served. Instagram has its own layout
+ *  below. */
 const socialSizes = [
-  ['instagram', 1080, 1080, 0.16],
   ['linkedin', 1200, 627, 0.21],
   ['x', 1600, 900, 0.21],
 ];
+
+/** The Instagram square: the illustration across the top at full width, and
+ *  the rest of the square given to type — the title large, then when and
+ *  where, then the event name with its logo on the right. */
+const instagramCard = async (entry) => {
+  const size = 1080;
+  const imageHeight = Math.round(size / 2);
+  const textHeight = size - imageHeight;
+  const picture = await sharp(new URL(entry.image, root).pathname)
+    .resize(size, imageHeight, { fit: 'cover', position: 'centre' })
+    .png()
+    .toBuffer();
+  const logoSize = 160;
+  const logo = await sharp(new URL('src/assets/wcbg-logo.png', root).pathname)
+    .resize(logoSize, logoSize, { fit: 'inside' })
+    .png()
+    .toBuffer();
+  const [dateLine, venue] = entry.subtitle.split(' · Dom ');
+  const text = box(
+    {
+      width: size,
+      height: textHeight,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      backgroundColor: SAND,
+      color: INK,
+      padding: 56,
+      fontFamily: 'Inter',
+      borderTop: `8px solid ${ACCENT}`,
+    },
+    [
+      box({ display: 'flex', fontSize: 64, fontWeight: 700, lineHeight: 1.12, letterSpacing: '-0.02em' }, entry.title),
+      box({ display: 'flex', flexDirection: 'column', fontSize: 34, color: INK_SOFT, lineHeight: 1.35 }, [
+        box({ display: 'flex' }, dateLine),
+        box({ display: 'flex' }, `Dom ${venue}`),
+      ]),
+      box({ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }, [
+        box({ display: 'flex', flexDirection: 'column' }, [
+          box({ display: 'flex', fontSize: 40, fontWeight: 700 }, 'WordCamp Belgrade 2026'),
+          box({ display: 'flex', fontSize: 30, color: INK_SOFT, marginTop: 6 }, readableUrl),
+        ]),
+        box({ display: 'flex', width: logoSize, height: logoSize }, ''),
+      ]),
+    ],
+  );
+  const svg = await satori(text, { width: size, height: textHeight, fonts });
+  const typo = await sharp(Buffer.from(svg)).png().toBuffer();
+  return sharp({ create: { width: size, height: size, channels: 3, background: SAND } })
+    .composite([
+      { input: picture, top: 0, left: 0 },
+      { input: typo, top: imageHeight, left: 0 },
+      { input: logo, top: size - 56 - logoSize, left: size - 56 - logoSize },
+    ])
+    .jpeg({ quality: 90 })
+    .toBuffer();
+};
 
 await rm(outDir, { recursive: true, force: true });
 await mkdir(outDir, { recursive: true });
@@ -186,6 +243,12 @@ console.log(`og: ${ogCards.length} cards, ${OG_WIDTH}x${OG_HEIGHT}`);
 
 for (const entry of ogCards.filter((c) => c.image)) {
   await mkdir(socialDir, { recursive: true });
+  {
+    const bytes = await instagramCard(entry);
+    const file = new URL(`${entry.slug}-instagram.jpg`, socialDir);
+    await writeFile(file, bytes);
+    console.log(`social: ${fileURLToPath(file)} 1080x1080 (${bytes.length} bytes)`);
+  }
   for (const [name, width, height, fraction] of socialSizes) {
     const bytes = await (await sharp(await pictureCard(entry, width, height, fraction))).jpeg({ quality: 90 }).toBuffer();
     const file = new URL(`${entry.slug}-${name}.jpg`, socialDir);
