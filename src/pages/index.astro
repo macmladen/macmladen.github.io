@@ -5,12 +5,13 @@ import StructuredData from '../components/StructuredData.astro';
 import headshot from '../assets/mladen-head-2020.jpg';
 import roomPhoto from '../assets/workshop.png';
 import { person } from '../data/person';
-import { isRegistrationOpen, workshop } from '../data/workshop';
+import { isRegistrationOpen, workshopStatus, workshop } from '../data/workshop';
 import { dayAndMonth, timeOfDay } from '../lib/dates';
 import { graph, personNode, webSiteNode } from '../lib/schema';
 
 /** Asked at render time, not at module scope: see isRegistrationOpen. */
 const registrationOpen = isRegistrationOpen();
+const status = workshopStatus();
 
 /** One set of options for the headshot, used both by <Image> and by the
  *  Person node, so the JSON-LD points at the file the page actually renders.
@@ -71,6 +72,7 @@ const description =
              as part of WordCamp before it reads as a date. */
         }
         <p class="eyebrow">
+          <span class={`tag tag--${status}`}>{status === 'next' ? 'Next' : 'Done'}</span>
           <strong>{workshop.wordcampName}</strong>{' · workshop'}<br />
           <time datetime={workshop.date}>{dayAndMonth(workshop.start)}</time>{' · '}<time
             datetime={workshop.start}>{timeOfDay(workshop.start)}</time>{` · ${workshop.venue}`}
@@ -89,13 +91,9 @@ const description =
              here disappears. */
         }
         <div class="row">
-          {
-            registrationOpen && (
-              <a class="button" href={workshop.path}>
-                Register for the workshop
-              </a>
-            )
-          }
+          <a class="button" href={workshop.path}>
+            {registrationOpen ? 'Register for the workshop' : 'Workshop page'}
+          </a>
           <a class="button button--secondary" href={workshop.programUrl}>
             {workshop.wordcampName}
           </a>

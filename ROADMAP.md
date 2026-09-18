@@ -43,6 +43,7 @@ The feedback on v1 is "okayish"; v2 has to be considerably better. Two reference
 - **Serbian bio block** on About if the WordCamp audience asks.
 - **AI cost script**: price each task's transcript tokens at API list rates, print cost and active minutes per task, replace the approximate figures in the backlog.
 - **Git-triggered deploys** (Workers Builds) instead of deploys from a developer machine.
+- **Registration and live questions per event**: the form, seats, questions, host switch and People page are built around one workshop (`src/data/workshop.ts`, one set of D1 tables). For the next workshop make them reusable: an event key on the rows, the workshop page as a template, the state flags per event. Off the pages since MM-95, all code kept.
 - **Workshop follow-ups** on the site: slides and recording on the workshop page after 18 September; the registration list handed to the Koder, meetup and Razgovori follow-ups.
 
 ## Estate (other properties, see `docs/analisys/f-2.md`)

@@ -10,7 +10,7 @@ import {
   messages,
   limits,
 } from '../src/lib/validate.ts';
-import { isBeforeStart, isRegistrationOpen, workshop } from '../src/data/workshop.ts';
+import { isBeforeStart, isRegistrationOpen, workshopStatus, workshop } from '../src/data/workshop.ts';
 
 let passed = 0;
 const failures = [];
@@ -223,6 +223,8 @@ console.log('registration window (MM-80)');
   check('closed at the end itself', isRegistrationOpen(end) === false);
   check('closed the day after', isRegistrationOpen(Date.parse('2026-09-19')) === false);
   check('endsAt is the session end', workshop.endsAt === workshop.end);
+  check('status is next before the end', workshopStatus(end - 1000) === 'next');
+  check('status is done from the end', workshopStatus(end) === 'done');
   check('isBeforeStart is the same gate', isBeforeStart(end - 1000) === true && isBeforeStart(end) === false);
 }
 

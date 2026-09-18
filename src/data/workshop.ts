@@ -160,6 +160,11 @@ export const workshop = {
 export const isRegistrationOpen = (now: number = Date.now()): boolean =>
   now < Date.parse(endsAt);
 
+/** The tag on the home announcement: 'next' while the workshop is ahead or
+ *  running, 'done' once it is over (MM-95). */
+export const workshopStatus = (now: number = Date.now()): 'next' | 'done' =>
+  isRegistrationOpen(now) ? 'next' : 'done';
+
 /** Alias kept for the pages that gate the seats lines on it. */
 export const isBeforeStart = isRegistrationOpen;
 

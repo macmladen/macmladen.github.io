@@ -678,3 +678,25 @@ a[target='_blank']:not(.button):not(.site-footer a)::after {
   font-weight: var(--weight-normal);
   font-variant-numeric: tabular-nums;
 }
+
+/* The status tag on the home announcement: "Next" in the accent while a
+   workshop is ahead, "Done" in the soft ink once it is over. */
+.tag {
+  display: inline-block;
+  margin-inline-end: var(--space-2);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-normal);
+}
+
+.tag--next {
+  background-color: var(--color-accent);
+  color: var(--color-accent-ink);
+}
+
+.tag--done {
+  background-color: var(--color-ink-soft);
+  color: var(--color-bg);
+}
