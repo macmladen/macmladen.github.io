@@ -7,7 +7,7 @@ import RegistrationForm from '../../../components/RegistrationForm.astro';
 import QuestionsForm from '../../../components/QuestionsForm.astro';
 import QuestionsList from '../../../components/QuestionsList.astro';
 import headshot from '../../../assets/mladen-head-2020.jpg';
-import { workshop, isBeforeStart, isRegistrationOpen } from '../../../data/workshop';
+import { workshop, isAfterSession, isBeforeStart, isRegistrationOpen } from '../../../data/workshop';
 import { fullDate } from '../../../lib/dates';
 import { breadcrumbNode, eventNode, graph, personNode } from '../../../lib/schema';
 
@@ -20,6 +20,10 @@ const registrationOpen = isRegistrationOpen();
  *  the archive it will stay. The page is prerendered, so the switch happens on
  *  the first build after the cut-off; the roadmap carries that rebuild. */
 const beforeStart = isBeforeStart();
+
+/** After the session the ticket notice gives way to a line for the people
+ *  who were in the room (MM-96). */
+const afterSession = isAfterSession();
 
 const headshotFile = await getImage({
   src: headshot,
@@ -79,10 +83,20 @@ const schema = graph(
                   {workshop.capacity} seats
                 </p>
               </div>
-              <p class="notice">
-                This registration is for the workshop only. To be at WordCamp Belgrade you need
-                a <a href={workshop.ticketsUrl}>WordCamp ticket</a> first.
-              </p>
+              {
+                afterSession ? (
+                  /* draft: Mladen to approve (MM-96). */
+                  <p class="notice">
+                    The workshop took place on Friday, 18 September. If you were there, register
+                    and you are on the list for the slides, the repository and what comes next.
+                  </p>
+                ) : (
+                  <p class="notice">
+                    This registration is for the workshop only. To be at WordCamp Belgrade you
+                    need a <a href={workshop.ticketsUrl}>WordCamp ticket</a> first.
+                  </p>
+                )
+              }
             </Fragment>
           )
         }
@@ -264,10 +278,14 @@ const schema = graph(
                      the workshop ends (MM-80, MM-81). */
                 }
                 {/* draft: Mladen to approve — the ticket comes first (MM-91). */}
-                <p class="notice">
-                  This registration is for the workshop only. To be at WordCamp Belgrade you need a{' '}
-                  <a href={workshop.ticketsUrl}>WordCamp ticket</a> first.
-                </p>
+                {
+                  !afterSession && (
+                    <p class="notice">
+                      This registration is for the workshop only. To be at WordCamp Belgrade you
+                      need a <a href={workshop.ticketsUrl}>WordCamp ticket</a> first.
+                    </p>
+                  )
+                }
                 <p>
                   Registration closes{' '}
                   <time datetime={workshop.closesLine}>{workshop.closesLineText}</time>.

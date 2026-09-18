@@ -219,10 +219,11 @@ console.log('registration window (MM-80)');
   const end = Date.parse(workshop.endsAt);
   check('open the day before', isRegistrationOpen(end - 24 * 60 * 60_000) === true);
   check('open while the workshop runs', isRegistrationOpen(Date.parse(workshop.start) + 60_000) === true);
+  check('still open after the session, for those who were there (MM-96)', isRegistrationOpen(Date.parse(workshop.end) + 60_000) === true);
   check('open a minute before the end', isRegistrationOpen(end - 60_000) === true);
   check('closed at the end itself', isRegistrationOpen(end) === false);
-  check('closed the day after', isRegistrationOpen(Date.parse('2026-09-19')) === false);
-  check('endsAt is the session end', workshop.endsAt === workshop.end);
+  check('closed once the reopened window is over', isRegistrationOpen(Date.parse('2026-09-21T09:00:00+02:00')) === false);
+  check('registration closes after the session ends', Date.parse(workshop.endsAt) > Date.parse(workshop.end));
   check('isBeforeStart is the same gate', isBeforeStart(end - 1000) === true && isBeforeStart(end) === false);
 }
 

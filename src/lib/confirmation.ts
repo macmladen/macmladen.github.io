@@ -12,7 +12,7 @@
  *  well as through Vite. */
 import type { RegistrationValues } from '../data/registration.ts';
 import { person } from '../data/person.ts';
-import { workshop } from '../data/workshop.ts';
+import { isAfterSession, workshop } from '../data/workshop.ts';
 import { timeOfDay, weekdayAndDate } from './dates.ts';
 import { FROM, send, type MailerSendEnv, type MailStatus } from './mailersend.ts';
 
@@ -34,8 +34,30 @@ const when = `${weekdayAndDate(workshop.start)}, ${timeOfDay(workshop.start)}–
  *  someone standing in front of it would say it. */
 const where = `${workshop.venue}, ${workshop.street}`;
 
-export const confirmationText = (name: string): string =>
+/** draft: Mladen to approve — what someone who registers after the session
+ *  gets (MM-96): the pre-event text would tell them what to install before
+ *  they come. */
+export const subjectAfter =
+  'Thank you for coming: WordPress, Docker and AI agents, WordCamp Belgrade';
+
+const afterText = (name: string): string =>
   [
+    `Hi ${name === '' ? ANYONE : name},`,
+    '',
+    `Thank you for being at the workshop on ${when}. You are on the list now.`,
+    '',
+    `The slides: ${workshop.slidesSpeakerDeck}`,
+    `The repository with the guides and the demo project: ${workshop.repoUrl}`,
+    '',
+    'If something from the workshop did not work on your machine, reply to this mail.',
+    '',
+    'Mladen',
+  ].join('\n');
+
+export const confirmationText = (name: string, now: number = Date.now()): string =>
+  isAfterSession(now)
+    ? afterText(name)
+    : [
     `Hi ${name === '' ? ANYONE : name},`,
     '',
     `You are on the list for the workshop on ${when}, ${where}.`,
@@ -56,12 +78,13 @@ export const confirmationText = (name: string): string =>
  *  answer to a confirmation is a question for him, not for a no-reply box. */
 export const confirmationPayload = (
   values: RegistrationValues,
+  now: number = Date.now(),
 ): Record<string, unknown> => ({
   from: FROM,
   to: [values.name === '' ? { email: values.email } : { email: values.email, name: values.name }],
   reply_to: { email: person.email, name: person.name },
-  subject,
-  text: confirmationText(values.name),
+  subject: isAfterSession(now) ? subjectAfter : subject,
+  text: confirmationText(values.name, now),
 });
 
 /** 'sent', 'skipped' (no API key) or 'failed:<reason>'; never throws. The

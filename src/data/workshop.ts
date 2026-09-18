@@ -2,11 +2,16 @@
  *  workshop page itself and its Event JSON-LD. Venue verified on
  *  belgrade.wordcamp.org, 2026-09-08. */
 
-/** Registration stays open through the workshop itself, so participants can
- *  be sent to the form from the stage (Mladen, 2026-09-14). It closes when the
- *  workshop ends; from that instant the form, the Register buttons and the seats
- *  lines are gone from the build and the post-event notice takes their place. */
-const endsAt = '2026-09-18T14:00:00+02:00';
+/** When the session itself ended. */
+const sessionEnd = '2026-09-18T14:00:00+02:00';
+
+/** When registration closes. It stayed open through the workshop so
+ *  participants could be sent to the form from the stage (MM-80), and was
+ *  reopened after it so the people who were in the room can still be put on
+ *  the list (Mladen, 2026-09-18, MM-96). From this instant the form, the
+ *  Register buttons and the seats lines are gone from the next build and the
+ *  endpoint refuses. */
+const endsAt = '2026-09-20T23:59:59+02:00';
 
 /** Street and city are kept apart so the PostalAddress in the JSON-LD and the
  *  visible venue line come from the same two values. */
@@ -100,7 +105,7 @@ export const workshop = {
   title: 'WordPress, Docker and AI agents — hands-on',
   date: '2026-09-18',
   start: '2026-09-18T12:40:00+02:00',
-  end: endsAt,
+  end: sessionEnd,
   venue: 'Dom Omladine Beograda',
   street,
   city,
@@ -131,8 +136,8 @@ export const workshop = {
   /** What the registration band says; the form is closed live from the room
    *  around this time by a rebuild, while the endpoint stays open until the end
    *  (MM-81). */
-  closesLine: '2026-09-18T12:40:00+02:00',
-  closesLineText: 'Friday, 18 September 2026 at 12:40',
+  closesLine: endsAt,
+  closesLineText: 'Sunday, 20 September 2026',
   abstract,
   audience,
   waysToFollow,
@@ -162,5 +167,10 @@ export const isRegistrationOpen = (now: number = Date.now()): boolean =>
 
 /** Alias kept for the pages that gate the seats lines on it. */
 export const isBeforeStart = isRegistrationOpen;
+
+/** True once the session itself is over; the confirmation mail and the
+ *  registration band speak in the past tense from here (MM-96). */
+export const isAfterSession = (now: number = Date.now()): boolean =>
+  now >= Date.parse(sessionEnd);
 
 export default workshop;

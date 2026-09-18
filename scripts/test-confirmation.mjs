@@ -21,7 +21,10 @@ const check = (name, condition, detail = '') => {
 };
 
 const registrant = { ...emptyValues, name: 'Ana Anić', email: 'ana@example.com' };
-const payload = confirmationPayload(registrant);
+/** The approved pre-event text is checked at an instant before the session. */
+const BEFORE = Date.parse('2026-09-17T10:00:00+02:00');
+const AFTER = Date.parse('2026-09-18T18:00:00+02:00');
+const payload = confirmationPayload(registrant, BEFORE);
 
 console.log('addresses');
 {
@@ -31,7 +34,7 @@ console.log('addresses');
   check('reply_to is Mladen', payload.reply_to.email === person.email, payload.reply_to.email);
   check('reply_to is not the no-reply address', payload.reply_to.email !== FROM.email);
 
-  const anonymous = confirmationPayload({ ...emptyValues, email: 'bo@example.com' });
+  const anonymous = confirmationPayload({ ...emptyValues, email: 'bo@example.com' }, BEFORE);
   check('to carries no name when none was given', anonymous.to[0].name === undefined);
 }
 
@@ -60,7 +63,16 @@ console.log('body');
   check('signs off', text.endsWith('See you there,\nMladen'));
   check('is plain text, no markup', !/[<>]/.test(text));
 
-  check('greets someone who gave no name', confirmationText('').startsWith('Hi there,\n'));
+  check('greets someone who gave no name', confirmationText('', BEFORE).startsWith('Hi there,\n'));
+}
+
+console.log('after the session (MM-96)');
+{
+  const late = confirmationPayload(registrant, AFTER);
+  check('a different subject', late.subject.startsWith('Thank you for coming'));
+  check('no install instructions', !late.text.includes('Before you come'));
+  check('no ticket reminder', !late.text.includes('ticket'));
+  check('carries the slides and the repository', late.text.includes('speakerdeck.com') && late.text.includes('github.com'));
 }
 
 console.log('');
