@@ -15,6 +15,7 @@
   --color-accent: #F40;
   --color-accent-ink: #FFF;
   --color-accent-hover: #A30;
+  --color-placeholder: #AAA; /* hint text inside empty fields: light by choice (MM-97); the label and the hint line carry the meaning */
   --color-code: #A22; /* inline code, the terminal's branch maroon: 6.3:1 on sand, 5.4:1 on the band */
   --color-accent-muted: #853;
   --color-link: #F40;

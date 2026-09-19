@@ -338,7 +338,7 @@
    meet the contrast the token table promises, so they take the soft ink; the
    explicit opacity undoes Firefox's own fading. */
 .field ::placeholder {
-  color: var(--color-ink-soft);
+  color: var(--color-placeholder);
   opacity: 1;
 }
 
